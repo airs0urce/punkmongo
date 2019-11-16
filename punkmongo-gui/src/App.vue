@@ -3,8 +3,8 @@
 
 
 <template>
-  <div class="main-container" @mousemove="onMouseMove" @mouseup="disableSeparatorMoving">
-    <div class="left-panel" :style="{width: leftPanelWidth + 'px'}">
+  <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
+    <div class="left-panel" :style="{width: $store.state.persistent.resizerPosition + 'px'}">
       <div>
         <div class="left-panel-header padding">
           <router-link class="left-panel-header-link" to="/overview/databases">Overview</router-link>  
@@ -15,7 +15,7 @@
         </div>
       </div>  
     </div>
-    <div class="split-adjust-handler" @mousedown="enableSeparatorMoving" ></div>
+    <div class="split-adjust-handler" @mousedown="enableResizerMoving" :class="{hover: movingResizer}"></div>
     <div class="right-panel">
       <div class="padding">
         <ul class="x">
@@ -36,6 +36,7 @@
   import '@/assets/css/reset.css'
   import '@/assets/css/main.css'
   import DatabasesNavigation from '@/components/DatabasesNavigation'
+  import { SET_RESIZER_POSITION } from './store/mutation-types'
 
   const leftPanelSizeLimits = {min: 200, max: 500}
 
@@ -46,31 +47,34 @@
     },
     data: function() {
       return {
-        leftPanelWidth: 250,
+        movingResizer: false
       }
-    },
-    methods: {
-      enableSeparatorMoving(event) {
-        this._movingSeparator = true;
-      },
-      onMouseMove(event) {
-        if (this._movingSeparator) {
-          this.leftPanelWidth = event.clientX;
-          if (this.leftPanelWidth > leftPanelSizeLimits.max) {
-            this.leftPanelWidth = leftPanelSizeLimits.max;
-          }
-          if (this.leftPanelWidth < leftPanelSizeLimits.min) {
-            this.leftPanelWidth = leftPanelSizeLimits.min;
-          }
-        }
-      },
-      disableSeparatorMoving(event) {
-        this._movingSeparator = false;
-      }
-
     },
     mounted: function() {
-      this._movingSeparator = false;
+      
+    },
+    methods: {
+      enableResizerMoving(event) {
+        this.movingResizer = true;
+      },
+      onMouseMove(event) {
+        let resizerPosition = 0;
+        if (this.movingResizer) {
+          resizerPosition = event.clientX;
+          if (resizerPosition > leftPanelSizeLimits.max) {
+            resizerPosition = leftPanelSizeLimits.max;
+          }
+          if (resizerPosition < leftPanelSizeLimits.min) {
+            resizerPosition = leftPanelSizeLimits.min;
+          }
+          this.$store.commit(SET_RESIZER_POSITION, resizerPosition);
+        }
+        
+      },
+      disableResizerMoving(event) {
+        this.movingResizer = false;
+      }
+
     }
   }
 </script>
@@ -120,7 +124,8 @@ a:hover {
   width: 6px;
   background-color: #ddd;
 }
-  .split-adjust-handler:hover {
+  .split-adjust-handler:hover,
+  .split-adjust-handler.hover {
     width: 6px;
     background-color: #C4E1A4;
     cursor: w-resize;

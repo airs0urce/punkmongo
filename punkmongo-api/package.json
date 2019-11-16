@@ -14,6 +14,7 @@
     "koa-jsonrpc": "github:airs0urce/koa-jsonrpc",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
-    "mongodb": "^3.3.4"
+    "mongodb": "^3.3.4",
+    "mz": "^2.7.0"
   }
 }
