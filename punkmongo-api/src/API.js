@@ -1,7 +1,7 @@
 const Koa = require('koa');
 const app = new Koa();
 const koaJsonRpc = require('koa-jsonrpc');
-const config = require('./../config');
+const config = require('./../../config');
 const DBFactory = require('./DBFactory');
 const fs = require('mz/fs');
 
@@ -27,14 +27,14 @@ const fs = require('mz/fs');
   
    
   app.use(jrpc.app());
-  app.listen(config.port);
+  app.listen(config.api.port);
   
-  console.log(`Started JSONRPC 2.0 API on ${config.host}:${config.port}`);
+  console.log(`Started JSONRPC 2.0 API on ${config.api.host}:${config.api.port}`);
 })();
 
 
 
 
 // const crypto = require('crypto');
-// const token = crypto.createHmac('sha256', config.auth.password).update(config.auth.username).digest('hex')
+// const token = crypto.createHmac('sha256', config.api.auth.password).update(config.api.auth.username).digest('hex')
 // console.log('Authorization header:', token)

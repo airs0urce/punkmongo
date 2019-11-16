@@ -1,6 +1,6 @@
 "use strict";
 
-const config = require('../config')
+const config = require('../../config')
     , mongodb = require('mongodb')
     , a = require('awaiting')
 ;
@@ -25,7 +25,7 @@ class DBFactory {
         }
         try {
             clientInstances.mongo = await mongodb.MongoClient.connect(
-                'mongodb://' + config.mongodb.host + ':' + config.mongodb.port, 
+                'mongodb://' + config.api.mongodb.host + ':' + config.api.mongodb.port, 
                 {
                     poolSize: 10, 
                     reconnectTries: Number.MAX_VALUE, 
