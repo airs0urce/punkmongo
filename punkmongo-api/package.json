@@ -1,0 +1,19 @@
+{
+  "name": "punkmongo-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "airs0urce",
+  "license": "ISC",
+  "dependencies": {
+    "awaiting": "^3.0.0",
+    "koa": "^2.11.0",
+    "koa-jsonrpc": "github:airs0urce/koa-jsonrpc",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.27",
+    "mongodb": "^3.3.4"
+  }
+}
