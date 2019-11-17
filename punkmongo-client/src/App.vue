@@ -3,14 +3,15 @@
 
 
 <template>
+  
   <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
-    <div class="left-panel" :style="{width: $store.state.persistent.resizerPosition + 'px'}">
+    <div class="left-panel" :style="{width: $store.state.persistent.resizerPosition + 'px', minWidth: leftPanelSizeLimits.min + 'px'}">
       <div>
-        <div class="left-panel-header padding">
+        <div class="left-panel-header padding" >
           <router-link class="left-panel-header-link" to="/overview/databases">Overview</router-link>  
         </div>
         <div class="line" />
-        <div class="padding">
+        <div class="padding" style="padding-top: 0;">
           <DatabasesNavigation />
         </div>
       </div>  
@@ -36,9 +37,7 @@
   import '@/assets/css/reset.css'
   import '@/assets/css/main.css'
   import DatabasesNavigation from '@/components/DatabasesNavigation'
-  import { SET_RESIZER_POSITION } from './store/mutation-types'
-
-  const leftPanelSizeLimits = {min: 200, max: 500}
+  import * as types from './store/mutation-types'
 
   export default {
     components: {
@@ -47,7 +46,8 @@
     },
     data: function() {
       return {
-        movingResizer: false
+        movingResizer: false,
+        leftPanelSizeLimits: {min: 200, max: 500}
       }
     },
     mounted: function() {
@@ -61,13 +61,13 @@
         let resizerPosition = 0;
         if (this.movingResizer) {
           resizerPosition = event.clientX;
-          if (resizerPosition > leftPanelSizeLimits.max) {
-            resizerPosition = leftPanelSizeLimits.max;
+          if (resizerPosition > this.leftPanelSizeLimits.max) {
+            resizerPosition = this.leftPanelSizeLimits.max;
           }
-          if (resizerPosition < leftPanelSizeLimits.min) {
-            resizerPosition = leftPanelSizeLimits.min;
+          if (resizerPosition < this.leftPanelSizeLimits.min) {
+            resizerPosition = this.leftPanelSizeLimits.min;
           }
-          this.$store.commit(SET_RESIZER_POSITION, resizerPosition);
+          this.$store.commit(types.SET_RESIZER_POSITION, resizerPosition);
         }
         
       },
@@ -84,6 +84,8 @@
 body {
   font-size: 12px;
   font-family:"Courier New", Arial;
+  /* font-family:"Akzidenz", "Helvetica Neue", Helvetica, Arial, sans-serif; */
+  text-rendering: geometricPrecision;
 }
 
 a {
@@ -105,9 +107,7 @@ a:hover {
 }
 
 .left-panel {
-  flex-grow: 20%;
   background-color: #eeefff;
-  width: 200px;
   height: 100vh;
   overflow: auto;
   white-space: nowrap;
@@ -117,7 +117,7 @@ a:hover {
 }
 
 .line {
-  margin-bottom: 10px;
+  margin-bottom: 1em;
   border-bottom: 1px #ccc solid;
 }
 .split-adjust-handler {
@@ -134,6 +134,9 @@ a:hover {
 
 .right-panel {
   flex-grow: 1;
+  height: 100vh;
+  overflow: auto;
+  padding-bottom: 1.5em;
 }
 .right-panel .line {
   border-bottom-color: #999;
@@ -157,11 +160,17 @@ table {
 table th {
   background-color: #cccccc;
   font-weight: bold;
-  padding: 2px;
+  padding: 0.5em;
+  text-align: center;
+  user-select: none;
 }
+
 table td {
   background-color: #fffeee;
-  padding: 2px;
+  padding: 0.3em;
+}
+table tfoot td {
+  font-weight: bold;
 }
 
 div.gap {

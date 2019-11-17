@@ -1,72 +1,30 @@
 <template>
   <div>
     <ul class="left-panel-dbs">
-      <li><a href="#">config</a> (1)</li>
-      <li><a href="#">local</a> (7)</li>
-      <li><a href="#">nearby_aboriginaldating</a> (41)</li>
-      <li><a href="#">nearby_afriflirt</a> (42)</li>
-      <li><a href="#">nearby_alumnisingles</a> (44)</li>
-      <li><a href="#">nearby_atheistdating</a> (43)</li>
-      <li><a href="#">nearby_aventura</a> (42)</li>
-      <li><a href="#">nearby_barebacksexdating</a> (42)</li>
-      <li><a href="#">nearby_bbwdate</a> (41)</li>
-      <li><a href="#">nearby_bbwsexdating</a> (42)</li>
-      <li><a href="#">nearby_bigdickdating</a> (43)</li>
-      <li><a href="#">nearby_bikers</a> (6)</li>
-      <li><a href="#">nearby_bikersdating</a> (44)</li>
-      <li><a href="#">nearby_blackchristiandating</a> (43)</li>
-      <li><a href="#">nearby_afriflirt</a> (42)</li>
-      <li><a href="#">nearby_alumnisingles</a> (44)</li>
-      <li><a href="#">nearby_atheistdating</a> (43)</li>
-      <li><a href="#">nearby_aventura</a> (42)</li>
-      <li><a href="#">nearby_barebacksexdating</a> (42)</li>
-      <li><a href="#">nearby_bbwdate</a> (41)</li>
-      <li><a href="#">nearby_bbwsexdating</a> (42)</li>
-      <li><a href="#">nearby_bigdickdating</a> (43)</li>
-      <li><a href="#">nearby_bikers</a> (6)</li>
-      <li><a href="#">nearby_bikersdating</a> (44)</li>
-      <li><a href="#">nearby_blackchristiandating</a> (43)</li>
-      <li><a href="#">nearby_afriflirt</a> (42)</li>
-      <li><a href="#">nearby_alumnisingles</a> (44)</li>
-      <li><a href="#">nearby_atheistdating</a> (43)</li>
-      <li><a href="#">nearby_aventura</a> (42)</li>
-      <li><a href="#">nearby_barebacksexdating</a> (42)</li>
-      <li><a href="#">nearby_bbwdate</a> (41)</li>
-      <li><a href="#">nearby_bbwsexdating</a> (42)</li>
-      <li><a href="#">nearby_bigdickdating</a> (43)</li>
-      <li><a href="#">nearby_bikers</a> (6)</li>
-      <li><a href="#">nearby_bikersdating</a> (44)</li>
-      <li><a href="#">nearby_blackchristiandating</a> (43)</li>
-      <li><a href="#">nearby_afriflirt</a> (42)</li>
-      <li><a href="#">nearby_alumnisingles</a> (44)</li>
-      <li><a href="#">nearby_atheistdating</a> (43)</li>
-      <li><a href="#">nearby_aventura</a> (42)</li>
-      <li><a href="#">nearby_barebacksexdating</a> (42)</li>
-      <li><a href="#">nearby_bbwdate</a> (41)</li>
-      <li><a href="#">nearby_bbwsexdating</a> (42)</li>
-      <li><a href="#">nearby_bigdickdating</a> (43)</li>
-      <li><a href="#">nearby_bikers</a> (6)</li>
-      <li><a href="#">nearby_bikersdating</a> (44)</li>
-      <li><a href="#">nearby_blackchristiandating</a> (43)</li>
-      <li><a href="#">nearby_afriflirt</a> (42)</li>
-      <li><a href="#">nearby_alumnisingles</a> (44)</li>
-      <li><a href="#">nearby_atheistdating</a> (43)</li>
-      <li><a href="#">nearby_aventura</a> (42)</li>
-      <li><a href="#">nearby_barebacksexdating</a> (42)</li>
-      <li><a href="#">nearby_bbwdate</a> (41)</li>
-      <li><a href="#">nearby_bbwsexdating</a> (42)</li>
-      <li><a href="#">nearby_bigdickdating</a> (43)</li>
-      <li><a href="#">nearby_bikers</a> (6)</li>
-      <li><a href="#">nearby_bikersdating</a> (44)</li>
-      <li><a href="#">nearby_blackchristiandating</a> (43)</li>
-      
+      <li v-for="db in this.$store.state.persistent.dbList"><a href="#">{{db.name}}</a> ({{db.stats.collections}})</li>
     </ul>
   </div>
 </template>
 
+<script type="text/javascript">
+
+import * as actions from '../store/action-types'
+
+export default {
+  name: 'databaseNavigation',
+  components: {
+    
+  },
+  mounted: async function() {
+    this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
+    
+  }
+}
+</script>
+
 <style type="text/css">
   .left-panel-dbs {
-    padding-bottom: 2em;
+    padding-bottom: 1.5em;
   }
   .left-panel-dbs li {
     padding-left: 1.7em;

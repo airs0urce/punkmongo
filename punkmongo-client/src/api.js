@@ -1,33 +1,33 @@
-const axios = require('axios');
-const config = require('../../config');
-const uuidv4 = require('uuid/v4');
+import axios from 'axios'
+import config from '../../config'
+import uuidv4 from 'uuid/v4'
 
 class API {
   constructor() {
     this.endpoint = `${config.client.protocol}${config.client.host}:${config.client.port}`;
   }
 
-  async request(method, params = {}, id) {
-    if (undefined === id) {
+  // you can send JSON RPC 2.0 notification if you pass undefined in "id" parameter
+  async request(method, params = {}, id = 'auto') {
+    if ('auto' === id) {
       id = uuidv4();
     }
-    const response = await axios.post(this.endpoint, {
+    let response;
+
+    response = await axios.post(this.endpoint, {
       jsonrpc: '2.0',
       method: method,
       params: params,
       id: id
     });
-
-    
-    return response.data;
+    const responseData = response.data;
+    if (responseData.error) {
+      throw Error(`[${responseData.error.code}] - ${responseData.error.message}`);
+    }
+    return responseData.result;
   }
 
 }
 
-const api = new API();
 
-api.request('listDatabases').then((response) => {
-  console.log('response:', response);
-});
-
-module.exports = api
+export default new API()

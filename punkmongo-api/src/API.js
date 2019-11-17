@@ -1,10 +1,11 @@
 const Koa = require('koa');
-const app = new Koa();
+const cors = require('koa2-cors');
 const koaJsonRpc = require('koa-jsonrpc');
 const config = require('./../../config');
 const DBFactory = require('./DBFactory');
 const fs = require('mz/fs');
 
+const app = new Koa();
 
 (async () => {  
   const dbClient = await DBFactory.connectMongo();
@@ -23,9 +24,8 @@ const fs = require('mz/fs');
       return await methodFunction(params, dbClient);
     });
   }
-  console.log(methodFiles);
   
-   
+  app.use(cors())
   app.use(jrpc.app());
   app.listen(config.api.port);
   
