@@ -112,9 +112,6 @@ a:hover {
   overflow: auto;
   white-space: nowrap;
 }
-.left-panel ul li:hover {
-  background-color: #e1e2f1;
-}
 
 .line {
   margin-bottom: 1em;

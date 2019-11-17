@@ -49,10 +49,15 @@
 
 <script>
 
+import * as actions from '../store/action-types'
+
 export default {
   name: 'OverviewDatabases',
   components: {
     
+  },
+  mounted: async function() {
+    this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
   },
   methods: {
     statsTotal(field) {

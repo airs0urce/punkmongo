@@ -19,7 +19,9 @@ export default new Vuex.Store({
   state: {
     persistent: {
       resizerPosition: 200, 
-      dbList: []
+      dbList: [],
+      dbName: {},
+      collections: []
     },
   },
   mutations: {
@@ -31,7 +33,14 @@ export default new Vuex.Store({
     },
     [types.SET_SERVER_INFO] (state, serverInfo) {
       state.persistent.serverInfo = serverInfo;
-    }
+    },
+    [types.SET_DB] (state, dbName) {
+      state.persistent.dbName = dbName;
+    },
+    [types.SET_COLLECTIONS] (state, collections) {
+      state.persistent.collections = collections;
+    },
+    
   },
   actions: {
     [actions.ACTION_RELOAD_DB_LIST]: async ({commit}) => {
@@ -41,6 +50,13 @@ export default new Vuex.Store({
     [actions.ACTION_RELOAD_SERVER_INFO]: async ({commit}) => {
       const serverInfo = await api.request('serverInfo');
       commit(types.SET_SERVER_INFO, serverInfo);
+    },
+    [actions.ACTION_LOAD_DB]: async ({ commit }, dbName) => {
+      commit(types.SET_COLLECTIONS, []);
+      const collectionList = await api.request('listCollections', {db: dbName});
+      
+      commit(types.SET_DB, dbName);
+      commit(types.SET_COLLECTIONS, collectionList);
     }
   },
   modules: {
