@@ -2,15 +2,20 @@
   <div>
     <ul class="left-panel-dbs">
       <li v-for="db in state.persistent.dbList">
+        
         <router-link 
           class="db-link loading-animation" 
           :class="{loading: showLoadingDb == db.name, 'router-link-exact-active': state.activeDb.name == db.name}"
           :to="'/database/' + db.name"
           @click.native="onDbLinkClicked(db.name)"
         >{{db.name}}</router-link>  
+
         ({{db.stats.collections}})
-        <ul class="left-panel-collections" v-show="state.activeDb.name == db.name">
-          <li v-for="collection in state.activeDb.collections">{{collection}}</li>
+
+        <ul class="left-panel-collections" v-if="state.activeDb.name == db.name">
+          <li v-for="collection in state.activeDb.collections">
+            <router-link :to="'/database/' + db.name + '/collection/' + collection">{{collection}}</router-link>  
+          </li>
         </ul>
       </li>
     </ul>
@@ -62,25 +67,27 @@ export default {
   methods: {
     onDbLinkClicked (dbName) {
       eventBus.$emit('load-database', dbName);
-    }
+    },
+
   },
   mounted: async function() {
-    this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
+    await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
   },
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .left-panel-dbs {
   padding-bottom: 1.5em;
 }
 .left-panel-dbs li {
-  padding-left: 1.7em;
+  line-height: 1.2;
   background: url('../assets/imgs/database.png') no-repeat;
   background-size: 14px;
   background-position: 0px 0.5px;
   
   a.db-link {
+    padding-left: 1.7em;
     cursor: pointer;
     &:hover {
       color: blue;
@@ -90,12 +97,12 @@ export default {
 
 
 ul.left-panel-collections {
-  padding-left: 0.1em;
+  padding-left: 1.6em;
   li {
-    padding-left: 1.4em;
+    padding-left: 1.7em;
     background: url('../assets/imgs/collection.png') no-repeat;
-    background-size: contain;
-    margin-bottom: 0.4em;
+    background-size: 14px;
+    margin-bottom: 0;
   }
 }
   
