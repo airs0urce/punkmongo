@@ -53,8 +53,7 @@ export default {
       if (loadingDB) {
         this.showLoadingDb = loadingDB;
       } else {
-        await a.delay(500);
-        
+        document.querySelector('.db-link.router-link-exact-active').scrollIntoView({block: 'nearest'})        
         const tookSec = moment.now() - dbLoadStartedTs;
         if (tookSec < loadingDbAnimationMs) {
           let msDelay = loadingDbAnimationMs - tookSec;        
