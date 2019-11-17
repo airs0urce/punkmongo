@@ -19,13 +19,8 @@
     <div class="split-adjust-handler" @mousedown="enableResizerMoving" :class="{hover: movingResizer}"></div>
     <div class="right-panel">
       <div class="padding">
-        <ul class="x">
-          <li><router-link to="/overview/databases">Databases</router-link></li>
-          <li><router-link to="/overview/server-info">Server info</router-link></li>
-        </ul>
-        <div class="line" />
         <div class="content">
-          <router-view/>    
+          <router-view />    
         </div>
       </div>
     </div>
@@ -37,7 +32,7 @@
   import '@/assets/css/reset.css'
   import '@/assets/css/main.css'
   import DatabasesNavigation from '@/components/DatabasesNavigation'
-  import * as types from './store/mutation-types'
+  import * as mutations from './store/mutations'
 
   export default {
     components: {
@@ -67,7 +62,7 @@
           if (resizerPosition < this.leftPanelSizeLimits.min) {
             resizerPosition = this.leftPanelSizeLimits.min;
           }
-          this.$store.commit(types.SET_RESIZER_POSITION, resizerPosition);
+          this.$store.commit(mutations.SET_RESIZER_POSITION, resizerPosition);
         }
         
       },
@@ -79,7 +74,7 @@
   }
 </script>
 
-<style>
+<style lang="scss">
 
 body {
   font-size: 12px;
@@ -139,43 +134,29 @@ a:hover {
   border-bottom-color: #999;
 }
 
-ul.x {
-  display: flex;
-}
-
-ul.x li {
-  margin-right: 0.5em;
-  border-right: 1px solid #ddd;
-  padding-right: 0.5em;
-}
 
 table {
   background-color: rgb(204, 204, 204);
   border-collapse: separate;
   border-spacing: 1px;
-}
-table th {
-  background-color: #cccccc;
-  font-weight: bold;
-  padding: 0.5em;
-  text-align: center;
-  user-select: none;
-}
-
-table td {
-  background-color: #fffeee;
-  padding: 0.3em;
-}
-table tfoot td {
-  font-weight: bold;
+  th {
+    background-color: #cccccc;
+    font-weight: bold;
+    padding: 0.5em;
+    text-align: center;
+    user-select: none;
+  }
+  td {
+    background-color: #fffeee;
+    padding: 0.3em;
+  }
+  tfoot td {
+    font-weight: bold;
+  }
 }
 
 div.gap {
   height: 20px;
-}
-
-.flex {
-  display: flex;
 }
 
 .left-panel-header-link {
@@ -184,6 +165,7 @@ div.gap {
   background-size: 13px;
   background-position: 0px 0.5px;
 }
+
 </style>
 
 

@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import OverviewDatabases from '../views/OverviewDatabases.vue'
-import ServerInfo from '../views/ServerInfo.vue'
+import Database from '../views/Database.vue'
+import Collection from '../views/Collection.vue'
+import Overview from '../views/Overview.vue'
 
 Vue.use(VueRouter)
 
@@ -11,12 +12,24 @@ const routes = [
     redirect: `/overview/databases`
   },
   {
+    name: 'overview-databases',
     path: '/overview/databases',
-    component: OverviewDatabases
+    component: Overview
   },
   {
+    name: 'overview-server-info',
     path: '/overview/server-info',
-    component: ServerInfo
+    component: Overview
+  },
+  {
+    name: 'database',
+    path: '/database/:dbName',
+    component: Database
+  },
+  {
+    name: 'collection',
+    path: '/database/:dbName/collection/:collName',
+    component: Collection
   },
   
   // {

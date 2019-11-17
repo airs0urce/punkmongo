@@ -49,7 +49,7 @@
 
 <script>
 
-import * as actions from '../store/action-types'
+import * as actions from '../store/actions'
 
 export default {
   name: 'OverviewDatabases',

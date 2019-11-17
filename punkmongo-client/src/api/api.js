@@ -1,5 +1,5 @@
 import axios from 'axios'
-import config from '../../config'
+import config from '../../../config'
 import uuidv4 from 'uuid/v4'
 
 class API {

@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
-import createCache from 'vuex-cache';
-import api from '../api'
+import api from '../api/api'
 
-import * as types from './mutation-types'
-import * as actions from './action-types'
+import * as mutations from './mutations'
+import * as actions from './actions'
 
 
 
@@ -14,52 +13,73 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   plugins: [
     createPersistedState({paths: ['persistent']}),
-    createCache()
   ],
   state: {
     persistent: {
       resizerPosition: 200, 
       dbList: [],
-      dbName: {},
-      collections: []
+      serverInfo: {},
     },
+    loadingDb: null,
+    activeDb: {
+      name: '',
+      collections: []
+    }
   },
   mutations: {
-    [types.SET_RESIZER_POSITION] (state, position) {
+    [mutations.SET_RESIZER_POSITION] (state, position) {
       state.persistent.resizerPosition = position;
     },
-    [types.SET_DB_LIST] (state, dbList) {
+    [mutations.SET_DB_LIST] (state, dbList) {
       state.persistent.dbList = dbList;
     },
-    [types.SET_SERVER_INFO] (state, serverInfo) {
+    [mutations.UPDATE_DB_STATS] (state, stats) {
+      for (let i = 0; i < state.persistent.dbList.length; i++) {
+        if (stats.db == state.persistent.dbList[i].name) {
+          state.persistent.dbList[i].stats = stats;
+          break;
+        }
+      }
+    },
+    [mutations.SET_SERVER_INFO] (state, serverInfo) {
       state.persistent.serverInfo = serverInfo;
     },
-    [types.SET_DB] (state, dbName) {
-      state.persistent.dbName = dbName;
+    [mutations.SET_DB] (state, dbName) {
+      state.activeDb.name = dbName;
     },
-    [types.SET_COLLECTIONS] (state, collections) {
-      state.persistent.collections = collections;
+    [mutations.SET_COLLECTIONS] (state, collections) {
+      state.activeDb.collections = collections;
     },
     
   },
   actions: {
     [actions.ACTION_RELOAD_DB_LIST]: async ({commit}) => {
       const dbList = await api.request('listDatabases');
-      commit(types.SET_DB_LIST, dbList);
+      commit(mutations.SET_DB_LIST, dbList);
     },
     [actions.ACTION_RELOAD_SERVER_INFO]: async ({commit}) => {
       const serverInfo = await api.request('serverInfo');
-      commit(types.SET_SERVER_INFO, serverInfo);
+      commit(mutations.SET_SERVER_INFO, serverInfo);
     },
     [actions.ACTION_LOAD_DB]: async ({ commit }, dbName) => {
-      commit(types.SET_COLLECTIONS, []);
-      const collectionList = await api.request('listCollections', {db: dbName});
+      const dbnfo = await api.request('getDatabase', {db: dbName});
       
-      commit(types.SET_DB, dbName);
-      commit(types.SET_COLLECTIONS, collectionList);
+      commit(mutations.SET_DB, dbnfo.stats.db);
+      commit(mutations.SET_COLLECTIONS, dbnfo.collections);
+      commit(mutations.UPDATE_DB_STATS, dbnfo.stats);
     }
   },
   modules: {
 
   }
 })
+
+
+
+
+
+
+
+
+
+

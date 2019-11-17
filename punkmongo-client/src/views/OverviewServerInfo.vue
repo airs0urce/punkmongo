@@ -110,16 +110,17 @@
 
 <script>
 
-import * as actions from '../store/action-types'
+import * as actions from '../store/actions'
 
 export default {
-  name: 'ServerInfo',
+  name: 'OverviewServerInfo',
   components: {
     
   },
   data: function() {
+    const state = this.$store.state;
     return {
-      serverInfo: this.$store.state.persistent.serverInfo
+      serverInfo: state.persistent.serverInfo
     }
   },
   mounted: async function() {
