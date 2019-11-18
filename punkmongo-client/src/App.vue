@@ -16,7 +16,10 @@
         </div>
       </div>  
     </div>
-    <div class="split-adjust-handler" @mousedown="enableResizerMoving" :class="{hover: movingResizer}"></div>
+    <div class="split-adjust-handler" 
+      @mousedown="enableResizerMoving" 
+      :class="{hover: movingResizer, 'left-panel-hidden': !$store.state.persistent.showLeftPanel}"
+    ></div>
     <div class="right-panel">
       <div class="padding">
         <div class="content">
@@ -88,6 +91,9 @@
       },
       toggleLeftPanel() {
         this.$store.commit(mutations.TOGGLE_LEFT_PANEL);
+        if (this.$store.state.persistent.resizerPosition < this.leftPanelSizeLimits.min) {
+          this.$store.commit(mutations.SET_RESIZER_POSITION, this.leftPanelSizeLimits.min);
+        }
       },
 
     }
@@ -133,7 +139,7 @@ a:hover {
 }
 .split-adjust-handler {
   height: 100vh;
-  flex: 0 0 1em;
+  flex: 0 0 0.7em;
   background-color: #ddd;
   border: 1px solid #BBB;
   display: flex;
@@ -143,6 +149,9 @@ a:hover {
     background-color: #C4E1A4;
     cursor: pointer;
     user-select: none;
+  }
+  &.left-panel-hidden {
+    flex: 0 0 1.2em;
   }
 }
 
