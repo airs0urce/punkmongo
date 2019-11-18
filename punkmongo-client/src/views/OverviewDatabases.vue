@@ -22,12 +22,15 @@
       </thead>
       <tbody>
         <tr v-for="db in this.$store.state.persistent.dbList">
-          <td>{{db.name}}</td>
+          <td>
+            <!-- {{db.name}} -->
+            <router-link :to="'/database/' + db.name" >{{db.name}}</router-link>  
+          </td>
           <td>{{db.stats.collections}}</td>
           <td>{{db.stats.indexes}}</td>
           <td>{{bytesFormatted(db.stats.storageSize)}}</td>
           <td>{{bytesFormatted(db.stats.indexSize)}}</td>
-          <td>{{db.stats.objects}}</td>
+          <td>{{numberWithCommas(db.stats.objects)}}</td>
         </tr>
       </tbody>
       <tfoot>
@@ -37,7 +40,15 @@
           <td>{{ statsTotal('indexes') }}</td>
           <td>{{ bytesFormatted(statsTotal('storageSize')) }}</td>
           <td>{{ bytesFormatted(statsTotal('indexSize')) }}</td>
-          <td>{{ statsTotal('objects') }}</td>
+          <td>{{ numberWithCommas(statsTotal('objects')) }}</td>
+        </tr>
+        <tr>
+          <th>Database name</th>
+          <th>Collections</th>
+          <th>Indexes</th>
+          <th>Storage Size</th>
+          <th>Indexes Size</th>
+          <th>Documents</th>
         </tr>
       </tfoot>
       
@@ -50,6 +61,7 @@
 <script>
 
 import * as actions from '../store/actions'
+import utils from '../utils'
 
 export default {
   name: 'OverviewDatabases',
@@ -68,18 +80,8 @@ export default {
       }
       return total;
     },
-    bytesFormatted(bytes) {
-      if (bytes <= 1073741824) { // less than 1GB
-        // show in MB
-        return (bytes / 1024 / 1024).toFixed(2) + ' MB';
-      } else if (bytes <= 1099511627776) { // less than 1TB
-        // show in GB
-        return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
-      } else {
-        // show in TB
-        return (bytes / 1024 / 1024 / 1024 / 1024).toFixed(2)  + ' TB';
-      }
-    }
+    bytesFormatted: utils.bytesFormatted,
+    numberWithCommas: utils.numberWithCommas,
   },
 }
 </script>

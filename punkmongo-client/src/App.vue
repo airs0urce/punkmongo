@@ -5,7 +5,7 @@
 <template>
   
   <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
-    <div class="left-panel" :style="{width: $store.state.persistent.resizerPosition + 'px', minWidth: leftPanelSizeLimits.min + 'px'}">
+    <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
       <div>
         <div class="left-panel-header padding" >
           <router-link class="left-panel-header-link" to="/overview/databases">Overview</router-link>  
@@ -42,7 +42,8 @@
     data: function() {
       return {
         movingResizer: false,
-        leftPanelSizeLimits: {min: 200, max: 500}
+        leftPanelSizeLimits: {min: 150, max: 600},
+        showLeftPanel: true
       }
     },
     mounted: function() {
@@ -51,24 +52,43 @@
     methods: {
       enableResizerMoving(event) {
         this.movingResizer = true;
+        this.movingStartPos = event.clientX;
       },
       onMouseMove(event) {
+        const persistent = this.$store.state.persistent;
+
         let resizerPosition = 0;
         if (this.movingResizer) {
           resizerPosition = event.clientX;
-          if (resizerPosition > this.leftPanelSizeLimits.max) {
-            resizerPosition = this.leftPanelSizeLimits.max;
+
+          if (resizerPosition < 30 && persistent.showLeftPanel) {
+            this.toggleLeftPanel();
+          } else if (resizerPosition > 30 && !persistent.showLeftPanel) {
+            this.toggleLeftPanel();
+            resizerPosition = 0;
+          } else {
+            if (resizerPosition > this.leftPanelSizeLimits.max) {
+              resizerPosition = this.leftPanelSizeLimits.max;
+            }
+            if (resizerPosition < this.leftPanelSizeLimits.min && persistent.showLeftPanel) {
+              resizerPosition = this.leftPanelSizeLimits.min;
+            }
           }
-          if (resizerPosition < this.leftPanelSizeLimits.min) {
-            resizerPosition = this.leftPanelSizeLimits.min;
-          }
+
           this.$store.commit(mutations.SET_RESIZER_POSITION, resizerPosition);
         }
         
       },
       disableResizerMoving(event) {
         this.movingResizer = false;
-      }
+        const movingEndPos = event.clientX;
+        if (this.movingStartPos == movingEndPos) {
+          this.toggleLeftPanel();
+        }
+      },
+      toggleLeftPanel() {
+        this.$store.commit(mutations.TOGGLE_LEFT_PANEL);
+      },
 
     }
   }
@@ -86,7 +106,6 @@ body {
 a {
   text-decoration: none;
   color: #004499;
-  line-height: 1.5;
 }
 a:hover {
   color: blue;
@@ -113,16 +132,19 @@ a:hover {
   border-bottom: 1px #ccc solid;
 }
 .split-adjust-handler {
-  width: 6px;
+  height: 100vh;
+  flex: 0 0 1em;
   background-color: #ddd;
-}
-  .split-adjust-handler:hover,
-  .split-adjust-handler.hover {
-    width: 6px;
+  border: 1px solid #BBB;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  &:hover, &.hover {
     background-color: #C4E1A4;
-    cursor: w-resize;
+    cursor: pointer;
     user-select: none;
   }
+}
 
 .right-panel {
   flex-grow: 1;

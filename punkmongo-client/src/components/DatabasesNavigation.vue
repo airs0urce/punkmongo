@@ -76,6 +76,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+a {
+  line-height: 1.5;
+}
 .left-panel-dbs {
   padding-bottom: 1.5em;
 }

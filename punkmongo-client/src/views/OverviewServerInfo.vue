@@ -6,18 +6,13 @@
       <col width="500" valign="top">
       <tr><th colspan="2">General</th></tr>
       <tr>
-        <td>MongoDB binary</td>
-        <td>{{serverInfo.mem.bits}} Bits</td>
-      </tr>
-      <tr>
         <td>Command</td>
         <td>{{serverInfo.argv}}</td>
       </tr>
       <tr>
-        <td>Bind IP</td>
-        <td>{{serverInfo.bindIp}}</td>
+        <td>Binary</td>
+        <td>{{serverInfo.mem.bits}} Bits</td>
       </tr>
-      
       <tr>
         <td>Uptime</td>
         <td>{{formatUptime(serverInfo.uptime)}}</td>
@@ -30,7 +25,10 @@
         <td>Storage Engine</td>
         <td>{{serverInfo.storageEngine}}</td>
       </tr>
-      
+      <tr>
+        <td>Bind IP</td>
+        <td>{{serverInfo.bindIp}}</td>
+      </tr>
     </table>
 
     <div class="gap"></div>
@@ -56,17 +54,10 @@
         <td>{{serverInfo.hostInfo.system.cpuArch}}</td>
       </tr>
       <tr>
-        <td>OS Type</td>
-        <td>{{serverInfo.hostInfo.os.type}}</td>
+        <td>OS</td>
+        <td>{{serverInfo.hostInfo.os.type}} {{serverInfo.hostInfo.os.name}} {{serverInfo.hostInfo.os.version}}</td>
       </tr>
-      <tr>
-        <td>OS Name</td>
-        <td>{{serverInfo.hostInfo.os.name}}</td>
-      </tr>
-      <tr>
-        <td>OS Version</td>
-        <td>{{serverInfo.hostInfo.os.version}}</td>
-      </tr>
+      
       
       
     </table>
@@ -135,6 +126,8 @@ export default {
         return Math.floor(uptime / 60) + ' min';
       } else if (uptime < 60 * 60 * 24) {
         return Math.floor(uptime / 60 / 60) + ' hours';
+      } else {
+        return Math.floor(uptime / 60 / 60 / 24) + ' day(s)';
       }
 
     }

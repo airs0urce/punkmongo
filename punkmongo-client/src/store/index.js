@@ -19,6 +19,7 @@ export default new Vuex.Store({
       resizerPosition: 200, 
       dbList: [],
       serverInfo: {},
+      showLeftPanel: true
     },
     loadingDb: null,
     activeDb: {
@@ -44,11 +45,12 @@ export default new Vuex.Store({
     [mutations.SET_SERVER_INFO] (state, serverInfo) {
       state.persistent.serverInfo = serverInfo;
     },
-    [mutations.SET_DB] (state, dbName) {
-      state.activeDb.name = dbName;
+
+    [mutations.SET_ACTIVE_DB] (state, db) {
+      state.activeDb = db;
     },
-    [mutations.SET_COLLECTIONS] (state, collections) {
-      state.activeDb.collections = collections;
+    [mutations.TOGGLE_LEFT_PANEL] (state) {
+      state.persistent.showLeftPanel = ! state.persistent.showLeftPanel;
     },
     
   },
@@ -64,9 +66,7 @@ export default new Vuex.Store({
     [actions.ACTION_LOAD_DB]: async ({ commit }, dbName) => {
       const dbnfo = await api.request('getDatabase', {db: dbName});
       
-      commit(mutations.SET_DB, dbnfo.stats.db);
-      commit(mutations.SET_COLLECTIONS, dbnfo.collections);
-      commit(mutations.UPDATE_DB_STATS, dbnfo.stats);
+      commit(mutations.SET_ACTIVE_DB, dbnfo);
     }
   },
   modules: {
