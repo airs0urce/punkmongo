@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="serverInfo.argv">
     
     <table cellpadding="2" cellspacing="1">
       <col width="150" valign="top">
@@ -102,21 +102,18 @@
 <script>
 
 import * as actions from '../store/actions'
+import { mapState } from 'vuex';
 
 export default {
   name: 'OverviewServerInfo',
   components: {
     
   },
-  data: function() {
-    const state = this.$store.state;
-    return {
-      serverInfo: state.persistent.serverInfo
-    }
-  },
-  mounted: async function() {
-    this.$store.dispatch(actions.ACTION_RELOAD_SERVER_INFO);
-    
+  computed: mapState({
+    serverInfo: state => state.persistent.serverInfo
+  }),
+  created: async function() {
+    await this.$store.dispatch(actions.ACTION_RELOAD_SERVER_INFO);
   },
   methods: {
     formatUptime (uptime) {

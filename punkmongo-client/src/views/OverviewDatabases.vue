@@ -68,7 +68,7 @@ export default {
   components: {
     
   },
-  mounted: async function() {
+  created: async function() {
     this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
   },
   methods: {

@@ -12,10 +12,22 @@ module.exports = async function (params, dbClient) {
   }
   collections.sort();
 
-  const dbStats = await db.stats();
+  const collectionsRecords = await Promise.all(collections.map((coll) => {
+    return db.collection(coll).count();
+  }));
+
+
+  const collectionsResult = [];
+
+  for (let i = 0; i < collections.length; i++) {
+    collectionsResult.push({
+      name: collections[i],  
+      count: collectionsRecords[i]
+    });
+  }
 
   return {
-    stats: dbStats,
-    collections: collections
+    stats: await db.stats(),
+    collections: collectionsResult,
   }
 }

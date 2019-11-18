@@ -17,6 +17,9 @@ const app = new Koa();
   const apiMethodsPath = __dirname + '/API/';
   const methodFiles = await fs.readdir(apiMethodsPath);
   for (let methodFile of methodFiles) {
+    if (! methodFile.includes('.js')) {
+      continue;
+    }
     const methodName = methodFile.replace('.js', '');
     const methodFunction = require(apiMethodsPath + methodFile);
 

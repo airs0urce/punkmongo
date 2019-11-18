@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="activeDb.name != ''">
     Databases » {{activeDb.name}}
     <div class="line" />
     Statistics | New Collection | Command | 
@@ -9,10 +9,10 @@
 
     <table cellpadding="2" cellspacing="1">
       <colgroup>
-        <col width="150" valign="top">
-        <col width="110" valign="top">
-        <col width="90" valign="top">
-        <col width="110" valign="top">
+        <col width="300" valign="top">
+        <col width="100" valign="top">
+        <col width="100" valign="top">
+        <col width="100" valign="top">
       </colgroup>
       <thead>
         <tr>
@@ -23,12 +23,6 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Avg Object Size</td>
-          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'KB') }}</td>
-          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'MB') }}</td>
-          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'GB') }}</td>
-        </tr>
         <tr>
           <td>Data Size</td>
           <td>{{ bytesFormatted(activeDb.stats.dataSize, 'KB') }}</td>
@@ -41,12 +35,21 @@
           <td>{{ bytesFormatted(activeDb.stats.storageSize, 'MB') }}</td>
           <td>{{ bytesFormatted(activeDb.stats.storageSize, 'GB') }}</td>
         </tr>
-        
         <tr>
           <td>Index Size</td>
           <td>{{ bytesFormatted(activeDb.stats.indexSize, 'KB') }}</td>
           <td>{{ bytesFormatted(activeDb.stats.indexSize, 'MB') }}</td>
           <td>{{ bytesFormatted(activeDb.stats.indexSize, 'GB') }}</td>
+        </tr>
+        <tr>
+          <td>Avg Object Size</td>
+          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'KB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'MB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'GB') }}</td>
+        </tr>
+        <tr>
+          <td>Collections</td>
+          <td colspan="3">{{activeDb.collections.length}}</td>
         </tr>
         <tr>
           <td>Objects</td>
@@ -56,10 +59,6 @@
           <td>Indexes</td>
           <td colspan="3">{{ activeDb.stats.indexes }}</td>
         </tr>
-        <tr>
-          <td>Collections</td>
-          <td colspan="3">{{activeDb.collections.length}}</td>
-        </tr>
       </tbody>
     </table>
     
@@ -67,17 +66,17 @@
 
     <table cellpadding="2" cellspacing="1">
       <colgroup>
-        <col width="463" valign="top">
+        <col width="600" valign="top">
       </colgroup>
       <thead>
         <tr>
-          <th>Collections</th>
+          <th>Collections ({{activeDb.collections.length}})</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="collection in activeDb.collections">
           <td>
-            <router-link :to="'/database/' + activeDb.name + '/collection/' + collection">{{collection}}</router-link>  
+            <router-link :to="'/database/' + activeDb.name + '/collection/' + collection.name">{{collection.name}}</router-link>  
           </td>
         </tr>
       </tbody>

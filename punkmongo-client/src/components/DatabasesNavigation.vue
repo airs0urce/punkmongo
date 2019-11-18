@@ -14,7 +14,7 @@
 
         <ul class="left-panel-collections" v-if="state.activeDb.name == db.name">
           <li v-for="collection in state.activeDb.collections">
-            <router-link :to="'/database/' + db.name + '/collection/' + collection">{{collection}}</router-link>  
+            <router-link :to="'/database/' + db.name + '/collection/' + collection.name">{{collection.name}}</router-link> ({{collection.count}})
           </li>
         </ul>
       </li>
