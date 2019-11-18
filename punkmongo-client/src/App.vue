@@ -123,7 +123,7 @@ a:hover {
   min-height: 100vh;
 }
 .padding {
-  padding: 0.5em;
+  padding: 0.8em;
 }
 
 .left-panel {

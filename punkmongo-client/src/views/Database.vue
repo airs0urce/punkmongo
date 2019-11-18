@@ -76,7 +76,9 @@
       </thead>
       <tbody>
         <tr v-for="collection in activeDb.collections">
-          <td>{{collection}}</td>
+          <td>
+            <router-link :to="'/database/' + activeDb.name + '/collection/' + collection">{{collection}}</router-link>  
+          </td>
         </tr>
       </tbody>
     </table>
@@ -104,6 +106,7 @@ export default {
     eventBus.$on('load-database', async (dbName) => {
       this.loadDatabase(dbName);
     });
+    this.loadDatabase(this.$route.params.dbName);
   },
   components: {
     
@@ -130,8 +133,5 @@ export default {
     bytesFormatted: utils.bytesFormatted,
     numberWithCommas: utils.numberWithCommas,
   },
-  mounted() {
-    this.loadDatabase(this.$route.params.dbName);
-  }
 }
 </script>
