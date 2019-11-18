@@ -1,24 +1,33 @@
 <template>
   <div>
-    <ul class="left-panel-dbs">
-      <li v-for="db in state.persistent.dbList">
-        
-        <router-link 
-          class="db-link loading-animation" 
-          :class="{loading: showLoadingDb == db.name, 'router-link-exact-active': state.activeDb.name == db.name}"
-          :to="'/database/' + db.name"
-          @click.native="onDbLinkClicked(db.name)"
-        >{{db.name}}</router-link>  
+    <div v-if="state.persistent.dbList.length == 0">
+      Loading databases...
+    </div>
+    <div v-if="state.persistent.dbList.length > 0">
 
-        ({{db.stats.collections}})
+      <router-link class="new-database" :to="'/new_database'">New database</router-link>
+      <ul class="left-panel-dbs">
+        <li v-for="db in state.persistent.dbList">
+          <router-link 
+            class="db-link loading-animation" 
+            :class="{loading: showLoadingDb == db.name, 'router-link-exact-active': state.activeDb.name == db.name}"
+            :to="'/database/' + db.name"
+            @click.native="onDbLinkClicked(db.name)"
+          >{{db.name}}</router-link>  
 
-        <ul class="left-panel-collections" v-if="state.activeDb.name == db.name">
-          <li v-for="collection in state.activeDb.collections">
-            <router-link :to="'/database/' + db.name + '/collection/' + collection.name">{{collection.name}}</router-link> ({{collection.count}})
-          </li>
-        </ul>
-      </li>
-    </ul>
+          ({{db.stats.collections}})
+
+          <div v-if="state.activeDb.name == db.name">
+            <ul class="left-panel-collections">
+              <li v-for="collection in state.activeDb.collections">
+                <router-link :to="'/database/' + db.name + '/collection/' + collection.name">{{collection.name}}</router-link> ({{numberWithCommas(collection.count)}})
+              </li>
+            </ul>
+            <router-link class="new-collection" :to="'/new_collection'">New collection</router-link>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -29,6 +38,7 @@ import { mapState } from 'vuex';
 import moment from 'moment';
 import * as a from 'awaiting';
 import eventBus from '../eventBus'
+import utils from '../utils'
 
 let dbLoadStartedTs = 0;
 const loadingDbAnimationMs = 400;
@@ -71,15 +81,35 @@ export default {
     onDbLinkClicked (dbName) {
       eventBus.$emit('load-database', dbName);
     },
+    numberWithCommas: utils.numberWithCommas,
 
   },
   mounted: async function() {
     await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
   },
+
 }
 </script>
 
 <style lang="scss" scoped>
+a.new-database {
+  background: url('../assets/imgs/add.png') no-repeat;
+  background-size: 14px;
+  background-position: 0px 0.5px;
+  padding-left: 1.7em;
+  padding-bottom: 0.3em;
+  display: inline-block;
+}
+a.new-collection {
+  background: url('../assets/imgs/add.png') no-repeat;
+  background-size: 14px;
+  background-position: 0px 0.5px;
+  padding-left: 1.7em;
+  padding-bottom: 0.3em;
+  display: inline-block;
+  margin-left: 1.6em;
+}
+
 a {
   line-height: 1.5;
 }

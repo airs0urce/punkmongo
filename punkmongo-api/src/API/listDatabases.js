@@ -1,6 +1,6 @@
+const a = require('awaiting');
 
-
-module.exports = async function (params, dbClient) {  
+module.exports = async function (params, dbClient) {
   const result = await dbClient.db('admin').admin().listDatabases();
   
 

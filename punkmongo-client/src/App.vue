@@ -196,7 +196,9 @@ div.gap {
   background-size: 13px;
   background-position: 0px 0.5px;
 }
-
+button:focus {
+  outline: 0;
+}
 </style>
 
 

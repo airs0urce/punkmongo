@@ -43,7 +43,14 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  scrollBehavior (to, from, savedPosition) {
+    // if (['database', 'collection'].includes(to.name)) {
+      // return 0;
+    // } else {
+    //   return savedPosition;
+    // }
+  }
 })
 
 export default router

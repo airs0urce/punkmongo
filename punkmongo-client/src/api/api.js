@@ -8,21 +8,23 @@ class API {
   }
 
   // you can send JSON RPC 2.0 notification if you pass undefined in "id" parameter
-  async request(method, params = {}, id = 'auto') {
-    if ('auto' === id) {
-      id = uuidv4();
-    }
+  async request(method, params = {}, timeout = 30 * 60000) {
     let response;
 
     response = await axios.post(this.endpoint, {
       jsonrpc: '2.0',
       method: method,
       params: params,
-      id: id
+      id: uuidv4()
+    }, {
+      responseType: 'json',
+      timeout: timeout
     });
     const responseData = response.data;
     if (responseData.error) {
-      throw Error(`[${responseData.error.code}] - ${responseData.error.message}`);
+      const error = `[${responseData.error.code}] - ${responseData.error.message}`;
+      alert(error);
+      throw Error(error);
     }
     return responseData.result;
   }

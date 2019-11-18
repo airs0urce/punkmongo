@@ -1,7 +1,9 @@
 <template>
   <div>
-    
-    <table cellpadding="2" cellspacing="1" class="sortable">
+    <div v-if="dbList.length == 0">
+      Loading...
+    </div>
+    <table v-if="dbList.length > 0" cellpadding="2" cellspacing="1" class="sortable">
       <colgroup>
         <col width="200" valign="top">
         <col width="110" valign="top">
@@ -21,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="db in this.$store.state.persistent.dbList">
+        <tr v-for="db in dbList">
           <td>
             <!-- {{db.name}} -->
             <router-link :to="'/database/' + db.name" >{{db.name}}</router-link>  
@@ -62,12 +64,16 @@
 
 import * as actions from '../store/actions'
 import utils from '../utils'
+import { mapState } from 'vuex';
 
 export default {
   name: 'OverviewDatabases',
   components: {
     
   },
+  computed: mapState({
+    dbList: state => state.persistent.dbList,
+  }),
   created: async function() {
     this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
   },

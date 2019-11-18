@@ -4,6 +4,7 @@ const koaJsonRpc = require('koa-jsonrpc');
 const config = require('./../../config');
 const DBFactory = require('./DBFactory');
 const fs = require('mz/fs');
+const a = require('awaiting');
 
 const app = new Koa();
 
@@ -22,7 +23,7 @@ const app = new Koa();
     }
     const methodName = methodFile.replace('.js', '');
     const methodFunction = require(apiMethodsPath + methodFile);
-
+    
     jrpc.use(methodName, async (params) => {
       return await methodFunction(params, dbClient);
     });

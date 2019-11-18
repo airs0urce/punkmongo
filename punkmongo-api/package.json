@@ -17,6 +17,7 @@
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
     "mongodb": "^3.3.4",
+    "mongodb-query-parser": "^1.4.3",
     "mz": "^2.7.0",
     "uuid": "^3.3.3"
   }

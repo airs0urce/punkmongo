@@ -48,8 +48,6 @@ module.exports = async function (params, dbClient) {
     hostInfo: hostInfo
   };
 
-  console.log(getCmdLineOpts);
-  // replSetGetStatus: admin.replSetGetStatus(),
   return results;
 }
 
