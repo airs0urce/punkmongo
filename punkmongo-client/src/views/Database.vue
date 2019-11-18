@@ -5,68 +5,83 @@
     Statistics | New Collection | Command | 
 
     <div class="line" />
-    {{activeDb}}
-    <table cellpadding="2" cellspacing="1" class="sortable">
+    
+
+    <table cellpadding="2" cellspacing="1">
       <colgroup>
-        <col width="200" valign="top">
+        <col width="150" valign="top">
         <col width="110" valign="top">
         <col width="90" valign="top">
         <col width="110" valign="top">
-        <col width="110" valign="top">
-        <col width="90" valign="top">
       </colgroup>
       <thead>
         <tr>
-          <th coolspan="2">Database Statistics</th>
+          <th>Database Statistics</th>
+          <th>KB</th>
+          <th>MB</th>
+          <th>GB</th>
         </tr>
       </thead>
       <tbody>
-        <!-- <tr>
-          <th>Objects</th>
-          <td>{{ numberWithCommas(activeDb.stats.objects) }}</td>
+        <tr>
+          <td>Avg Object Size</td>
+          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'KB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'MB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'GB') }}</td>
         </tr>
         <tr>
-          <th>Avg Object Size</th>
-          <td>{{ numberWithCommas(activeDb.stats.avgObjSize) }}</td>
-        </tr> -->
-        <tr>
-          <th>Data Size</th>
-          <td></td>
+          <td>Data Size</td>
+          <td>{{ bytesFormatted(activeDb.stats.dataSize, 'KB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.dataSize, 'MB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.dataSize, 'GB') }}</td>
         </tr>
         <tr>
-          <th>Storage Size</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th>Extents</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th>Indexes</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th>Index Size</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th>Collections</th>
-          <td></td>
+          <td>Storage Size</td>
+          <td>{{ bytesFormatted(activeDb.stats.storageSize, 'KB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.storageSize, 'MB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.storageSize, 'GB') }}</td>
         </tr>
         
-        <!-- <tr v-for="db in this.$store.state.persistent.dbList">
-          <td>
-            <router-link :to="'/database/' + db.name" >{{db.name}}</router-link>  
-          </td>
-          <td>{{db.stats.collections}}</td>
-          <td>{{db.stats.indexes}}</td>
-          <td>{{bytesFormatted(db.stats.storageSize)}}</td>
-          <td>{{bytesFormatted(db.stats.indexSize)}}</td>
-          <td>{{numberWithCommas(db.stats.objects)}}</td>
-        </tr> -->
+        <tr>
+          <td>Index Size</td>
+          <td>{{ bytesFormatted(activeDb.stats.indexSize, 'KB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.indexSize, 'MB') }}</td>
+          <td>{{ bytesFormatted(activeDb.stats.indexSize, 'GB') }}</td>
+        </tr>
+        <tr>
+          <td>Objects</td>
+          <td colspan="3">{{ numberWithCommas(activeDb.stats.objects) }}</td>
+        </tr>
+        <tr>
+          <td>Indexes</td>
+          <td colspan="3">{{ activeDb.stats.indexes }}</td>
+        </tr>
+        <tr>
+          <td>Collections</td>
+          <td colspan="3">{{activeDb.collections.length}}</td>
+        </tr>
       </tbody>
     </table>
     
+    <div class="gap"></div>
+
+    <table cellpadding="2" cellspacing="1">
+      <colgroup>
+        <col width="463" valign="top">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Collections</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="collection in activeDb.collections">
+          <td>{{collection}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+
 
 
 

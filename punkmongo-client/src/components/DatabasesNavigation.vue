@@ -53,7 +53,11 @@ export default {
       if (loadingDB) {
         this.showLoadingDb = loadingDB;
       } else {
-        document.querySelector('.db-link.router-link-exact-active').scrollIntoView({block: 'nearest'})        
+        const activeDbEl = document.querySelector('.db-link.router-link-exact-active');
+        if (activeDbEl) {
+          activeDbEl.scrollIntoView({block: 'nearest'});
+        }
+        
         const tookSec = moment.now() - dbLoadStartedTs;
         if (tookSec < loadingDbAnimationMs) {
           let msDelay = loadingDbAnimationMs - tookSec;        

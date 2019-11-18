@@ -24,6 +24,7 @@ export default new Vuex.Store({
     loadingDb: null,
     activeDb: {
       name: '',
+      stats: {},
       collections: []
     }
   },
