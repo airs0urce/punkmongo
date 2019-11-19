@@ -218,6 +218,14 @@ button:focus {
 .vue-tab[aria-selected="true"] {
   background-color: #eeefff;
 }
+input {
+  padding: 5.5px;
+  background-color: #f5f6f7;
+  border: 1px solid #ddd;
+  &:focus {
+    outline: 0;
+  }
+}
 </style>
 
 

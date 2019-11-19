@@ -4,15 +4,18 @@
     <div class="query-editor">
 
       <div class="filter-wrapper" :class="{'filter-invalid': !this.filter.valid}">
-        <div class="filter-label">filter</div>
-        <div class="options-label">options</div>
+        
+        <!-- <div class="filter-label">filter</div> -->
+        <!-- <div class="options-label">options</div> -->
         <div>
+          <div>filter</div>
           <AceEditor
             width="500px"
             mode="mongodb"
             theme="mongodb"
+            :cursorStart="2"
             :minLines="4"
-            :maxLines="20"
+            :maxLines="40"
             :fontSize="11"
             :showPrintMargin="true"
             :showGutter="false"
@@ -25,9 +28,9 @@
             :editorProps="{$blockScrolling: Infinity}"
           />
         </div>
-        <div class="sort-and-projection">
+        <div class="query-options">
           <div>
-            Sort
+            <div>sort</div>
             <vue-tags-input
               v-model="sort.tag"
               :tags="sort.tags"
@@ -39,7 +42,11 @@
             />
           </div>
           <div>
-            Project
+            <div>limit</div>
+            <input type="number" name="" />
+          </div>
+          <div>
+            <div>projection</div>
             <vue-tags-input
               v-model="projection.tag"
               :tags="projection.tags"
@@ -50,23 +57,23 @@
               placeholder="Add field"
             />   
           </div>
+          <div>
+            <div>rows per page</div>
+            <select name="" >
+              <option>10</option>  
+              <option>30</option>  
+              <option>50</option>  
+              <option>100</option>  
+              <option>500</option>  
+              <option>1000</option>  
+              <option>2000</option>  
+            </select>
+          </div>
         </div>
       </div>
       
-      
-      
       <div></div>
-      Limit <input type="number" name="" />
-      Rows 
-      <select name="" >
-        <option>10</option>  
-        <option>30</option>  
-        <option>50</option>  
-        <option>100</option>  
-        <option>500</option>  
-        <option>1000</option>  
-        <option>2000</option>  
-      </select>
+      
 
       <div>
         <button>Submit Query</button>
@@ -75,8 +82,6 @@
 
       Cost: 33ms  
 
-
-      DISTINCT!!!
     </div>
     
      
@@ -175,8 +180,11 @@ export default {
   &.filter-invalid .ace_editor {
     background-color: #fdefef;  
   }
-  .sort-and-projection {
+  .query-options {
     padding-left: 1em;
+    > div {
+      margin-bottom: 0.3em;
+    }
   }
   .vue-tags-input {
     display: inline-block;
@@ -192,18 +200,41 @@ export default {
     user-select: none;
     font-family: Verdana;
   }
-  .options-label {
-    display: inline-block;
-    position: absolute;
-    top: 1px;
-    left: 515px;
-    font-size: 0.8em;
-    font-weight: 200;
-    color: #c7c8d2;
-    user-select: none;
-    font-family: Verdana;
+
+
+  // .options-label {
+  //   display: inline-block;
+  //   position: absolute;
+  //   top: 1px;
+  //   left: 515px;
+  //   font-size: 0.8em;
+  //   font-weight: 200;
+  //   color: #c7c8d2;
+  //   user-select: none;
+  //   font-family: Verdana;
+  // }
+}
+/deep/ .ace_scroller {
+  border: 1px solid #ddd;
+}
+/deep/ .vue-tags-input  {
+  width: 25em;
+  background-color: #f5f6f7;
+  .ti-input {
+    border: 1px solid #ddd;
+    padding: 2px;
+  }
+  .ti-new-tag-input {
+    background-color: #c8f7c8;
+    color: #0a420a;
+    // outline: 0.3em solid #c8f7c8;
+  }
+  .ti-invalid {
+    background-color: #f5f6f7;
   }
 }
+
+
 
 
 </style>

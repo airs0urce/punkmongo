@@ -17,8 +17,11 @@
       </tab>
     </tabs>
 
-    
-
+    <div class="gap"></div>
+    <div class="pagination">
+      First | 1 | 2 | 3 | 4 | 5 | Last
+    </div>
+    <div class="gap"></div>
 
     <div class="document">
       Update | Delete | Refresh | Expand | Expand All
@@ -70,6 +73,7 @@ div.document {
   padding: 1em 0.4em 0.4em;
   position: relative;
 }
+
 </style>
 
 
