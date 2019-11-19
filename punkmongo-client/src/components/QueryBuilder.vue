@@ -4,7 +4,8 @@
     <div class="query-editor">
 
       <div class="filter-wrapper" :class="{'filter-invalid': !this.filter.valid}">
-        <div class="query-label">query</div>
+        <div class="filter-label">filter</div>
+        <div class="options-label">options</div>
         <div>
           <AceEditor
             width="500px"
@@ -105,7 +106,7 @@ export default {
         },
         sort: {
           tag: '',
-          tags: ['_id:-1'],
+          tags: [{text: '_id:-1'}],
           autocompleteItems: [
             {text: '_id:1'},
             {text: '_id:-1'},  
@@ -180,11 +181,22 @@ export default {
   .vue-tags-input {
     display: inline-block;
   }
-  .query-label {
+  .filter-label {
     display: inline-block;
     position: absolute;
-    top: 0;
+    top: 1px;
     left: 1em;
+    font-size: 0.8em;
+    font-weight: 200;
+    color: #c7c8d2;
+    user-select: none;
+    font-family: Verdana;
+  }
+  .options-label {
+    display: inline-block;
+    position: absolute;
+    top: 1px;
+    left: 515px;
     font-size: 0.8em;
     font-weight: 200;
     color: #c7c8d2;
