@@ -1,15 +1,23 @@
 <template>
   <div>
-    Collection view
+    {{activeDb.name}} -> 
 
-    <ul>
-      <li><router-link to="">Query</router-link></li>
-      <li><router-link to="">Aggregate</router-link></li>
-      <li><router-link to="">Update</router-link></li>
-      <li><router-link to="">Delete</router-link></li>
-    </ul>
+    <tabs class="collection-tabs">
+      <tab title="Query/Update/Delete" class="collection-tab">
+        <QueryBuilder />
+      </tab>
+      <tab title="Insert" class="collection-tab">
+        Insert
+      </tab>
+      <tab title="Aggregate" class="collection-tab">
+        Aggregate interface
+      </tab>
+      <tab title="Distinct" class="collection-tab">
+        Distinct interface
+      </tab>
+    </tabs>
 
-    <QueryBuilder />
+    
 
 
     <div class="document">
@@ -27,18 +35,24 @@
 
 <script>
   import * as a from 'awaiting';
-  
   import QueryBuilder from '@/components/QueryBuilder';
-  
-  import * as queryParser from 'mongodb-query-parser'
+  import { mapState } from 'vuex';
+  import eventBus from '../eventBus'
 
   export default {
     components: {
       QueryBuilder,
     },
+    computed: mapState({
+      activeDb: state => state.activeDb,
+    }),
     methods: {
 
-    }
+    },
+    mounted () {
+      eventBus.$emit('load-database', this.$route.params.dbName);
+
+    },
   }
 </script>
 
@@ -51,7 +65,11 @@ div.document {
     background-color: rgb(238, 239, 255);
   }
 }
-  
+.collection-tab {
+  background-color: rgb(238, 239, 255);
+  padding: 1em 0.4em 0.4em;
+  position: relative;
+}
 </style>
 
 

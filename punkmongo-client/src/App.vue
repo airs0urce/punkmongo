@@ -31,17 +31,21 @@
 </template>
 
 <script type="text/javascript">
-
+  
+  import 'vue-slim-tabs/themes/default.css'
   import '@/assets/css/reset.css'
   import '@/assets/css/main.css'
   import DatabasesNavigation from '@/components/DatabasesNavigation'
   import * as mutations from './store/mutations'
+  import * as actions from './store/actions'
+  import eventBus from './eventBus'
 
   export default {
     components: {
       DatabasesNavigation,
       
     },
+    
     data: function() {
       return {
         movingResizer: false,
@@ -49,8 +53,11 @@
         showLeftPanel: true
       }
     },
-    mounted: function() {
-      
+    mounted () {
+      eventBus.$on('load-database', async (dbName) => {
+        this.loadDatabase(dbName);
+      });
+      this.loadDatabase(this.$route.params.dbName);
     },
     methods: {
       enableResizerMoving(event) {
@@ -94,6 +101,14 @@
         if (this.$store.state.persistent.resizerPosition < this.leftPanelSizeLimits.min) {
           this.$store.commit(mutations.SET_RESIZER_POSITION, this.leftPanelSizeLimits.min);
         }
+      },
+      async loadDatabase(dbName) {
+        if (this.$store.state.loadingDb == dbName) {
+          return;
+        }
+        this.$store.state.loadingDb = dbName;
+        await this.$store.dispatch(actions.ACTION_LOAD_DB, dbName);
+        this.$store.state.loadingDb = null;
       },
 
     }
@@ -198,6 +213,10 @@ div.gap {
 }
 button:focus {
   outline: 0;
+}
+
+.vue-tab[aria-selected="true"] {
+  background-color: #eeefff;
 }
 </style>
 

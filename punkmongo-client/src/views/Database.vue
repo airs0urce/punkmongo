@@ -106,12 +106,6 @@ import utils from '../utils'
 
 export default {
   name: 'OverviewDatabases',
-  mounted () {
-    eventBus.$on('load-database', async (dbName) => {
-      this.loadDatabase(dbName);
-    });
-    this.loadDatabase(this.$route.params.dbName);
-  },
   components: {
     
   },
@@ -121,19 +115,11 @@ export default {
   watch: {
     async $route (to) {
       if ('database' == to.name) {        
-        this.loadDatabase(this.$route.params.dbName);
+        eventBus.$emit('load-database', this.$route.params.dbName);
       }
     }
   },
   methods: {
-    async loadDatabase(dbName) {
-      if (this.$store.state.loadingDb == dbName) {
-        return;
-      }
-      this.$store.state.loadingDb = dbName;
-      await this.$store.dispatch(actions.ACTION_LOAD_DB, dbName);
-      this.$store.state.loadingDb = null;
-    },
     bytesFormatted: utils.bytesFormatted,
     numberWithCommas: utils.numberWithCommas,
   },

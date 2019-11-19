@@ -50,7 +50,8 @@ export default {
   },
   data: function() {
     return {
-      showLoadingDb: false
+      showLoadingDb: false,
+      lastActiveDbName: ''
     }
   },
   computed: mapState({
@@ -65,7 +66,12 @@ export default {
       } else {
         const activeDbEl = document.querySelector('.db-link.router-link-exact-active');
         if (activeDbEl) {
-          activeDbEl.scrollIntoView({block: 'nearest'});
+          if ('' === this.lastActiveDbName) {
+            activeDbEl.scrollIntoView({block: 'start'});
+          } else {
+            activeDbEl.scrollIntoView({block: 'nearest'});
+          }
+          this.lastActiveDbName = this.$store.activeDb && this.$store.activeDb.name;
         }
         
         const tookSec = moment.now() - dbLoadStartedTs;
@@ -85,9 +91,8 @@ export default {
 
   },
   mounted: async function() {
-    await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
+    await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST)
   },
-
 }
 </script>
 
