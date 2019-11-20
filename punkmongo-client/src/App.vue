@@ -39,6 +39,7 @@
   import * as mutations from './store/mutations'
   import * as actions from './store/actions'
   import eventBus from './eventBus'
+  import utils from './utils'
 
   export default {
     components: {
@@ -87,7 +88,8 @@
 
           this.$store.commit(mutations.SET_RESIZER_POSITION, resizerPosition);
         }
-        
+
+        utils.removeDocumentSelection();
       },
       disableResizerMoving(event) {
         this.movingResizer = false;
@@ -106,9 +108,8 @@
         if (this.$store.state.loadingDb == dbName) {
           return;
         }
-        this.$store.state.loadingDb = dbName;
+        
         await this.$store.dispatch(actions.ACTION_LOAD_DB, dbName);
-        this.$store.state.loadingDb = null;
       },
 
     }

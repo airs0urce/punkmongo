@@ -5,6 +5,8 @@ export const SET_ACTIVE_DB = 'SET_ACTIVE_DB';
 export const TOGGLE_LEFT_PANEL = 'TOGGLE_LEFT_PANEL';
 export const UPDATE_DB_STATS = 'UPDATE_DB_STATS';
 export const SET_ACTIVE_COLLECTION = 'SET_ACTIVE_COLLECTION';
+export const SET_LOADING_DB = 'SET_LOADING_DB';
+
 
 
 

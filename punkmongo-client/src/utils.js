@@ -23,5 +23,12 @@ export default {
   },
   numberWithCommas: function(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+  },
+  removeDocumentSelection: function() {
+    if (document.selection) {
+      document.selection.empty();
+    } else {
+      window.getSelection().removeAllRanges();
+    }
   }
 }

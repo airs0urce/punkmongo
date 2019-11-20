@@ -30,6 +30,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    [mutations.SET_LOADING_DB] (state, bool) {
+      state.loadingDb = bool;
+    },
     [mutations.SET_RESIZER_POSITION] (state, position) {
       state.persistent.resizerPosition = position;
     },
@@ -71,9 +74,10 @@ export default new Vuex.Store({
       commit(mutations.SET_SERVER_INFO, serverInfo);
     },
     [actions.ACTION_LOAD_DB]: async ({ commit }, dbName) => {
+      commit(mutations.SET_LOADING_DB, dbName);
       const dbnfo = await api.request('getDatabase', {db: dbName});
-      
       commit(mutations.SET_ACTIVE_DB, dbnfo);
+      commit(mutations.SET_LOADING_DB, null);
     }
   },
   modules: {

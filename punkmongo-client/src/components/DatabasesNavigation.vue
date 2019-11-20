@@ -70,8 +70,10 @@ export default {
           await a.delay(msDelay); // let animation finish
         }
         this.showLoadingDb = false;
+        this.$nextTick(() => {
+          this.scrollToActiveDB();
+        });
       }
-      this.scrollToActiveDB();
     },
   },
   methods: {
