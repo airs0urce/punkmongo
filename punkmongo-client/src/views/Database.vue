@@ -11,12 +11,12 @@
       <div class="line" />
       
 
-      <table cellpadding="2" cellspacing="1">
+      <table cellpadding="2" cellspacing="1" width="700px">
         <colgroup>
-          <col width="300" valign="top">
-          <col width="100" valign="top">
-          <col width="100" valign="top">
-          <col width="100" valign="top">
+          <col width="25%" valign="top">
+          <col width="25%" valign="top">
+          <col width="25%" valign="top">
+          <col width="25%" valign="top">
         </colgroup>
         <thead>
           <tr>
@@ -68,15 +68,22 @@
       
       <div class="gap"></div>
 
-      <table cellpadding="2" cellspacing="1">
+      <table cellpadding="2" cellspacing="1" width="700px">
         <colgroup>
-          <col width="400" valign="top">
-          <col width="200" valign="top">
+          <col width="45%" valign="top">
+          <col width="20%" valign="top">
+          <col width="15%" valign="top">
+          <col width="10%" valign="top">
+          <col width="10%" valign="top">
         </colgroup>
         <thead>
           <tr>
             <th>Collections ({{activeDb.collections.length}})</th>
             <th>Documents</th>
+            <th>Data Size</th>
+            <th>Avg Doc Size</th>
+            <th>Indexes</th>
+            <th>Indexes Size</th>
           </tr>
         </thead>
         <tbody>
@@ -87,6 +94,10 @@
             <td>
               {{numberWithCommas(collection.count)}}
             </td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
           </tr>
         </tbody>
       </table>

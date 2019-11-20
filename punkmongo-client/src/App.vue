@@ -122,7 +122,7 @@ body {
   font-size: 12px;
   font-family:"Courier New", Arial;
   /* font-family:"Akzidenz", "Helvetica Neue", Helvetica, Arial, sans-serif; */
-  text-rendering: geometricPrecision;
+  // text-rendering: geometricPrecision;
 }
 
 a {
@@ -198,6 +198,9 @@ table {
   background-color: rgb(204, 204, 204);
   border-collapse: separate;
   border-spacing: 1px;
+  thead .bold {
+    font-weight: bold;
+  }
   th {
     background-color: #cccccc;
     font-weight: bold;

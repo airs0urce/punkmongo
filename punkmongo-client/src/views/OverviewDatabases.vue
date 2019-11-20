@@ -21,6 +21,14 @@
           <th>Indexes Size</th>
           <th>Documents</th>
         </tr>
+        <tr class="bold">
+          <td>TATAL</td>
+          <td>{{ numberWithCommas(statsTotal('collections')) }}</td>
+          <td>{{ numberWithCommas(statsTotal('indexes')) }}</td>
+          <td>{{ bytesFormatted(statsTotal('storageSize')) }}</td>
+          <td>{{ bytesFormatted(statsTotal('indexSize')) }}</td>
+          <td>{{ numberWithCommas(statsTotal('objects')) }}</td>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="db in dbList">
