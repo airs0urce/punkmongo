@@ -6,7 +6,7 @@
   
   <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
     <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
-      <div class="left-panel-header padding" :style="{width: $store.state.persistent.resizerPosition + 'px'}">
+      <div class="left-panel-header padding">
         <router-link class="left-panel-header-link" to="/overview/databases">Overview</router-link>  
       </div>
       <div class="left-panel-scroll">
@@ -142,9 +142,11 @@ a:hover {
 }
 
 .left-panel {
+
   background-color: #eeefff;
   white-space: nowrap;
   .left-panel-header {
+    width: 100%;
     background-color: #ddd;
     border-bottom: 1px solid #BBB;
     height: 2rem;
