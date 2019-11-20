@@ -87,9 +87,9 @@
           }
 
           this.$store.commit(mutations.SET_RESIZER_POSITION, resizerPosition);
+          utils.removeDocumentSelection();
         }
 
-        utils.removeDocumentSelection();
       },
       disableResizerMoving(event) {
         this.movingResizer = false;
@@ -177,7 +177,6 @@ a:hover {
   &:hover, &.hover {
     background-color: #C4E1A4;
     cursor: pointer;
-    user-select: none;
   }
   &.left-panel-hidden {
     flex: 0 0 1.2em;
@@ -204,7 +203,6 @@ table {
     font-weight: bold;
     padding: 0.5em;
     text-align: center;
-    user-select: none;
   }
   td {
     background-color: #fffeee;

@@ -156,13 +156,14 @@ ul.left-panel-collections {
 }
   
 .loading-animation {
-  background: linear-gradient(90deg, transparent, #dad076);  
+  background: linear-gradient(90deg, #eeefff, #dad076);  
   background-repeat: no-repeat;
-  background-size: 0;
+  background-size: 0 100%;
+  background-position: 14px 0;
 }
 .loading-animation.loading {
   transition: background 0.4s ease-out; 
-  background-size: 100%;
+  background-size: 100% 100%;
 }
 // .loading-animation.loading {
 //   transition: background 0.4s ease-out; 
