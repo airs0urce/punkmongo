@@ -1,37 +1,29 @@
 <template>
   <div>
-    {{activeDb.name}} -> 
+    <!-- <router-link :to="'/db/' + activeDb.name + '/col/' + activeDb.activeCollection + '/insert'">New collection</router-link> -->
 
     <tabs class="collection-tabs">
-      <tab title="Query/Update/Delete" class="collection-tab">
+      <tab title="Query/Update/Delete/Distinct" class="collection-tab">
         <QueryBuilder />
+        <QueryResults />
       </tab>
-      <tab title="Insert" class="collection-tab">
+      <tab title="Insert" class="collection-tab" >
         Insert
       </tab>
       <tab title="Aggregate" class="collection-tab">
         Aggregate interface
       </tab>
-      <tab title="Distinct" class="collection-tab">
-        Distinct interface
+      <tab title="Indexes" class="collection-tab">
+        Indexes Management | Usage Statistics
       </tab>
+      <tab title="Validation" class="collection-tab">
+        Validation
+      </tab>
+      <tab title="Import/Export" class="collection-tab">
+        Import/Export
+      </tab>
+      
     </tabs>
-
-    <div class="gap"></div>
-    <div class="pagination">
-      First | 1 | 2 | 3 | 4 | 5 | Last
-    </div>
-    <div class="gap"></div>
-
-    <div class="document">
-      Update | Delete | Refresh | Expand | Expand All
-    </div>
-    <div class="document">
-      Update | Delete | Refresh | Expand | Expand All
-    </div>
-    <div class="document">
-      Update | Delete | Refresh | Expand | Expand All
-    </div>
     
   </div>
 </template>
@@ -39,12 +31,16 @@
 <script>
   import * as a from 'awaiting';
   import QueryBuilder from '@/components/QueryBuilder';
+  import QueryResults from '@/components/QueryResults';
+  
   import { mapState } from 'vuex';
   import eventBus from '../eventBus'
+  import * as mutations from '../store/mutations'
 
   export default {
     components: {
       QueryBuilder,
+      QueryResults
     },
     computed: mapState({
       activeDb: state => state.activeDb,
@@ -54,25 +50,28 @@
     },
     mounted () {
       eventBus.$emit('load-database', this.$route.params.dbName);
-
+      this.setActiveCollection();
     },
+    watch: {
+      async $route (to) {
+        if (to.name.startsWith('collection-manager')) {        
+          this.setActiveCollection();
+        }
+      }
+    },
+    methods: {
+      setActiveCollection() {
+        const collName = this.$route.params.collName;
+        console.log('>>>>>collName', collName);
+        this.$store.commit(mutations.SET_ACTIVE_COLLECTION, collName);
+      }
+    }
   }
 </script>
 
 <style lang="scss" scoped>
 
-div.document {
-  border: 2px #ccc solid;
-  margin-bottom: 1em;
-  &:hover {
-    background-color: rgb(238, 239, 255);
-  }
-}
-.collection-tab {
-  background-color: rgb(238, 239, 255);
-  padding: 1em 0.4em 0.4em;
-  position: relative;
-}
+
 
 </style>
 

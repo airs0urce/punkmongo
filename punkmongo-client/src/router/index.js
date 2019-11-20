@@ -23,13 +23,42 @@ const routes = [
   },
   {
     name: 'database',
-    path: '/database/:dbName',
+    path: '/db/:dbName',
     component: Database
   },
   {
-    name: 'collection',
-    path: '/database/:dbName/collection/:collName',
+    name: 'collection-manager',
+    path: '/db/:dbName/col/:collName',
     component: Collection
+  },
+  {
+    name: 'collection-manager-crud',
+    path: '/db/:dbName/col/:collName/crud',
+    component: Collection
+  },
+  {
+    name: 'collection-manager-insert',
+    path: '/db/:dbName/col/:collName/insert',
+    component: Collection
+  },
+  {
+    name: 'collection-manager-aggregate',
+    path: '/db/:dbName/col/:collName/aggregate',
+    component: Collection
+  },
+  {
+    name: 'collection-manager-indexes',
+    path: '/db/:dbName/col/:collName/indexes',
+    component: Collection
+  },
+  {
+    name: 'collection-manager-validation',
+    path: '/db/:dbName/col/:collName/validation',
+    component: Collection
+  },
+  {
+    path: '*',
+    component: () => import('../views/404.vue')
   },
   
   // {

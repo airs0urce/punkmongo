@@ -82,7 +82,7 @@
         <tbody>
           <tr v-for="collection in activeDb.collections">
             <td>
-              <router-link :to="'/database/' + activeDb.name + '/collection/' + collection.name">{{collection.name}}</router-link>  
+              <router-link :to="'/db/' + activeDb.name + '/col/' + collection.name">{{collection.name}}</router-link>  
             </td>
             <td>
               {{numberWithCommas(collection.count)}}

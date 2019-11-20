@@ -43,7 +43,7 @@
           </div>
           <div>
             <div>limit</div>
-            <input type="number" name="" />
+            <input type="number" class="field-limit" min="0" />
           </div>
           <div>
             <div>projection</div>
@@ -71,12 +71,18 @@
           </div>
         </div>
       </div>
+      Timeout <input type="" name="">
       
+      После запроса уидать его в фон и показывать статистику выполнения:
+      Time: 2,345 ms / 5 sec / 1 min
+      <!-- hrtime -->
+      !!!!!!!!!! Перейти полностью на Websocket !!!!!!!!!!!!!!
+
       <div></div>
       
 
       <div>
-        <button>Submit Query</button>
+        <button>Submit</button>
         <button>Explain</button>
       </div>
 
@@ -177,6 +183,9 @@ export default {
 .filter-wrapper {
   display: flex;
   overflow: hidden;
+  background-color: rgb(238, 239, 255);
+  padding: 1em 0.4em 0.4em;
+  position: relative;
   &.filter-invalid .ace_editor {
     background-color: #fdefef;  
   }
@@ -225,6 +234,7 @@ export default {
     padding: 2px;
   }
   .ti-new-tag-input {
+    font-family: 'Courier New';
     background-color: #c8f7c8;
     color: #0a420a;
     // outline: 0.3em solid #c8f7c8;
@@ -234,6 +244,9 @@ export default {
   }
 }
 
+.field-limit {
+  width: 4em;
+}
 
 
 

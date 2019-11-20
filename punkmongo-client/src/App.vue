@@ -6,12 +6,12 @@
   
   <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
     <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
-      <div>
-        <div class="left-panel-header padding" >
-          <router-link class="left-panel-header-link" to="/overview/databases">Overview</router-link>  
-        </div>
-        <div class="line" />
-        <div class="padding" style="padding-top: 0;">
+      <div class="left-panel-header padding" :style="{width: $store.state.persistent.resizerPosition + 'px'}">
+        <router-link class="left-panel-header-link" to="/overview/databases">Overview</router-link>  
+      </div>
+      <div class="left-panel-scroll">
+        <!-- <div class="line" /> -->
+        <div class="padding">
           <DatabasesNavigation />
         </div>
       </div>  
@@ -143,9 +143,20 @@ a:hover {
 
 .left-panel {
   background-color: #eeefff;
-  height: 100vh;
-  overflow: auto;
   white-space: nowrap;
+  .left-panel-header {
+    background-color: #ddd;
+    border-bottom: 1px solid #BBB;
+    height: 2rem;
+  }
+  .left-panel-scroll {
+    overflow: auto;
+    height: calc(100vh - 2rem);
+    .padding {
+      padding-top: 1em;
+      padding-bottom: 2em;
+    }
+  }
 }
 
 .line {
@@ -211,9 +222,6 @@ div.gap {
   background-size: 13px;
   background-position: 0px 0.5px;
 }
-button:focus {
-  outline: 0;
-}
 
 .vue-tab[aria-selected="true"] {
   background-color: #eeefff;
@@ -226,6 +234,14 @@ input {
     outline: 0;
   }
 }
+button {
+  padding: 5.5px;
+  &:focus {
+    outline: 0;
+  }
+}
+
+
 </style>
 
 

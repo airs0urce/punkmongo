@@ -25,7 +25,8 @@ export default new Vuex.Store({
     activeDb: {
       name: '',
       stats: {},
-      collections: []
+      collections: [],
+      activeCollection: null,
     }
   },
   mutations: {
@@ -51,7 +52,9 @@ export default new Vuex.Store({
       state.activeDb.name = db.stats.db;
       state.activeDb.stats = db.stats;
       state.activeDb.collections = db.collections;
-
+    },
+    [mutations.SET_ACTIVE_COLLECTION] (state, collName) {
+      state.activeDb.activeCollection = collName;
     },
     [mutations.TOGGLE_LEFT_PANEL] (state) {
       state.persistent.showLeftPanel = ! state.persistent.showLeftPanel;

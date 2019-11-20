@@ -14,16 +14,16 @@
           <td>{{serverInfo.argv}}</td>
         </tr>
         <tr>
+          <td>Mongo Version</td>
+          <td>{{serverInfo.version}}</td>
+        </tr>
+        <tr>
           <td>Binary</td>
           <td>{{serverInfo.mem.bits}} Bits</td>
         </tr>
         <tr>
           <td>Uptime</td>
           <td>{{formatUptime(serverInfo.uptime)}}</td>
-        </tr>
-        <tr>
-          <td>Server Local Time</td>
-          <td>{{Date(serverInfo.localTime).toString()}}</td>
         </tr>
         <tr>
           <td>Storage Engine</td>
@@ -60,6 +60,10 @@
         <tr>
           <td>OS</td>
           <td>{{serverInfo.hostInfo.os.type}} {{serverInfo.hostInfo.os.name}} {{serverInfo.hostInfo.os.version}}</td>
+        </tr>
+        <tr>
+          <td>Server Local Time</td>
+          <td>{{Date(serverInfo.localTime).toString()}}</td>
         </tr>
         
         

@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "awaiting": "^3.0.0",
+    "faye-websocket": "^0.11.3",
     "koa": "^2.11.0",
     "koa-jsonrpc": "github:airs0urce/koa-jsonrpc",
     "koa2-cors": "^2.0.6",

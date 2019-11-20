@@ -11,7 +11,7 @@
           <router-link 
             class="db-link loading-animation" 
             :class="{loading: showLoadingDb == db.name, 'router-link-exact-active': state.activeDb.name == db.name}"
-            :to="'/database/' + db.name"
+            :to="'/db/' + db.name"
             @click.native="onDbLinkClicked(db.name)"
           >{{db.name}}</router-link>  
 
@@ -20,7 +20,7 @@
           <div v-if="state.activeDb.name == db.name">
             <ul class="left-panel-collections">
               <li v-for="collection in state.activeDb.collections">
-                <router-link :to="'/database/' + db.name + '/collection/' + collection.name">{{collection.name}}</router-link> ({{numberWithCommas(collection.count)}})
+                <router-link :to="'/db/' + db.name + '/col/' + collection.name">{{collection.name}}</router-link> ({{numberWithCommas(collection.count)}})
               </li>
             </ul>
             <router-link class="new-collection" :to="'/new_collection'">New collection</router-link>
@@ -64,16 +64,6 @@ export default {
       if (loadingDB) {
         this.showLoadingDb = loadingDB;
       } else {
-        const activeDbEl = document.querySelector('.db-link.router-link-exact-active');
-        if (activeDbEl) {
-          if ('' === this.lastActiveDbName) {
-            activeDbEl.scrollIntoView({block: 'start'});
-          } else {
-            activeDbEl.scrollIntoView({block: 'nearest'});
-          }
-          this.lastActiveDbName = this.$store.activeDb && this.$store.activeDb.name;
-        }
-        
         const tookSec = moment.now() - dbLoadStartedTs;
         if (tookSec < loadingDbAnimationMs) {
           let msDelay = loadingDbAnimationMs - tookSec;        
@@ -81,11 +71,24 @@ export default {
         }
         this.showLoadingDb = false;
       }
-    }
+      await a.delay(100);
+      this.scrollToActiveDB();
+    },
   },
   methods: {
     onDbLinkClicked (dbName) {
       eventBus.$emit('load-database', dbName);
+    },
+    scrollToActiveDB () {
+      const activeDbEl = document.querySelector('.db-link.router-link-exact-active');
+      if (activeDbEl) {
+        if ('' === this.lastActiveDbName) {
+          activeDbEl.scrollIntoView({block: 'start'});
+        } else {
+          activeDbEl.scrollIntoView({block: 'nearest'});
+        }
+        this.lastActiveDbName = this.$store.activeDb && this.$store.activeDb.name;
+      }
     },
     numberWithCommas: utils.numberWithCommas,
 
@@ -120,21 +123,25 @@ a {
 }
 .left-panel-dbs {
   padding-bottom: 1.5em;
-}
-.left-panel-dbs li {
-  line-height: 1.2;
-  background: url('../assets/imgs/database.png') no-repeat;
-  background-size: 14px;
-  background-position: 0px 0.5px;
-  
-  a.db-link {
-    padding-left: 1.7em;
-    cursor: pointer;
-    &:hover {
-      color: blue;
+  .left-panel-collections .router-link-active {
+    font-weight: bold;
+  }
+  li {
+    line-height: 1.2;
+    background: url('../assets/imgs/database.png') no-repeat;
+    background-size: 14px;
+    background-position: 0px 0.5px;
+    
+    a.db-link {
+      padding-left: 1.7em;
+      cursor: pointer;
+      &:hover {
+        color: blue;
+      }
     }
   }
 }
+
 
 
 ul.left-panel-collections {
@@ -163,6 +170,7 @@ ul.left-panel-collections {
 .db-link.router-link-exact-active {
   font-weight: bold;
 }  
+
   
 </style>
 

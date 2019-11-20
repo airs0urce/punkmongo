@@ -26,7 +26,7 @@
         <tr v-for="db in dbList">
           <td>
             <!-- {{db.name}} -->
-            <router-link :to="'/database/' + db.name" >{{db.name}}</router-link>  
+            <router-link :to="'/db/' + db.name" >{{db.name}}</router-link>  
           </td>
           <td>{{db.stats.collections}}</td>
           <td>{{db.stats.indexes}}</td>
