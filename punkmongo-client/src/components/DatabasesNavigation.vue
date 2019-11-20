@@ -71,7 +71,6 @@ export default {
         }
         this.showLoadingDb = false;
       }
-      await a.delay(100);
       this.scrollToActiveDB();
     },
   },
@@ -83,7 +82,7 @@ export default {
       const activeDbEl = document.querySelector('.db-link.router-link-exact-active');
       if (activeDbEl) {
         if ('' === this.lastActiveDbName) {
-          activeDbEl.scrollIntoView({block: 'start'});
+          activeDbEl.scrollIntoView({block: 'start', behavior: 'smooth'});
         } else {
           activeDbEl.scrollIntoView({block: 'nearest'});
         }
