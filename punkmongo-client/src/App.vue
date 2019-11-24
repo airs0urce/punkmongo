@@ -244,6 +244,18 @@ button {
     outline: 0;
   }
 }
+button {
+  position: relative;
+  box-shadow: 0 3px 0 0 #bbb;
+  background-color: #fff;
+  color: #555;
+  cursor: pointer;
+  &:active {
+    background-color: #fdffee;
+    top: 1px;
+    box-shadow: none;
+  }
+}
 
 
 </style>

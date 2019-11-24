@@ -16,12 +16,15 @@
       <tab title="Indexes" class="collection-tab">
         Indexes Management | Usage Statistics
       </tab>
+      <!-- 
       <tab title="Validation" class="collection-tab">
         Validation
       </tab>
       <tab title="Import/Export" class="collection-tab">
         Import/Export
-      </tab>
+      </tab> 
+      Changestreams
+      -->
       
     </tabs>
     
