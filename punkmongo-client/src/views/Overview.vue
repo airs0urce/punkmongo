@@ -35,9 +35,9 @@ export default {
 ul.x {
   display: flex;
   li {
-    margin-right: 0.5em;
+    margin-right: 0.5rem;
     border-right: 1px solid #ddd;
-    padding-right: 0.5em;
+    padding: 0.4rem 0.5rem;
   }
 }
 .router-link-exact-active {

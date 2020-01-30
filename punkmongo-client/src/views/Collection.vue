@@ -4,8 +4,7 @@
 
     <tabs class="collection-tabs">
       <tab title="Query/Update/Delete/Distinct" class="collection-tab">
-        <QueryBuilder />
-        <QueryResults />
+        <RUD />
       </tab>
       <tab title="Insert" class="collection-tab" >
         Insert
@@ -33,8 +32,7 @@
 
 <script>
   import * as a from 'awaiting';
-  import QueryBuilder from '@/components/QueryBuilder';
-  import QueryResults from '@/components/QueryResults';
+  import RUD from '@/components/RUD';
   
   import { mapState } from 'vuex';
   import eventBus from '../eventBus'
@@ -42,8 +40,7 @@
 
   export default {
     components: {
-      QueryBuilder,
-      QueryResults
+      RUD,
     },
     computed: mapState({
       activeDb: state => state.activeDb,
@@ -65,7 +62,6 @@
     methods: {
       setActiveCollection() {
         const collName = this.$route.params.collName;
-        console.log('>>>>>collName', collName);
         this.$store.commit(mutations.SET_ACTIVE_COLLECTION, collName);
       }
     }

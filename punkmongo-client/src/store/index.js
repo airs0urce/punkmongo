@@ -78,7 +78,7 @@ export default new Vuex.Store({
       const dbnfo = await api.request('getDatabase', {db: dbName});
       commit(mutations.SET_ACTIVE_DB, dbnfo);
       commit(mutations.SET_LOADING_DB, null);
-    }
+    },
   },
   modules: {
 

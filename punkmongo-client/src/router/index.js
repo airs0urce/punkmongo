@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Database from '../views/Database.vue'
 import Collection from '../views/Collection.vue'
 import Overview from '../views/Overview.vue'
+import NewCollection from '../views/NewCollection.vue'
+import NewDatabase from '../views/NewDatabase.vue'
 
 Vue.use(VueRouter)
 
@@ -25,6 +27,16 @@ const routes = [
     name: 'database',
     path: '/db/:dbName',
     component: Database
+  },
+  {
+    name: 'new_database',
+    path: '/new-database',
+    component: NewDatabase
+  },
+  {
+    name: 'new_collection',
+    path: '/db/:dbName/new-collection',
+    component: NewCollection
   },
   {
     name: 'collection-manager',

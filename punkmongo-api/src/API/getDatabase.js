@@ -13,7 +13,7 @@ module.exports = async function (params, dbClient) {
   collections.sort();
 
   const collectionsRecords = await Promise.all(collections.map((coll) => {
-    return db.collection(coll).countDocuments();
+    return db.collection(coll).estimatedDocumentCount();
   }));
 
 

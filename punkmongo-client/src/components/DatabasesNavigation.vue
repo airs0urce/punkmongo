@@ -1,11 +1,12 @@
 <template>
   <div>
+    
     <div v-if="state.persistent.dbList.length == 0">
       Loading databases...
     </div>
     <div v-if="state.persistent.dbList.length > 0">
 
-      <router-link class="new-database" :to="'/new_database'">New database</router-link>
+      <router-link class="new-database" :to="'/new-database'">New database</router-link>
       <ul class="left-panel-dbs">
         <li v-for="db in state.persistent.dbList">
           <router-link 
@@ -20,10 +21,10 @@
           <div v-if="state.activeDb.name == db.name">
             <ul class="left-panel-collections">
               <li v-for="collection in state.activeDb.collections">
-                <router-link :to="'/db/' + db.name + '/col/' + collection.name">{{collection.name}}</router-link> ({{numberWithCommas(collection.count)}})
+                <router-link :to="'/db/' + state.activeDb.name + '/col/' + collection.name">{{collection.name}}</router-link> ({{numberWithCommas(collection.count)}})
               </li>
             </ul>
-            <router-link class="new-collection" :to="'/new_collection'">New collection</router-link>
+            <router-link class="new-collection" :to="'/db/' + state.activeDb.name + '/new-collection'">New collection</router-link>
           </div>
         </li>
       </ul>

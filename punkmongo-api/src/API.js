@@ -4,7 +4,6 @@ const koaJsonRpc = require('koa-jsonrpc');
 const config = require('./../../config');
 const DBFactory = require('./DBFactory');
 const fs = require('mz/fs');
-const a = require('awaiting');
 
 const app = new Koa();
 
@@ -14,7 +13,6 @@ const app = new Koa();
   const jrpc = koaJsonRpc({
     limit: '20mb',
   });
-  
   const apiMethodsPath = __dirname + '/API/';
   const methodFiles = await fs.readdir(apiMethodsPath);
   for (let methodFile of methodFiles) {

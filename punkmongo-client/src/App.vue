@@ -6,7 +6,7 @@
   
   <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
     <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
-      <div class="left-panel-header padding">
+      <div class="left-panel-header">
         <router-link class="left-panel-header-link" to="/overview/databases">Overview</router-link>  
       </div>
       <div class="left-panel-scroll">
@@ -118,7 +118,7 @@
 
 <style lang="scss">
 
-body {
+html,body {
   font-size: 12px;
   font-family:"Courier New", Arial;
   /* font-family:"Akzidenz", "Helvetica Neue", Helvetica, Arial, sans-serif; */
@@ -128,6 +128,10 @@ body {
 a {
   text-decoration: none;
   color: #004499;
+  outline: none;
+}
+a, a:active, a:focus{
+  outline: none;
 }
 a:hover {
   color: blue;
@@ -139,8 +143,10 @@ a:hover {
   min-height: 100vh;
 }
 .padding {
-  padding: 0.8em;
+  padding: 0.8rem;
 }
+
+$left-panel-header-height: 2.5rem;
 
 .left-panel {
 
@@ -150,25 +156,26 @@ a:hover {
     width: 100%;
     background-color: #ddd;
     border-bottom: 1px solid #BBB;
-    height: 2rem;
+    padding: 0.8rem;
+    height: $left_panel_header_height;
   }
   .left-panel-scroll {
     overflow: auto;
-    height: calc(100vh - 2rem);
+    height: calc(100vh - #{$left-panel-header-height});
     .padding {
-      padding-top: 1em;
-      padding-bottom: 2em;
+      padding-top: 1rem;
+      padding-bottom: 2rem;
     }
   }
 }
 
 .line {
-  margin-bottom: 1em;
+  margin-bottom: 1rem;
   border-bottom: 1px #ccc solid;
 }
 .split-adjust-handler {
   height: 100vh;
-  flex: 0 0 0.7em;
+  flex: 0 0 0.7rem;
   background-color: #ddd;
   border: 1px solid #BBB;
   display: flex;
@@ -179,7 +186,7 @@ a:hover {
     cursor: pointer;
   }
   &.left-panel-hidden {
-    flex: 0 0 1.2em;
+    flex: 0 0 1.2rem;
   }
 }
 
@@ -187,7 +194,7 @@ a:hover {
   flex-grow: 1;
   height: 100vh;
   overflow: auto;
-  padding-bottom: 1.5em;
+  padding-bottom: 1.5rem;
 }
 .right-panel .line {
   border-bottom-color: #999;
@@ -204,12 +211,12 @@ table {
   th {
     background-color: #cccccc;
     font-weight: bold;
-    padding: 0.5em;
+    padding: 0.5rem;
     text-align: center;
   }
   td {
     background-color: #fffeee;
-    padding: 0.3em;
+    padding: 0.3rem;
   }
   tfoot td {
     font-weight: bold;
@@ -221,7 +228,7 @@ div.gap {
 }
 
 .left-panel-header-link {
-  padding-left: 1.6em;
+  padding-left: 1.6rem;
   background: url('./assets/imgs/world.png') no-repeat;
   background-size: 13px;
   background-position: 0px 0.5px;
@@ -231,32 +238,44 @@ div.gap {
   background-color: #eeefff;
 }
 input {
-  padding: 5.5px;
-  background-color: #f5f6f7;
+  padding: 0.542em;
+  background-color: #fff;
   border: 1px solid #ddd;
   &:focus {
     outline: 0;
   }
 }
+
 button {
-  padding: 5.5px;
-  &:focus {
-    outline: 0;
-  }
-}
-button {
+  padding: 0.542em;
   position: relative;
-  box-shadow: 0 3px 0 0 #bbb;
+  box-shadow: none;
   background-color: #fff;
   color: #555;
   cursor: pointer;
+  border: 1px solid #ddd;
   &:active {
     background-color: #fdffee;
     top: 1px;
     box-shadow: none;
   }
+  &:focus {
+    outline: 0;
+  }
 }
 
+select {
+  padding: 0.542em 2em 0.542em 0.542em;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%);
+  background-position: calc(100% - 14px) 1em, calc(100% - 10px) 1em, calc(100% - 2.5em) 0.5em;
+  background-size: 5px 5px, 5px 5px, 1px 1.5em;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 
 </style>
 

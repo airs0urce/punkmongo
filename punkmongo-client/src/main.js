@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 import * as Tabs from 'vue-slim-tabs'
+
 Vue.use(Tabs)
 
 Vue.config.productionTip = false
