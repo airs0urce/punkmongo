@@ -6,28 +6,16 @@ module.exports = async function (params, dbClient) {
   
   const cursor = await db.listCollections({}, {nameOnly: true});
   let collection;
-  const collections = [];
+  let collections = [];
   while (collection = await cursor.next()) {
     collections.push(collection.name);
   }
   collections.sort();
 
-  const collectionsRecords = await Promise.all(collections.map((coll) => {
-    return db.collection(coll).estimatedDocumentCount();
-  }));
-
-
-  const collectionsResult = [];
-
-  for (let i = 0; i < collections.length; i++) {
-    collectionsResult.push({
-      name: collections[i],  
-      count: collectionsRecords[i]
-    });
-  }
+  collections = collections.map((collection) => {  return {name: collection} })
 
   return {
     stats: await db.stats(),
-    collections: collectionsResult,
+    collections: collections,
   }
 }

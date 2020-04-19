@@ -11,7 +11,7 @@
       <div class="line" />
       
 
-      <table cellpadding="2" cellspacing="1" width="700px">
+      <table cellpadding="2" cellspacing="1" width="480px">
         <colgroup>
           <col width="25%" valign="top">
           <col width="25%" valign="top">
@@ -21,7 +21,6 @@
         <thead>
           <tr>
             <th>Database Statistics</th>
-            <th>KB</th>
             <th>MB</th>
             <th>GB</th>
           </tr>
@@ -29,58 +28,56 @@
         <tbody>
           <tr>
             <td>Data Size</td>
-            <td>{{ bytesFormatted(activeDb.stats.dataSize, 'KB') }}</td>
             <td>{{ bytesFormatted(activeDb.stats.dataSize, 'MB') }}</td>
             <td>{{ bytesFormatted(activeDb.stats.dataSize, 'GB') }}</td>
           </tr>
           <tr>
             <td>Storage Size</td>
-            <td>{{ bytesFormatted(activeDb.stats.storageSize, 'KB') }}</td>
             <td>{{ bytesFormatted(activeDb.stats.storageSize, 'MB') }}</td>
             <td>{{ bytesFormatted(activeDb.stats.storageSize, 'GB') }}</td>
           </tr>
           <tr>
             <td>Index Size</td>
-            <td>{{ bytesFormatted(activeDb.stats.indexSize, 'KB') }}</td>
             <td>{{ bytesFormatted(activeDb.stats.indexSize, 'MB') }}</td>
             <td>{{ bytesFormatted(activeDb.stats.indexSize, 'GB') }}</td>
           </tr>
           <tr>
             <td>Avg Object Size</td>
-            <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'KB') }}</td>
             <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'MB') }}</td>
             <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'GB') }}</td>
           </tr>
           <tr>
             <td>Collections</td>
-            <td colspan="3">{{activeDb.collections.length}}</td>
+            <td colspan="2">{{activeDb.collections.length}}</td>
           </tr>
           <tr>
             <td>Documents</td>
-            <td colspan="3">{{ numberWithCommas(activeDb.stats.objects) }}</td>
+            <td colspan="2">{{ numberWithCommas(activeDb.stats.objects) }}</td>
           </tr>
           <tr>
             <td>Indexes</td>
-            <td colspan="3">{{ activeDb.stats.indexes }}</td>
+            <td colspan="2">{{ activeDb.stats.indexes }}</td>
           </tr>
         </tbody>
       </table>
       
       <div class="gap"></div>
 
-      <table cellpadding="2" cellspacing="1" width="700px">
+      <table cellpadding="2" cellspacing="1" class="full-width-table">
         <colgroup>
-          <col width="45%" valign="top">
-          <col width="20%" valign="top">
-          <col width="15%" valign="top">
-          <col width="10%" valign="top">
-          <col width="10%" valign="top">
+          <col width="14%" valign="top">
+          <col width="14%" valign="top">
+          <col width="14%" valign="top">
+          <col width="14%" valign="top">
+          <col width="14%" valign="top">
+          <col width="14%" valign="top">
         </colgroup>
         <thead>
           <tr>
             <th>Collections ({{activeDb.collections.length}})</th>
             <th>Documents</th>
             <th>Data Size</th>
+            <th>Storage Size</th>
             <th>Avg Doc Size</th>
             <th>Indexes</th>
             <th>Indexes Size</th>
@@ -88,16 +85,13 @@
         </thead>
         <tbody>
           <tr v-for="collection in activeDb.collections">
-            <td>
-              <router-link :to="'/db/' + activeDb.name + '/col/' + collection.name">{{collection.name}}</router-link>  
-            </td>
-            <td>
-              {{numberWithCommas(collection.count)}}
-            </td>
-            <td>?</td>
-            <td>?</td>
-            <td>?</td>
-            <td>?</td>
+            <td><router-link :to="'/db/' + activeDb.name + '/col/' + collection.name">{{collection.name}}</router-link></td>
+            <td>{{numberWithCommas(collection.stats.objects)}}</td>
+            <td>{{bytesFormatted(collection.stats.dataSize)}}</td>
+            <td>{{bytesFormatted(collection.stats.storageSize)}}</td>
+            <td>{{bytesFormatted(collection.stats.avgObjSize)}}</td>
+            <td>{{numberWithCommas(collection.stats.indexesCount)}}</td>
+            <td>{{bytesFormatted(collection.stats.indexesSize)}}</td>
           </tr>
         </tbody>
       </table>
@@ -136,3 +130,11 @@ export default {
   },
 }
 </script>
+
+
+
+
+
+
+
+

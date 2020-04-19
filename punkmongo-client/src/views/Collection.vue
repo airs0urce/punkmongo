@@ -49,7 +49,11 @@
 
     },
     mounted () {
-      eventBus.$emit('load-database', this.$route.params.dbName);
+
+      if (this.$route.params.dbName !== this.$store.state.activeDb.name) {
+        eventBus.$emit('load-database', this.$route.params.dbName);
+      }
+      
       this.setActiveCollection();
     },
     watch: {

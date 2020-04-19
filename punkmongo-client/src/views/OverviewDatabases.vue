@@ -3,7 +3,7 @@
     <div v-if="dbList.length == 0">
       Loading...
     </div>
-    <table v-if="dbList.length > 0" cellpadding="2" cellspacing="1" class="sortable">
+    <table v-if="dbList.length > 0" cellpadding="2" cellspacing="1" class="full-width-table">
       <colgroup>
         <col width="200" valign="top">
         <col width="110" valign="top">
@@ -16,6 +16,7 @@
         <tr>
           <th>Database name</th>
           <th>Collections</th>
+          <th>Views</th>
           <th>Indexes</th>
           <th>Storage Size</th>
           <th>Indexes Size</th>
@@ -24,6 +25,7 @@
         <tr class="bold">
           <td>TATAL</td>
           <td>{{ numberWithCommas(statsTotal('collections')) }}</td>
+          <td>{{ numberWithCommas(statsTotal('views')) }}</td>
           <td>{{ numberWithCommas(statsTotal('indexes')) }}</td>
           <td>{{ bytesFormatted(statsTotal('storageSize')) }}</td>
           <td>{{ bytesFormatted(statsTotal('indexSize')) }}</td>
@@ -37,6 +39,7 @@
             <router-link :to="'/db/' + db.name" >{{db.name}}</router-link>  
           </td>
           <td>{{db.stats.collections}}</td>
+          <td>{{db.stats.views}}</td>
           <td>{{db.stats.indexes}}</td>
           <td>{{bytesFormatted(db.stats.storageSize)}}</td>
           <td>{{bytesFormatted(db.stats.indexSize)}}</td>
@@ -47,6 +50,7 @@
         <tr>
           <td>TATAL</td>
           <td>{{ statsTotal('collections') }}</td>
+          <td>{{ statsTotal('views') }}</td>
           <td>{{ statsTotal('indexes') }}</td>
           <td>{{ bytesFormatted(statsTotal('storageSize')) }}</td>
           <td>{{ bytesFormatted(statsTotal('indexSize')) }}</td>
@@ -55,6 +59,7 @@
         <tr>
           <th>Database name</th>
           <th>Collections</th>
+          <th>Views</th>
           <th>Indexes</th>
           <th>Storage Size</th>
           <th>Indexes Size</th>

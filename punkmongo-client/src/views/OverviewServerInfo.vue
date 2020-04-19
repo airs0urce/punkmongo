@@ -65,22 +65,25 @@
           <td>Server Local Time</td>
           <td>{{Date(serverInfo.localTime).toString()}}</td>
         </tr>
-        
-        
-        
       </table>
 
-      <!-- <table cellpadding="2" cellspacing="1">
+      <!-- <div class="gap"></div>
+
+      <table cellpadding="2" cellspacing="1">
         <col width="150" valign="top">
         <col width="500" valign="top">
-        <tr><th colspan="2">Bind to</th></tr>
+        <tr><th colspan="2">Connections</th></tr>
         <tr>
-          <td>IP</td>
-          <td>{{serverInfo.bindIp}}</td>
+          <td>Current</td>
+          <td>{{serverInfo.connections.current}}</td>
         </tr>
         <tr>
-          <td>Port</td>
-          <td>{{serverInfo.port}}</td>
+          <td>Available</td>
+          <td>{{serverInfo.connections.available}}</td>
+        </tr>
+        <tr>
+          <td>Active</td>
+          <td>{{serverInfo.connections.active}}</td>
         </tr>
       </table> -->
 

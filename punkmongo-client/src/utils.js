@@ -1,6 +1,9 @@
 
 export default {
   bytesFormatted: function(bytes, forceUnit) {
+    if (typeof bytes == 'undefined') {
+      return '-';
+    }
     if (forceUnit) {
       switch (forceUnit) {
         case 'KB': return (bytes / 1024).toFixed(2) + ' KB'
@@ -22,7 +25,10 @@ export default {
     }
   },
   numberWithCommas: function(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+    if (typeof x == 'undefined') {
+      return '-';
+    }
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   },
   removeDocumentSelection: function() {
     if (document.selection) {

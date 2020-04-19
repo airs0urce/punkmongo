@@ -5,6 +5,7 @@ import api from '../api/api'
 
 import * as mutations from './mutations'
 import * as actions from './actions'
+import * as a from 'awaiting'
 
 
 
@@ -54,7 +55,9 @@ export default new Vuex.Store({
     [mutations.SET_ACTIVE_DB] (state, db) {
       state.activeDb.name = db.stats.db;
       state.activeDb.stats = db.stats;
-      state.activeDb.collections = db.collections;
+      state.activeDb.collections = db.collections.map((collection) => {
+        return {...collection, stats: {}}; // add "stats" object
+      });
     },
     [mutations.SET_ACTIVE_COLLECTION] (state, collName) {
       state.activeDb.activeCollection = collName;
@@ -62,7 +65,15 @@ export default new Vuex.Store({
     [mutations.TOGGLE_LEFT_PANEL] (state) {
       state.persistent.showLeftPanel = ! state.persistent.showLeftPanel;
     },
-    
+    [mutations.SET_COLLECTIONS_STATS] (state, {db, stats}) {
+      if (db != state.activeDb.name) {
+        // if by any reason we got wrong active DB 
+        throw Error(`mutations.SET_COLLECTIONS_STATS: ${db} != ${state.activeDb.name}`);
+      }
+      for (let i = 0; i < state.activeDb.collections.length; i++) {
+        state.activeDb.collections[i].stats = stats[state.activeDb.collections[i].name];
+      }
+    },
   },
   actions: {
     [actions.ACTION_RELOAD_DB_LIST]: async ({commit}) => {
@@ -73,10 +84,21 @@ export default new Vuex.Store({
       const serverInfo = await api.request('serverInfo');
       commit(mutations.SET_SERVER_INFO, serverInfo);
     },
-    [actions.ACTION_LOAD_DB]: async ({ commit }, dbName) => {
+    [actions.ACTION_LOAD_DB]: async ({ commit, state, dispatch }, dbName) => {
       commit(mutations.SET_LOADING_DB, dbName);
-      const dbnfo = await api.request('getDatabase', {db: dbName});
-      commit(mutations.SET_ACTIVE_DB, dbnfo);
+      
+      api.request('getDbCollectionsStats', {db: dbName}).then(async (dbCollectionsStats) => {
+        while (state.loadingDb) {
+          await a.delay(50);
+        }      
+        commit(mutations.SET_COLLECTIONS_STATS, {
+          db: dbName,
+          stats: dbCollectionsStats
+        });
+      });
+
+      const dbInfo = await api.request('getDatabase', {db: dbName});
+      commit(mutations.SET_ACTIVE_DB, dbInfo);
       commit(mutations.SET_LOADING_DB, null);
     },
   },

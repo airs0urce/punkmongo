@@ -10,16 +10,17 @@
   "license": "ISC",
   "dependencies": {
     "awaiting": "^3.0.0",
+    "bson": "^4.0.4",
     "faye-websocket": "^0.11.3",
     "koa": "^2.11.0",
     "koa-jsonrpc": "github:airs0urce/koa-jsonrpc",
     "koa2-cors": "^2.0.6",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.27",
-    "mongodb": "^3.3.4",
-    "mongodb-query-parser": "^1.4.3",
+    "moment-timezone": "^0.5.28",
+    "mongodb": "^3.5.6",
+    "mongodb-query-parser": "^2.1.1",
     "mz": "^2.7.0",
-    "uuid": "^3.3.3"
+    "uuid": "7.0.3"
   }
 }

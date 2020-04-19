@@ -144,7 +144,7 @@
         </div>
         <div>
           
-          <!-- <AceEditor
+          <AceEditor
             mode="mongodb"
             theme="mongodb"
             :minLines="4"
@@ -153,7 +153,7 @@
             :showPrintMargin="false"
             :showGutter="false"
             :value="JSON.stringify(record)"
-          /> -->
+          />
         </div>
       </div>
     </div>
@@ -181,6 +181,7 @@ import api from '../api/api'
 import Loader from './Loader'
 import * as a from 'awaiting'
 import * as moment from 'moment'
+import { EJSON } from 'bson'
 
 
 export default {
@@ -268,10 +269,7 @@ export default {
       },
       activeDb: {
         handler: function(newVal, oldVal) {
-          console.log('1');
-          console.log(newVal.name, oldVal.name, newVal.activeCollection, oldVal.activeCollection);
           if (newVal.name != oldVal.name || newVal.activeCollection != oldVal.activeCollection) {
-            console.log('2');
             this.resetQuery();
             this.querySubmit();
             this.records = [];
@@ -282,8 +280,8 @@ export default {
     },
     methods: {
       onChange(newValue) {    
-        this.filter.text = newValue;
-        this.filter.valid = this.isFilterValid(this.filter.text);
+        this.query.filter.text = newValue;
+        this.query.filter.valid = this.isFilterValid(this.query.filter.text);
       },
       isFilterValid(filter) {
         filter = filter.trim();
@@ -322,7 +320,7 @@ export default {
           }
         }
         
-        const response = await api.request('collectionFilter', {
+        const response = await api.request('collectionQuery', {
           db: activeDb.name,
           collection: activeDb.activeCollection,
           query: {
@@ -338,6 +336,13 @@ export default {
         });
         if (! response.error) {
           this.records = response.records;
+
+          // this.records = response.records.map((record) => {
+          //   record = EJSON.deserialize(record);
+          //   // record = EJSON.stringify(record);
+          //   return record;
+          // });
+
           this.recordsTimestamps = response.recordsTimestamps;
         } else {
           this.records = [];

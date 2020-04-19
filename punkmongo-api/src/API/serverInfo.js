@@ -9,7 +9,7 @@ module.exports = async function (params, dbClient) {
   const hostInfo = await db.executeDbAdminCommand({hostInfo: 1});
   
 
-  const results = {
+  const result = {
     version: serverStatus.version,
     uptime: serverStatus.uptime,
     localTime: serverStatus.localTime,
@@ -42,13 +42,12 @@ module.exports = async function (params, dbClient) {
     },
     argv: getCmdLineOpts.argv.join(' '),
     bindIp: getCmdLineOpts.parsed.net.bindIp,
-    port: getCmdLineOpts.parsed.net.port,
     oplogSizeMB: getCmdLineOpts.parsed.replication.oplogSizeMB,
     replSet: getCmdLineOpts.parsed.replication.replSet,
     hostInfo: hostInfo
   };
 
-  return results;
+  return result;
 }
 
 

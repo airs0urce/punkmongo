@@ -120,9 +120,9 @@
 
 html,body {
   font-size: 12px;
-  font-family:"Courier New", Arial;
-  /* font-family:"Akzidenz", "Helvetica Neue", Helvetica, Arial, sans-serif; */
-  // text-rendering: geometricPrecision;
+  /* font-family:"Courier New", Arial; */
+  /* text-rendering: geometricPrecision; */
+  font-family: "Akzidenz", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 a {
@@ -209,7 +209,7 @@ table {
     font-weight: bold;
   }
   th {
-    background-color: #cccccc;
+    background-color: #e2e1e1;
     font-weight: bold;
     padding: 0.5rem;
     text-align: center;
@@ -275,6 +275,11 @@ select {
   background-repeat: no-repeat;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.full-width-table {
+  min-width: 700px;
+  width: 100%;
 }
 
 </style>

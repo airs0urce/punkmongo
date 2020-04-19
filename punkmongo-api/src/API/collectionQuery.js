@@ -2,6 +2,7 @@
 const a = require('awaiting');
 const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
+const { EJSON } = require('bson');
 
 /*
 params.db - database
@@ -44,7 +45,7 @@ module.exports = async function (params, dbClient) {
   const records = [];
   let record;
   while (record = await cursor.next()) {
-    records.push(record);
+    records.push(EJSON.serialize(record));
   }
 
   const countOptions = {};

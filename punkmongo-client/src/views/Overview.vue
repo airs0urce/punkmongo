@@ -1,8 +1,8 @@
 <template>
   <div>
     <ul class="x">
-      <li><router-link to="/overview/databases">All Databases</router-link></li>
-      <li><router-link to="/overview/server-info">Server info</router-link></li>
+      <li><router-link to="/overview/databases">Databases</router-link></li>
+      <li><router-link to="/overview/server-info">Server</router-link></li>
     </ul>
     <div class="line" />
 
