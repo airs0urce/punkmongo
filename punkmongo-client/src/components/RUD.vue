@@ -23,7 +23,7 @@
             :enableBasicAutocompletion="false" 
             :enableLiveAutocompletion="true"
             :onChange="onChange"
-            name="editor"
+            name="mongo-query-editor"
             :value="this.query.filter.text"
             :editorProps="{$blockScrolling: Infinity}"
           />
@@ -147,6 +147,8 @@
           <AceEditor
             mode="mongodb"
             theme="mongodb"
+
+            :name="`mongo-record-viewer-${index}`"
             :minLines="4"
             :maxLines="40"
             :fontSize="11"
@@ -172,7 +174,6 @@ hrtime
 <script>
 import * as mongodbQueryParser from 'mongodb-query-parser';
 import VueTagsInput from '@johmun/vue-tags-input';
-import brace from 'brace';
 import { Ace as AceEditor, Split as SplitEditor } from 'vue2-brace-editor';
 import 'mongodb-ace-mode';
 import 'mongodb-ace-theme';
