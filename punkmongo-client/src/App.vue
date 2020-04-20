@@ -5,9 +5,10 @@
 <template>
   
   <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
-    <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
+    <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px', width: $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
       <div class="left-panel-header">
-        <router-link class="left-panel-header-link" to="/overview/databases">Overview</router-link>  
+        <router-link class="left-panel-header-link overview" to="/overview/databases">Overview</router-link>  
+        <router-link class="left-panel-header-link settings" to="/settings">Settings</router-link>  
       </div>
       <div class="left-panel-scroll">
         <!-- <div class="line" /> -->
@@ -31,89 +32,90 @@
 </template>
 
 <script type="text/javascript">
-  
-  import 'vue-slim-tabs/themes/default.css'
-  import '@/assets/css/reset.css'
-  import '@/assets/css/main.css'
-  import DatabasesNavigation from '@/components/DatabasesNavigation'
-  import * as mutations from './store/mutations'
-  import * as actions from './store/actions'
-  import eventBus from './eventBus'
-  import utils from './utils'
 
-  export default {
-    components: {
-      DatabasesNavigation,
-      
-    },
+import 'vue-slim-tabs/themes/default.css'
+import '@/assets/css/reset.css'
+import '@/assets/css/main.css'
+import DatabasesNavigation from '@/components/DatabasesNavigation'
+import * as mutations from './store/mutations'
+import * as actions from './store/actions'
+import eventBus from './eventBus'
+import utils from './utils'
+
+
+
+export default {
+  components: {
+    DatabasesNavigation,
     
-    data: function() {
-      return {
-        movingResizer: false,
-        leftPanelSizeLimits: {min: 150, max: 600},
-        showLeftPanel: true
+  },
+  
+  data: function() {
+    return {
+      movingResizer: false,
+      leftPanelSizeLimits: {min: 200, max: 600},
+      showLeftPanel: true
+    }
+  },
+  mounted () {
+    eventBus.$on('load-database', async (dbName) => {
+      this.loadDatabase(dbName);
+    });
+    this.loadDatabase(this.$route.params.dbName);
+  },
+  methods: {
+    enableResizerMoving(event) {
+      this.movingResizer = true;
+      this.movingStartPos = event.clientX;
+    },
+    onMouseMove(event) {
+      const persistent = this.$store.state.persistent;
+      let resizerPosition = 0;
+      if (this.movingResizer) {
+        resizerPosition = event.clientX;
+
+        if (resizerPosition < 30 && persistent.showLeftPanel) {
+          this.toggleLeftPanel();
+        } else if (resizerPosition > 30 && !persistent.showLeftPanel) {
+          this.toggleLeftPanel();
+          resizerPosition = 0;
+        } else {
+          if (resizerPosition > this.leftPanelSizeLimits.max) {
+            resizerPosition = this.leftPanelSizeLimits.max;
+          }
+          if (resizerPosition < this.leftPanelSizeLimits.min && persistent.showLeftPanel) {
+            resizerPosition = this.leftPanelSizeLimits.min;
+          }
+        }
+
+        this.$store.commit(mutations.SET_RESIZER_POSITION, resizerPosition);
+        utils.removeDocumentSelection();
+      }
+
+    },
+    disableResizerMoving(event) {
+      this.movingResizer = false;
+      const movingEndPos = event.clientX;
+      if (this.movingStartPos == movingEndPos) {
+        this.toggleLeftPanel();
       }
     },
-    mounted () {
-      eventBus.$on('load-database', async (dbName) => {
-        this.loadDatabase(dbName);
-      });
-      this.loadDatabase(this.$route.params.dbName);
+    toggleLeftPanel() {
+      this.$store.commit(mutations.TOGGLE_LEFT_PANEL);
+      if (this.$store.state.persistent.resizerPosition < this.leftPanelSizeLimits.min) {
+        this.$store.commit(mutations.SET_RESIZER_POSITION, this.leftPanelSizeLimits.min);
+      }
     },
-    methods: {
-      enableResizerMoving(event) {
-        this.movingResizer = true;
-        this.movingStartPos = event.clientX;
-      },
-      onMouseMove(event) {
-        const persistent = this.$store.state.persistent;
+    async loadDatabase(dbName) {
+      if (this.$store.state.loadingDb == dbName) {
+        return;
+      }
+      
+      await this.$store.dispatch(actions.ACTION_LOAD_DB, dbName);
+    },
 
-        let resizerPosition = 0;
-        if (this.movingResizer) {
-          resizerPosition = event.clientX;
-
-          if (resizerPosition < 30 && persistent.showLeftPanel) {
-            this.toggleLeftPanel();
-          } else if (resizerPosition > 30 && !persistent.showLeftPanel) {
-            this.toggleLeftPanel();
-            resizerPosition = 0;
-          } else {
-            if (resizerPosition > this.leftPanelSizeLimits.max) {
-              resizerPosition = this.leftPanelSizeLimits.max;
-            }
-            if (resizerPosition < this.leftPanelSizeLimits.min && persistent.showLeftPanel) {
-              resizerPosition = this.leftPanelSizeLimits.min;
-            }
-          }
-
-          this.$store.commit(mutations.SET_RESIZER_POSITION, resizerPosition);
-          utils.removeDocumentSelection();
-        }
-
-      },
-      disableResizerMoving(event) {
-        this.movingResizer = false;
-        const movingEndPos = event.clientX;
-        if (this.movingStartPos == movingEndPos) {
-          this.toggleLeftPanel();
-        }
-      },
-      toggleLeftPanel() {
-        this.$store.commit(mutations.TOGGLE_LEFT_PANEL);
-        if (this.$store.state.persistent.resizerPosition < this.leftPanelSizeLimits.min) {
-          this.$store.commit(mutations.SET_RESIZER_POSITION, this.leftPanelSizeLimits.min);
-        }
-      },
-      async loadDatabase(dbName) {
-        if (this.$store.state.loadingDb == dbName) {
-          return;
-        }
-        
-        await this.$store.dispatch(actions.ACTION_LOAD_DB, dbName);
-      },
-
-    }
   }
+}
 </script>
 
 <style lang="scss">
@@ -229,9 +231,16 @@ div.gap {
 
 .left-panel-header-link {
   padding-left: 1.6rem;
-  background: url('./assets/imgs/world.png') no-repeat;
+  padding-bottom: 0.2rem;
   background-size: 13px;
   background-position: 0px 0.5px;
+  &.overview {
+    background: url('./assets/imgs/world.png') no-repeat;
+    margin-right: 0.5rem;
+  }
+  &.settings {
+    background: url('./assets/imgs/settings.png') no-repeat; 
+  }
 }
 
 .vue-tab[aria-selected="true"] {
@@ -247,12 +256,13 @@ input {
 }
 
 button {
+  font-size: 0.9rem;
   padding: 0.542em;
   position: relative;
   box-shadow: none;
   background-color: #fff;
   color: #555;
-  cursor: pointer;
+  cursor: default;
   border: 1px solid #ddd;
   &:active {
     background-color: #fdffee;
@@ -280,6 +290,10 @@ select {
 .full-width-table {
   min-width: 700px;
   width: 100%;
+}
+
+.ace_content {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 </style>

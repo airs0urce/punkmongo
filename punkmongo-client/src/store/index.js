@@ -17,7 +17,7 @@ export default new Vuex.Store({
   ],
   state: {
     persistent: {
-      resizerPosition: 200, 
+      resizerPosition: 260, 
       dbList: [],
       serverInfo: {},
       showLeftPanel: true
@@ -89,12 +89,17 @@ export default new Vuex.Store({
       
       api.request('getDbCollectionsStats', {db: dbName}).then(async (dbCollectionsStats) => {
         while (state.loadingDb) {
-          await a.delay(50);
+          await a.delay(70);
         }      
-        commit(mutations.SET_COLLECTIONS_STATS, {
-          db: dbName,
-          stats: dbCollectionsStats
-        });
+        // why we check this below? Because it's possible 
+        // that getDbCollectionsStats request for DB_1 didn't finish and you already moved to DB_2. 
+        // In this case when we don't need to apply stats from DB_1
+        if (dbName == state.activeDb.name) {
+          commit(mutations.SET_COLLECTIONS_STATS, {
+            db: dbName,
+            stats: dbCollectionsStats
+          });
+        }
       });
 
       const dbInfo = await api.request('getDatabase', {db: dbName});

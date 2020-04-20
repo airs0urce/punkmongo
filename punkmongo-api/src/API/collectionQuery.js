@@ -3,6 +3,7 @@ const a = require('awaiting');
 const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
 const { EJSON } = require('bson');
+const util = require('util');
 
 /*
 params.db - database
@@ -41,11 +42,25 @@ module.exports = async function (params, dbClient) {
   options.skip = pageSize * (pageNumber - 1);
   options.limit = pageSize;
 
-  const cursor = collection.find(params.filter, options);
+console.log('params.query.filter str: ', params.query.filter);
+eval('const filter = ' + params.query.filter);
+console.log(filter);
+
+  const cursor = collection.find(filter, options);
   const records = [];
+  const recordsTimestamps = [];
+
   let record;
   while (record = await cursor.next()) {
-    records.push(EJSON.serialize(record));
+    records.push(EJSON.stringify(record));
+
+    if (ObjectID.isValid(record._id)) {
+      recordsTimestamps.push(
+        moment(ObjectID(record._id).getTimestamp()).format('YYYY-MM-DD HH:mm:ss')
+      );
+    } else {
+      recordsTimestamps.push(false);
+    }
   }
 
   const countOptions = {};
@@ -54,20 +69,18 @@ module.exports = async function (params, dbClient) {
   }
   const documentsTotal = await collection.countDocuments(params.filter, countOptions);
 
+  cursor.rewind();
+  
+  const explainInfo = await cursor.explain();
 
-  const recordsTimestamps = records.map((record) => {
-    if (ObjectID.isValid(record._id)) {
-      return moment(ObjectID(record._id).getTimestamp()).format('YYYY-MM-DD HH:mm:ss');
-    } else {
-      return false;
-    }
-  });
 
   return {
     pagesTotal: Math.ceil(documentsTotal / pageSize),
     pageNumber: pageNumber,
     records: records,
     recordsTimestamps: recordsTimestamps,
+    // timeCost: 
+    explain: explainInfo
   }
 }
 

@@ -1,6 +1,12 @@
 <template>
   <div>
-    <!-- <router-link :to="'/db/' + activeDb.name + '/col/' + activeDb.activeCollection + '/insert'">New collection</router-link> -->
+    <h1>
+      <div v-if="activeDb.name != ''">
+        Databases » <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link> » {{activeDb.activeCollection}}
+      </div>  
+    </h1>
+    <br/>
+    
 
     <tabs class="collection-tabs">
       <tab title="Query/Update/Delete/Distinct" class="collection-tab">

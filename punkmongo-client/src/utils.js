@@ -2,7 +2,7 @@
 export default {
   bytesFormatted: function(bytes, forceUnit) {
     if (typeof bytes == 'undefined') {
-      return '-';
+      return '...';
     }
     if (forceUnit) {
       switch (forceUnit) {
@@ -26,7 +26,7 @@ export default {
   },
   numberWithCommas: function(x) {
     if (typeof x == 'undefined') {
-      return '-';
+      return '...';
     }
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   },

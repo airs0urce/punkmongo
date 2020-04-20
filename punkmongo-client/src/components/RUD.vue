@@ -75,11 +75,11 @@
           <div class="filter-row-wrapper footer">
             <div class="submit-area">
               <button @click="querySubmit">Submit query</button>
-              <button @click="queryExplain">Explain</button>
+              <button @click="resetConditions">Clear Conditions</button>
               <Loader v-if="loading" />  
             </div>
             <div class="rows-and-cost">
-              <div class="cost-value">cost: 33ms</div>
+              <div class="cost-value" v-if="explain">cost: {{explain.executionStats.executionTimeMillis / 1000}} sec</div>
             </div>
           </div>
         </div>
@@ -122,7 +122,32 @@
       
     </div>
 
-    <div>
+    <div v-if="explain">
+      <div class="gap"></div>
+      <div>
+        Explain: 
+        <AceEditor
+          width="100%"
+          mode="mongodb"
+          theme="mongodb"
+          :name="'mongo-explain'"
+          :minLines="4"
+          :maxLines="10"
+          :fontSize="11"
+          :showPrintMargin="false"
+          :showGutter="true"
+          :value="JSON.stringify(explain)"
+          :editorProps="{$blockScrolling: Infinity}"
+          :readOnly="true"
+          :highlightActiveLine="false"
+          :enableBasicAutocompletion="false" 
+          :enableLiveAutocompletion="false"
+          :hideCursorLayer="true"
+        />
+      </div>
+
+
+
       <div class="gap"></div>
       <div class="pagination">
         <div><button>Go to page</button> <input type="" name="" style="width: 4em;"></div> 
@@ -145,16 +170,22 @@
         <div>
           
           <AceEditor
+            width="100%"
             mode="mongodb"
             theme="mongodb"
-
             :name="`mongo-record-viewer-${index}`"
             :minLines="4"
-            :maxLines="40"
+            :maxLines="10"
             :fontSize="11"
             :showPrintMargin="false"
-            :showGutter="false"
-            :value="JSON.stringify(record)"
+            :showGutter="true"
+            :value="record"
+            :editorProps="{$blockScrolling: Infinity}"
+            :readOnly="true"
+            :highlightActiveLine="false"
+            :enableBasicAutocompletion="false" 
+            :enableLiveAutocompletion="false"
+            :hideCursorLayer="true"
           />
         </div>
       </div>
@@ -185,66 +216,69 @@ import * as moment from 'moment'
 import { EJSON } from 'bson'
 
 
+function getDefaultData() {
+  return {
+    loading: false,
+    query: {
+      filter: {
+        text: `{\n  \n}`,
+        valid: true,
+      },
+      sort: {
+        tag: '',
+        tags: [{text: '_id:-1'}],
+        autocompleteItems: [
+          {text: '_id:1'},
+          {text: '_id:-1'},  
+        ],
+        validate: [
+          {
+            classes: 'field-with-direction', 
+            disableAdd: true,
+            rule: ({ text }) => {
+              const invalid = (text.slice(-3) !== ':-1' && text.slice(-2) !== ':1');
+              return invalid;
+            }
+          },
+        ]
+      },
+      projection: {
+        tag: '',
+        tags: [],
+        autocompleteItems: [
+          {text: '_id:1'},
+          {text: '_id:-1'},  
+        ],
+        validate: [
+          {
+            classes: 'field-with-include-flag', 
+            disableAdd: true,
+            rule: ({ text }) => {
+              const invalid = (text.slice(-2) !== ':0' && text.slice(-2) !== ':1');
+              return invalid;
+            }
+          },
+        ]
+      },
+
+      limit: '',
+      timeout: '',
+      pagination: {pageSize: 10, pageNumber: 1},
+      hint: ''
+    },
+    records: [],
+    recordsTimestamps: [],
+    explain: null
+  }
+}
+
 export default {
     components: {
       AceEditor,
       VueTagsInput,
       Loader,
     },
-    data: function() {
-      return {
-        loading: false,
-        query: {
-          filter: {
-            text: `{\n  \n}`,
-            valid: true,
-          },
-          sort: {
-            tag: '',
-            tags: [{text: '_id:-1'}],
-            autocompleteItems: [
-              {text: '_id:1'},
-              {text: '_id:-1'},  
-            ],
-            validate: [
-              {
-                classes: 'field-with-direction', 
-                disableAdd: true,
-                rule: ({ text }) => {
-                  const invalid = (text.slice(-3) !== ':-1' && text.slice(-2) !== ':1');
-                  return invalid;
-                }
-              },
-            ]
-          },
-          projection: {
-            tag: '',
-            tags: [],
-            autocompleteItems: [
-              {text: '_id:1'},
-              {text: '_id:-1'},  
-            ],
-            validate: [
-              {
-                classes: 'field-with-include-flag', 
-                disableAdd: true,
-                rule: ({ text }) => {
-                  const invalid = (text.slice(-2) !== ':0' && text.slice(-2) !== ':1');
-                  return invalid;
-                }
-              },
-            ]
-          },
-
-          limit: '',
-          timeout: '',
-          pagination: {pageSize: 10, pageNumber: 1},
-          hint: ''
-        },
-        records: [],
-        recordsTimestamps: []
-      }
-    },
+    data: getDefaultData,
     computed: {
       autosuggestSortFields() {
         return this.autocompleteItems.filter(i => {
@@ -253,7 +287,13 @@ export default {
       },
       activeDb() {
         return this.$store.state.activeDb;
-      }
+      },
+      activeDbName() {
+        return this.$store.state.activeDb.name;
+      },
+      activeCollectionName() {
+        return this.$store.state.activeDb.activeCollection;
+      },
     },
     watch: {
       query: {
@@ -268,15 +308,16 @@ export default {
         },
         deep: true
       },
-      activeDb: {
-        handler: function(newVal, oldVal) {
-          if (newVal.name != oldVal.name || newVal.activeCollection != oldVal.activeCollection) {
-            this.resetQuery();
-            this.querySubmit();
-            this.records = [];
-          }
-        },
-        deep: true
+      activeDbName: function() {
+        this.querySubmit();
+      },
+      activeCollectionName: function(newVal, oldVal) {
+        if (newVal != oldVal) {
+          this.resetQueryInterface();
+          this.records = [];
+          this.recordsTimestamps = [];
+          this.querySubmit();
+        }
       }
     },
     methods: {
@@ -301,9 +342,11 @@ export default {
       },
       async querySubmit() {
 
-        this.loading = moment().valueOf();
+        if (!this.activeDb.name || !this.activeDb.activeCollection) {
+          return;
+        }
 
-        const activeDb = this.activeDb;
+        this.loading = moment().valueOf();
 
         const sort = {};
         if (this.query.sort.tags.length > 0) {
@@ -322,8 +365,8 @@ export default {
         }
         
         const response = await api.request('collectionQuery', {
-          db: activeDb.name,
-          collection: activeDb.activeCollection,
+          db: this.activeDb.name,
+          collection: this.activeDb.activeCollection,
           query: {
             filter: this.query.filter.text, 
             options: {
@@ -337,13 +380,12 @@ export default {
         });
         if (! response.error) {
           this.records = response.records;
+          this.explain = response.explain;
 
-          // this.records = response.records.map((record) => {
-          //   record = EJSON.deserialize(record);
-          //   // record = EJSON.stringify(record);
-          //   return record;
-          // });
-
+          this.records = response.records.map((record) => {
+            var obj = EJSON.parse(record);
+            return mongodbQueryParser.toJSString(obj, '    ');
+          });
           this.recordsTimestamps = response.recordsTimestamps;
         } else {
           this.records = [];
@@ -357,28 +399,32 @@ export default {
         
         this.loading = false;
       },
-      queryExplain() {
-        ;
-      },
       isValueEmpty(field) {
         if (field === 'query.limit') {
-          return (this.query.limit <= 0);
+          return (this.query.limit <= 0)
         }
         if (field === 'query.sort') {
-          return (!this.query.sort.tags || this.query.sort.tags.length === 0);
+          return (!this.query.sort.tags || this.query.sort.tags.length === 0)
         }
         if (field === 'query.projection') {
-          return (!this.query.projection.tags || this.query.projection.tags.length === 0);
+          return (!this.query.projection.tags || this.query.projection.tags.length === 0)
         }
         if (field === 'query.timeout') {
-          return (this.query.timeout <= 0);
+          return (this.query.timeout <= 0)
         }
         if (field === 'query.hint') {
-          return (this.query.hint == '');
+          return (this.query.hint == '')
         }
       },
-      resetQuery() {
-        ;
+      resetQueryInterface() {
+        Object.assign(this.$data, getDefaultData())
+      },
+      resetConditions() {
+        const defaultData = getDefaultData()
+        delete defaultData.records
+        delete defaultData.recordsTimestamps
+        delete defaultData.explain
+        Object.assign(this.$data, defaultData)
       }
     },
 }

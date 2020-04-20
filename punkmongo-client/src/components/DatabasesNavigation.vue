@@ -13,7 +13,6 @@
             class="db-link loading-animation" 
             :class="{loading: showLoadingDb == db.name, 'router-link-exact-active': state.activeDb.name == db.name}"
             :to="'/db/' + db.name"
-            @click.native="onDbLinkClicked(db.name)"
           >{{db.name}}</router-link>  
 
           ({{db.stats.collections}})
@@ -78,9 +77,6 @@ export default {
     },
   },
   methods: {
-    onDbLinkClicked (dbName) {
-      eventBus.$emit('load-database', dbName);
-    },
     scrollToActiveDB () {
       const activeDbEl = document.querySelector('.db-link.router-link-exact-active');
       if (activeDbEl) {

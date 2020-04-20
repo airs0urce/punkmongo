@@ -128,6 +128,9 @@ export default {
     bytesFormatted: utils.bytesFormatted,
     numberWithCommas: utils.numberWithCommas,
   },
+  mounted() {
+    eventBus.$emit('load-database', this.$route.params.dbName);
+  }
 }
 </script>
 
