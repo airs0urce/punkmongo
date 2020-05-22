@@ -1,7 +1,7 @@
 <template>
-  <div>
-    NewDatabase
-  </div>
+    <div>
+        NewDatabase
+    </div>
 </template>
 
 <script>

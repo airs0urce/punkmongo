@@ -8,30 +8,30 @@ const fs = require('mz/fs');
 const app = new Koa();
 
 (async () => {  
-  const dbClient = await DBFactory.connectMongo();
-  
-  const jrpc = koaJsonRpc({
-    limit: '20mb',
-  });
-  const apiMethodsPath = __dirname + '/API/';
-  const methodFiles = await fs.readdir(apiMethodsPath);
-  for (let methodFile of methodFiles) {
-    if (! methodFile.includes('.js')) {
-      continue;
-    }
-    const methodName = methodFile.replace('.js', '');
-    const methodFunction = require(apiMethodsPath + methodFile);
-    
-    jrpc.use(methodName, async (params) => {
-      return await methodFunction(params, dbClient);
+    const dbClient = await DBFactory.connectMongo();
+
+    const jrpc = koaJsonRpc({
+        limit: '20mb',
     });
-  }
-  
-  app.use(cors())
-  app.use(jrpc.app());
-  app.listen(config.api.port);
-  
-  console.log(`Started JSONRPC 2.0 API on ${config.api.host}:${config.api.port}`);
+    const apiMethodsPath = __dirname + '/API/';
+    const methodFiles = await fs.readdir(apiMethodsPath);
+    for (let methodFile of methodFiles) {
+        if (! methodFile.includes('.js')) {
+            continue;
+        }
+        const methodName = methodFile.replace('.js', '');
+        const methodFunction = require(apiMethodsPath + methodFile);
+
+        jrpc.use(methodName, async (params) => {
+            return await methodFunction(params, dbClient);
+        });
+    }
+
+    app.use(cors())
+    app.use(jrpc.app());
+    app.listen(config.api.port);
+
+    console.log(`Started JSONRPC 2.0 API on ${config.api.host}:${config.api.port}`);
 })();
 
 

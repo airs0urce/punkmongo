@@ -1,7 +1,7 @@
 <template>
-  <div>
-    New Collectioon
-  </div>
+    <div>
+        New Collectioon
+    </div>
 </template>
 
 <script>

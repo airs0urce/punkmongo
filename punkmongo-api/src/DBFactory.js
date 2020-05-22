@@ -28,7 +28,6 @@ class DBFactory {
                 'mongodb://' + config.api.mongodb.host + ':' + config.api.mongodb.port, 
                 {
                     poolSize: 10, 
-                    reconnectTries: Number.MAX_VALUE, 
                     useNewUrlParser: true,
                     useUnifiedTopology: true,
                     socketTimeoutMS:  350 * 60 * 1000, // 350 min. 
