@@ -116,72 +116,74 @@ export default {
 
 <style lang="scss" scoped>
 a.new-database {
-     background: url('../assets/imgs/add.png') no-repeat;
-     background-size: 14px;
-     background-position: 0px 0.5px;
-     padding-left: 1.7em;
-     padding-bottom: 0.3em;
-     display: inline-block;
+    background: url("../assets/imgs/add.png") no-repeat;
+    background-size: 14px;
+    background-position: 0px 0.5px;
+    padding-left: 1.7em;
+    padding-bottom: 0.3em;
+    display: inline-block;
 }
- a.new-collection {
-     background: url('../assets/imgs/add.png') no-repeat;
-     background-size: 14px;
-     background-position: 0px 0.5px;
-     padding-left: 1.7em;
-     padding-bottom: 0.3em;
-     display: inline-block;
-     margin-left: 1.6em;
+a.new-collection {
+    background: url("../assets/imgs/add.png") no-repeat;
+    background-size: 14px;
+    background-position: 0px 0.5px;
+    padding-left: 1.7em;
+    padding-bottom: 0.3em;
+    display: inline-block;
+    margin-left: 1.6em;
 }
- a {
-     line-height: 1.5;
+
+a {
+    line-height: 1.5;
 }
- .left-panel-dbs {
-     padding-bottom: 1.5em;
-     .left-panel-collections .router-link-active {
-         font-weight: bold;
+.left-panel-dbs {
+    padding-bottom: 1.5em;
+    .left-panel-collections .router-link-active {
+        font-weight: bold;
     }
-     li {
-         line-height: 1.2;
-         background: url('../assets/imgs/database.png') no-repeat;
-         background-size: 14px;
-         background-position: 0px 0.5px;
-         a.db-link {
-             padding-left: 1.7em;
-             cursor: pointer;
-             &:hover {
-                 color: blue;
+    li {
+        line-height: 1.2;
+        background: url("../assets/imgs/database.png") no-repeat;
+        background-size: 14px;
+        background-position: 0px 0.5px;
+
+        a.db-link {
+            padding-left: 1.7em;
+            cursor: pointer;
+            &:hover {
+                color: blue;
             }
         }
     }
 }
- ul.left-panel-collections {
-     padding-left: 1.6em;
-     li {
-         padding-left: 1.7em;
-         background: url('../assets/imgs/collection.png') no-repeat;
-         background-size: 14px;
-         margin-bottom: 0;
+
+ul.left-panel-collections {
+    padding-left: 1.6em;
+    li {
+        padding-left: 1.7em;
+        background: url("../assets/imgs/collection.png") no-repeat;
+        background-size: 14px;
+        margin-bottom: 0;
     }
 }
- .loading-animation {
-     background: linear-gradient(90deg, #eeefff, #dad076);
-     background-repeat: no-repeat;
-     background-size: 0 100%;
-     background-position: 14px 0;
+
+.loading-animation {
+    background: linear-gradient(90deg, #eeefff, #dad076);
+    background-repeat: no-repeat;
+    background-size: 0 100%;
+    background-position: 14px 0;
 }
- .loading-animation.loading {
-     transition: background 0.4s ease-out;
-     background-size: 100% 100%;
+.loading-animation.loading {
+    transition: background 0.4s ease-out;
+    background-size: 100% 100%;
 }
- // .loading-animation.loading {
-     // transition: background 0.4s ease-out;
-     // background-size: 100%;
-     // 
+// .loading-animation.loading {
+//   transition: background 0.4s ease-out;
+//   background-size: 100%;
+// }
+.db-link.router-link-exact-active {
+    font-weight: bold;
 }
- .db-link.router-link-exact-active {
-     font-weight: bold;
-}
- 
 
 
 </style>

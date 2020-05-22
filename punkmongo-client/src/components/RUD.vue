@@ -197,6 +197,7 @@ import * as moment from 'moment'
 import {
     EJSON
 } from 'bson'
+import eventBus from '../eventBus'
 
 
 function getDefaultData() {
@@ -425,160 +426,174 @@ export default {
         }
     },
     mounted: async function() {
-        eventBus.$on('reload-collection', async () => {
-            this.querySubmit();
-        });
+        console.log(eventBus);
+        eventBus.$on('reload-collection', this.querySubmit);
     },
+    destroyed: async function() {
+        eventBus.$off('reload-collection', this.querySubmit);
+    }
 
 }
 </script>
 
 <style lang="scss" scoped>
 .query-editor {
-     padding: 1rem 0.8rem 0.4rem;
-     background-color: rgb(238, 239, 255);
+    padding: 1rem 0.8rem 0.4rem;
+    background-color: rgb(238, 239, 255);
 }
- .filter-row-wrapper {
-     display: flex;
-     align-items: flex-start;
-     overflow: hidden;
-     margin-bottom: 0.3rem;
-     // padding: 1rem 0.4rem 0.4rem;
-     position: relative;
-     &.filter-invalid .ace_editor {
-         background-color: #fdefef;
+.filter-row-wrapper {
+    display: flex;
+    align-items: flex-start;
+    overflow: hidden;
+    margin-bottom: 0.3rem;
+
+    // padding: 1rem 0.4rem 0.4rem;
+    position: relative;
+    &.filter-invalid .ace_editor {
+        background-color: #fdefef;
     }
-     .query-options {
-         padding-left: 1rem;
-         > div {
-             margin-bottom: 0.3rem;
+    .query-options {
+        padding-left: 1rem;
+        > div {
+            margin-bottom: 0.3rem;
         }
     }
-     .vue-tags-input {
-         display: inline-block;
-         cursor: text;
+    .vue-tags-input {
+        display: inline-block;
+        cursor: text;
     }
-     .filter-label {
-         display: inline-block;
-         position: absolute;
-         top: 1px;
-         left: 1rem;
-         font-size: 0.8rem;
-         font-weight: 200;
-         color: #c7c8d2;
-         user-select: none;
-         font-family: Verdana;
+    .filter-label {
+        display: inline-block;
+        position: absolute;
+        top: 1px;
+        left: 1rem;
+        font-size: 0.8rem;
+        font-weight: 200;
+        color: #c7c8d2;
+        user-select: none;
+        font-family: Verdana;
     }
-     &.footer {
-         align-items: baseline;
-         width: 500px;
-         justify-content: space-between;
-         margin-top: 1.2rem;
-         .rows-and-cost {
-             > div {
-                 display: inline-block;
-                 margin-left: 1rem;
+    &.footer {
+        align-items: baseline;
+        width: 500px;
+        justify-content: space-between;
+        margin-top: 1.2rem;
+        .rows-and-cost {
+            > div {
+                display: inline-block;
+                margin-left: 1rem;
             }
         }
-         button {
-             width: 9rem;
+        button {
+            width: 9rem;
         }
     }
-     // .options-label {
-         // display: inline-block;
-         // position: absolute;
-         // top: 1px;
-         // left: 515px;
-         // font-size: 0.8rem;
-         // font-weight: 200;
-         // color: #c7c8d2;
-         // user-select: none;
-         // font-family: Verdana;
-         // 
-    }
+
+    // .options-label {
+    //   display: inline-block;
+    //   position: absolute;
+    //   top: 1px;
+    //   left: 515px;
+    //   font-size: 0.8rem;
+    //   font-weight: 200;
+    //   color: #c7c8d2;
+    //   user-select: none;
+    //   font-family: Verdana;
+    // }
 }
- /deep/ {
-     .ace_scroller {
-         border: 1px solid #ddd;
+/deep/ {
+    .ace_scroller {
+        border: 1px solid #ddd;
     }
-     .ace-mongodb {
-         background: #fff;
+    .ace-mongodb {
+        background: #fff;
     }
-     .ti-new-tag-input-wrapper {
-         font-size: 1rem;
+    .ti-new-tag-input-wrapper {
+        font-size: 1rem;
     }
-     .vue-tags-input {
-         width: 17.2rem;
-         background-color: #fff;
-         .ti-input {
-             border: 1px solid #ddd;
-             padding: 2px;
+    .vue-tags-input {
+        width: 17.2rem;
+        background-color: #fff;
+        .ti-input {
+            border: 1px solid #ddd;
+            padding: 2px;
         }
-         .ti-new-tag-input {
-             font-family: 'Courier New';
-             background-color: #c8f7c8;
-             color: #0a420a;
-             // outline: 0.3rem solid #c8f7c8;
+        .ti-new-tag-input {
+            font-family: "Courier New";
+            background-color: #c8f7c8;
+            color: #0a420a;
+            // outline: 0.3rem solid #c8f7c8;
         }
-         .ti-invalid {
-             background-color: #fff;
+        .ti-invalid {
+            background-color: #fff;
         }
     }
-     .ti-tag {
-         background-color: #5e87c1;
-         cursor: default;
-    }
-}
- .field-limit {
-     width: 6rem;
-}
- .sort-and-limit {
-     display: flex;
-     justify-content: space-between;
-}
- .filter-content-left {
-     border-right: 2px solid #cecef94a;
-     padding-right: 1rem;
-}
- .sort_params_input, .projection_params_input {
-     user-select: none;
-}
- .submit-area {
-     display: flex;
-     align-items: center;
-}
- .submit-area > * {
-     margin-right: 0.5rem;
-}
- .logs-per-page-select, .timeout-input, .hint-select {
-     width: 8rem;
-}
- div.document {
-     border: 2px #ccc solid;
-     margin-bottom: 1em;
-     &:hover {
-         background-color: rgb(238, 239, 255);
-    }
-}
- .empty-value, .empty-value /deep/ input {
-     background-color: #eee !important;
-     color: #aaa;
-}
- /deep/ .ti-new-tag-input-wrapper input {
-     min-width: fit-content;
-}
- .query-row-margin {
-     margin-top: 0.5rem;
-}
- .document-header {
-     border-bottom: 2px solid #ccc;
-     a {
-         border-right: 1px solid #ccc;
-         padding: 0.5em;
-         display: inline-block;
+
+    .ti-tag {
+        background-color: #5e87c1;
+        cursor: default;
     }
 }
 
+.field-limit {
+    width: 6rem;
+}
+
+.sort-and-limit {
+    display: flex;
+    justify-content: space-between;
+}
+.filter-content-left {
+    border-right: 2px solid #cecef94a;
+    padding-right: 1rem;
+}
+.sort_params_input,
+.projection_params_input {
+    user-select: none;
+}
+.submit-area {
+    display: flex;
+    align-items: center;
+}
+.submit-area > * {
+    margin-right: 0.5rem;
+}
+
+.logs-per-page-select,
+.timeout-input,
+.hint-select {
+    width: 8rem;
+}
+
+div.document {
+    border: 2px #ccc solid;
+    margin-bottom: 1em;
+    &:hover {
+        background-color: rgb(238, 239, 255);
+    }
+}
+.empty-value,
+.empty-value /deep/ input {
+    background-color: #eee !important;
+    color: #aaa;
+}
+
+/deep/ .ti-new-tag-input-wrapper input {
+    min-width: fit-content;
+}
+
+.query-row-margin {
+    margin-top: 0.5rem;
+}
+
+.document-header {
+    border-bottom: 2px solid #ccc;
+    a {
+        border-right: 1px solid #ccc;
+        padding: 0.5em;
+        display: inline-block;
+    }
+}
 
 </style>
 

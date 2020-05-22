@@ -120,172 +120,185 @@ export default {
 </script>
 
 <style lang="scss">
- html,body {
-     font-size: 12px;
-    /* font-family:"Courier New", Arial;
-     */
-    /* text-rendering: geometricPrecision;
-     */
-     font-family: "Akzidenz", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
- a {
-     text-decoration: none;
-     color: #004499;
-     outline: none;
-}
- a, a:active, a:focus{
-     outline: none;
-}
- a:hover {
-     color: blue;
-}
- .main-container {
-     display: flex;
-     flex-direction: row;
-     flex-wrap: nowrap;
-     min-height: 100vh;
-}
- .padding {
-     padding: 0.8rem;
-}
- $left-panel-header-height: 2.5rem;
- .left-panel {
-     background-color: #eeefff;
-     white-space: nowrap;
-     .left-panel-header {
-         width: 100%;
-         background-color: #ddd;
-         border-bottom: 1px solid #BBB;
-         padding: 0.8rem;
-         height: $left_panel_header_height;
-    }
-     .left-panel-scroll {
-         overflow: auto;
-         height: calc(100vh - #{
-            $left-panel-header-height
-        }
-        );
-         .padding {
-             padding-top: 1rem;
-             padding-bottom: 2rem;
-        }
-    }
-}
- .line {
-     margin-bottom: 1rem;
-     border-bottom: 1px #ccc solid;
-}
- .split-adjust-handler {
-     height: 100vh;
-     flex: 0 0 0.7rem;
-     background-color: #ddd;
-     border: 1px solid #BBB;
-     display: flex;
-     flex-direction: column;
-     justify-content: center;
-     &:hover, &.hover {
-         background-color: #C4E1A4;
-         cursor: pointer;
-    }
-     &.left-panel-hidden {
-         flex: 0 0 1.2rem;
-    }
-}
- .right-panel {
-     flex-grow: 1;
-     height: 100vh;
-     overflow: auto;
-     padding-bottom: 1.5rem;
-}
- .right-panel .line {
-     border-bottom-color: #999;
-}
- table {
-     background-color: rgb(204, 204, 204);
-     border-collapse: separate;
-     border-spacing: 1px;
-     thead .bold {
-         font-weight: bold;
-    }
-     th {
-         background-color: #e2e1e1;
-         font-weight: bold;
-         padding: 0.5rem;
-         text-align: center;
-    }
-     td {
-         background-color: #fffeee;
-         padding: 0.3rem;
-    }
-     tfoot td {
-         font-weight: bold;
-    }
-}
- div.gap {
-     height: 20px;
-}
- .left-panel-header-link {
-     padding-left: 1.6rem;
-     padding-bottom: 0.2rem;
-     background-size: 13px;
-     background-position: 0px 0.5px;
-     &.overview {
-         background: url('./assets/imgs/world.png') no-repeat;
-         margin-right: 0.5rem;
-    }
-     &.settings {
-         background: url('./assets/imgs/settings.png') no-repeat;
-    }
-}
- .vue-tab[aria-selected="true"] {
-     background-color: #eeefff;
-}
- input {
-     padding: 0.542em;
-     background-color: #fff;
-     border: 1px solid #ddd;
-     &:focus {
-         outline: 0;
-    }
-}
- button {
-     font-size: 0.9rem;
-     padding: 0.542em;
-     position: relative;
-     box-shadow: none;
-     background-color: #fff;
-     color: #555;
-     cursor: default;
-     border: 1px solid #ddd;
-     &:active {
-         background-color: #fdffee;
-         top: 1px;
-         box-shadow: none;
-    }
-     &:focus {
-         outline: 0;
-    }
-}
- select {
-     padding: 0.542em 2em 0.542em 0.542em;
-     border: 1px solid #ddd;
-     border-radius: 0;
-     appearance: none;
-     background-image: linear-gradient(45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%);
-     background-position: calc(100% - 14px) 1em, calc(100% - 10px) 1em, calc(100% - 2.5em) 0.5em;
-     background-size: 5px 5px, 5px 5px, 1px 1.5em;
-     background-repeat: no-repeat;
-     text-overflow: ellipsis;
-     overflow: hidden;
-}
- .full-width-table {
-     min-width: 700px;
-     width: 100%;
-}
- .ace_content {
-     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+html,
+body {
+    font-size: 12px;
+    /* font-family:"Courier New", Arial; */
+    /* text-rendering: geometricPrecision; */
+    font-family: "Akzidenz", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+a {
+    text-decoration: none;
+    color: #004499;
+    outline: none;
+}
+a,
+a:active,
+a:focus {
+    outline: none;
+}
+a:hover {
+    color: blue;
+}
+.main-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    min-height: 100vh;
+}
+.padding {
+    padding: 0.8rem;
+}
+
+$left-panel-header-height: 2.5rem;
+
+.left-panel {
+    background-color: #eeefff;
+    white-space: nowrap;
+    .left-panel-header {
+        width: 100%;
+        background-color: #ddd;
+        border-bottom: 1px solid #bbb;
+        padding: 0.8rem;
+        height: $left_panel_header_height;
+    }
+    .left-panel-scroll {
+        overflow: auto;
+        height: calc(100vh - #{$left-panel-header-height});
+        .padding {
+            padding-top: 1rem;
+            padding-bottom: 2rem;
+        }
+    }
+}
+
+.line {
+    margin-bottom: 1rem;
+    border-bottom: 1px #ccc solid;
+}
+.split-adjust-handler {
+    height: 100vh;
+    flex: 0 0 0.7rem;
+    background-color: #ddd;
+    border: 1px solid #bbb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    &:hover,
+    &.hover {
+        background-color: #c4e1a4;
+        cursor: pointer;
+    }
+    &.left-panel-hidden {
+        flex: 0 0 1.2rem;
+    }
+}
+
+.right-panel {
+    flex-grow: 1;
+    height: 100vh;
+    overflow: auto;
+    padding-bottom: 1.5rem;
+}
+.right-panel .line {
+    border-bottom-color: #999;
+}
+
+table {
+    background-color: rgb(204, 204, 204);
+    border-collapse: separate;
+    border-spacing: 1px;
+    thead .bold {
+        font-weight: bold;
+    }
+    th {
+        background-color: #e2e1e1;
+        font-weight: bold;
+        padding: 0.5rem;
+        text-align: center;
+    }
+    td {
+        background-color: #fffeee;
+        padding: 0.3rem;
+    }
+    tfoot td {
+        font-weight: bold;
+    }
+}
+
+div.gap {
+    height: 20px;
+}
+
+.left-panel-header-link {
+    padding-left: 1.6rem;
+    padding-bottom: 0.2rem;
+    background-size: 13px;
+    background-position: 0px 0.5px;
+    &.overview {
+        background: url("./assets/imgs/world.png") no-repeat;
+        margin-right: 0.5rem;
+    }
+    &.settings {
+        background: url("./assets/imgs/settings.png") no-repeat;
+    }
+}
+
+.vue-tab[aria-selected="true"] {
+    background-color: #eeefff;
+}
+input {
+    padding: 0.542em;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    &:focus {
+        outline: 0;
+    }
+}
+
+button {
+    font-size: 0.9rem;
+    padding: 0.542em;
+    position: relative;
+    box-shadow: none;
+    background-color: #fff;
+    color: #555;
+    cursor: default;
+    border: 1px solid #ddd;
+    &:active {
+        background-color: #fdffee;
+        top: 1px;
+        box-shadow: none;
+    }
+    &:focus {
+        outline: 0;
+    }
+}
+
+select {
+    padding: 0.542em 2em 0.542em 0.542em;
+    border: 1px solid #ddd;
+    border-radius: 0;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+        linear-gradient(135deg, gray 50%, transparent 50%);
+    background-position: calc(100% - 14px) 1em, calc(100% - 10px) 1em,
+        calc(100% - 2.5em) 0.5em;
+    background-size: 5px 5px, 5px 5px, 1px 1.5em;
+    background-repeat: no-repeat;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.full-width-table {
+    min-width: 700px;
+    width: 100%;
+}
+
+.ace_content {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
 
 </style>
 

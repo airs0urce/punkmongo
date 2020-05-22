@@ -62,6 +62,7 @@ export default {
 
         this.setActiveCollection();
     },
+    
     watch: {
         async $route(to) {
             if (to.name.startsWith('collection-manager')) {
