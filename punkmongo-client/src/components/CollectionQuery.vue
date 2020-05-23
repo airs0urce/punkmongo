@@ -440,6 +440,8 @@ export default {
 .query-editor {
     padding: 1rem 0.8rem 0.4rem;
     background-color: rgb(238, 239, 255);
+    border: 1px solid #e2e2e2;
+    border-top: none;
 }
 .filter-row-wrapper {
     display: flex;

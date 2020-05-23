@@ -31,7 +31,6 @@
 
 <script type="text/javascript">
 
-import 'vue-slim-tabs/themes/default.css'
 import '@/assets/css/reset.css'
 import '@/assets/css/main.css'
 import DatabasesNavigation from '@/components/DatabasesNavigation'

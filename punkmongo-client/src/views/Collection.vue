@@ -8,35 +8,31 @@
             </div>
         </h1>
         <br/>
-        <tabs class="collection-tabs">
-            <tab title="Query/Update/Delete/Distinct" class="collection-tab">
-                <RUD />
-            </tab>
-            <tab title="Insert" class="collection-tab" >
-                Insert
-            </tab>
-            <tab title="Aggregate" class="collection-tab">
-                Aggregate interface
-            </tab>
-            <tab title="Indexes" class="collection-tab">
-                Indexes Management | Usage Statistics
-            </tab>
-            <!-- 
-                <tab title="Validation" class="collection-tab">
-                  Validation
-                </tab>
-                <tab title="Import/Export" class="collection-tab">
-                  Import/Export
-                </tab> 
-                Changestreams
-                -->
-        </tabs>
+
+        <ul class="tabs">
+            <li :class="{active: selectedTab == 'query'}" @click="setSelectedTab('query')">Query/Update/Delete/Distinct</li>
+            <li :class="{active: selectedTab == 'insert'}" @click="setSelectedTab('insert')">Insert</li>
+            <li :class="{active: selectedTab == 'aggregate'}" @click="setSelectedTab('aggregate')">Aggregate</li>
+            <li :class="{active: selectedTab == 'indexes'}" @click="setSelectedTab('indexes')">Indexes</li>
+        </ul>
+        
+        <CollectionQuery v-if="selectedTab == 'query'"/>
+        <CollectionInsert v-if="selectedTab == 'insert'"/>
+        <CollectionAggregate v-if="selectedTab == 'aggregate'"/>
+        <CollectionIndexes v-if="selectedTab == 'indexes'" />    
+        
+
     </div>
 </template>
 
 <script>
 import * as a from 'awaiting';
-import RUD from '@/components/RUD';
+import CollectionQuery from '@/components/CollectionQuery';
+import CollectionInsert from '@/components/CollectionInsert';
+import CollectionAggregate from '@/components/CollectionAggregate';
+import CollectionIndexes from '@/components/CollectionIndexes';
+import CollectionValidation from '@/components/CollectionValidation';
+
 
 import {
     mapState
@@ -46,13 +42,40 @@ import * as mutations from '../store/mutations'
 
 export default {
     components: {
-        RUD,
+        CollectionQuery, CollectionInsert, 
+        CollectionAggregate, CollectionIndexes, 
+        CollectionValidation
+    },
+    data: function() {
+        return {
+            selectedTab: 'query'
+        }
     },
     computed: mapState({
         activeDb: state => state.activeDb,
     }),
     methods: {
-
+        setActiveCollection() {
+            const collName = this.$route.params.collName;
+            this.$store.commit(mutations.SET_ACTIVE_COLLECTION, collName);
+        },
+        setSelectedTab(tabName) {
+            this.selectedTab = tabName;
+            switch(tabName) {
+                case 'query':
+                    this.$router.push({name: 'collection-manager-query'})
+                    break;
+                case 'insert':
+                    this.$router.push({name: 'collection-manager-insert'})
+                    break;
+                case 'aggregate':
+                    this.$router.push({name: 'collection-manager-aggregate'})
+                    break;
+                case 'indexes':
+                    this.$router.push({name: 'collection-manager-indexes'})
+                    break;
+            }
+        }
     },
     mounted() {
 
@@ -62,24 +85,46 @@ export default {
 
         this.setActiveCollection();
     },
-    
+
     watch: {
         async $route(to) {
-            if (to.name.startsWith('collection-manager')) {
+            if (to.name.startsWith('collection-manager-')) {
+                this.setSelectedTab(to.name.replace('collection-manager-', ''));
+
                 this.setActiveCollection();
             }
         }
     },
-    methods: {
-        setActiveCollection() {
-            const collName = this.$route.params.collName;
-            this.$store.commit(mutations.SET_ACTIVE_COLLECTION, collName);
-        }
-    }
 }
 </script>
 
 <style lang="scss" scoped>
+
+.tabs {
+    list-style: none;
+    display: flex;
+    padding-left: 0;
+    border-bottom: 1px solid #e2e2e2;
+
+    li {
+        background-color: #eeefff;
+        padding: 5px 10px;
+        cursor: pointer;
+        user-select: none;
+        border: 1px solid transparent;
+        border-radius: 3px 3px 0 0;
+        position: relative;
+        bottom: -1px;
+        border-bottom-color: #e2e2e2;
+        background-color: white;
+
+        &.active {
+            border-color: #e2e2e2;
+            border-bottom-color: transparent;
+            background-color: #eeefff;
+        }
+    }
+}
 
 
 

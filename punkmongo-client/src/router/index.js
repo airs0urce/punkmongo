@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Database from '../views/Database.vue'
-import Collection from '../views/Collection.vue'
 import Overview from '../views/Overview.vue'
 import NewCollection from '../views/NewCollection.vue'
 import NewDatabase from '../views/NewDatabase.vue'
+import Collection from '../views/Collection.vue'
+
 
 Vue.use(VueRouter)
 
@@ -40,11 +41,11 @@ const routes = [{
     {
         name: 'collection-manager',
         path: '/db/:dbName/col/:collName',
-        component: Collection
+        redirect: { name: 'collection-manager-query' }
     },
     {
-        name: 'collection-manager-crud',
-        path: '/db/:dbName/col/:collName/crud',
+        name: 'collection-manager-query',
+        path: '/db/:dbName/col/:collName/query',
         component: Collection
     },
     {

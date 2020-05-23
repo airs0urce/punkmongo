@@ -55,7 +55,8 @@ const BSON_TO_JS_STRING = {
         return `DBRef(${stringifyValue(v.collection)}, ${stringifyValue(v.oid)}${dbIfExists})`;
     },
     Timestamp: function(v) {
-        return `Timestamp(${v.getLowBits()}, ${v.getHighBits()})`;
+        // TODO: check why low and high bits mixed up
+        return `Timestamp(${v.getHighBits()}, ${v.getLowBits()})`;
     },
     Long: function(v) {
         return `NumberLong(${v.toString()})`;
