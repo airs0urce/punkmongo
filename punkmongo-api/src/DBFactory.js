@@ -35,7 +35,7 @@ class DBFactory {
             );
             return clientInstances.mongo;
         } catch (e) {
-            if (e.name == 'MongoNetworkError') {
+            if (e.name == 'MongoNetworkError' || e.name == 'MongoServerSelectionError') {
                 console.error('[MongoDB] Error connecting: ', e.message);
                 // probably mongodb is not up yet, let's try again to make sure 
                 // we connected when mongodb is up again

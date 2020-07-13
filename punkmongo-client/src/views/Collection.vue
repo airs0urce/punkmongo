@@ -10,17 +10,17 @@
         <br/>
 
         <ul class="tabs">
-            <li :class="{active: selectedTab == 'query'}" @click="setSelectedTab('query')">Query/Update/Delete/Distinct</li>
-            <li :class="{active: selectedTab == 'insert'}" @click="setSelectedTab('insert')">Insert</li>
-            <li :class="{active: selectedTab == 'aggregate'}" @click="setSelectedTab('aggregate')">Aggregate</li>
-            <li :class="{active: selectedTab == 'indexes'}" @click="setSelectedTab('indexes')">Indexes</li>
+            <router-link :to="{name: 'collection-manager-query'}">Query/Update/Delete/Distinct</router-link>
+            <router-link :to="{name: 'collection-manager-insert'}">Insert</router-link>
+            <router-link :to="{name: 'collection-manager-aggregate'}">Aggregate</router-link>
+            <router-link :to="{name: 'collection-manager-indexes'}">Indexes</router-link>
         </ul>
         
-        <CollectionQuery v-if="selectedTab == 'query'"/>
-        <CollectionInsert v-if="selectedTab == 'insert'"/>
-        <CollectionAggregate v-if="selectedTab == 'aggregate'"/>
-        <CollectionIndexes v-if="selectedTab == 'indexes'" />    
-        
+        <CollectionQuery v-if="$route.name == 'collection-manager-query'"/>
+        <CollectionInsert v-if="$route.name == 'collection-manager-insert'"/>
+        <CollectionAggregate v-if="$route.name == 'collection-manager-aggregate'"/>
+        <CollectionIndexes v-if="$route.name == 'collection-manager-indexes'" />    
+
 
     </div>
 </template>
@@ -59,23 +59,6 @@ export default {
             const collName = this.$route.params.collName;
             this.$store.commit(mutations.SET_ACTIVE_COLLECTION, collName);
         },
-        setSelectedTab(tabName) {
-            this.selectedTab = tabName;
-            switch(tabName) {
-                case 'query':
-                    this.$router.push({name: 'collection-manager-query'})
-                    break;
-                case 'insert':
-                    this.$router.push({name: 'collection-manager-insert'})
-                    break;
-                case 'aggregate':
-                    this.$router.push({name: 'collection-manager-aggregate'})
-                    break;
-                case 'indexes':
-                    this.$router.push({name: 'collection-manager-indexes'})
-                    break;
-            }
-        }
     },
     mounted() {
 
@@ -89,8 +72,6 @@ export default {
     watch: {
         async $route(to) {
             if (to.name.startsWith('collection-manager-')) {
-                this.setSelectedTab(to.name.replace('collection-manager-', ''));
-
                 this.setActiveCollection();
             }
         }
@@ -106,7 +87,7 @@ export default {
     padding-left: 0;
     border-bottom: 1px solid #e2e2e2;
 
-    li {
+    a {
         background-color: #eeefff;
         padding: 5px 10px;
         cursor: pointer;
@@ -118,7 +99,7 @@ export default {
         border-bottom-color: #e2e2e2;
         background-color: white;
 
-        &.active {
+        &.router-link-exact-active {
             border-color: #e2e2e2;
             border-bottom-color: transparent;
             background-color: #eeefff;

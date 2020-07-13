@@ -60,7 +60,7 @@ module.exports = async function (params, dbClient) {
         if (ObjectID.isValid(record._id)) {
             recordsTimestamps.push(
                 moment(ObjectID(record._id).getTimestamp()).format('YYYY-MM-DD HH:mm:ss')
-                );
+            );
         } else {
             recordsTimestamps.push(false);
         }

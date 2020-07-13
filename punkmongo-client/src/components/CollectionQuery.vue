@@ -100,7 +100,7 @@
                         </select>
                     </div>
                     <div class="query-row-margin">
-                        <div>rows per page</div>
+                        <div>docs per page</div>
                         <select class="logs-per-page-select" v-model.number="query.pagination.pageSize">
                             <option>10</option>
                             <option>30</option>
@@ -108,9 +108,6 @@
                             <option>100</option>
                             <option>500</option>
                             <option>1000</option>
-                            <option>2000</option>
-                            <option>5000</option>
-                            <option>10000</option>
                         </select>
                     </div>
                 </div>
@@ -198,6 +195,7 @@ import {
     EJSON
 } from 'bson'
 import eventBus from '../eventBus'
+
 
 
 function getDefaultData() {
@@ -426,8 +424,8 @@ export default {
         }
     },
     mounted: async function() {
-        console.log(eventBus);
         eventBus.$on('reload-collection', this.querySubmit);
+        this.querySubmit();
     },
     destroyed: async function() {
         eventBus.$off('reload-collection', this.querySubmit);
