@@ -6,18 +6,9 @@
     </div>
 </template>
 <script>
-    import Prism from '@/../vendor/prismjs/prism.js';
-    import '@/../vendor/prismjs/prism.css'
-    // prism.css
-    // prism-coy.css
-    // prism-dark.css
-    // prism-funky.css
-    // prism-okaidia.css
-    // prism-solarizedlight.css
-    // prism-tomorrow.css
-    // prism-twilight.css
-    // prism.css
-    import {CodeJar} from 'codejar';
+    import Prism from '@/vendor/prismjs/prism.js';
+    import '@/vendor/prismjs/prism.css'
+    import {CodeJar} from '@/vendor/codejar/codejar.js';
 
     export default {
         mounted: function() {

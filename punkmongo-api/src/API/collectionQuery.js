@@ -76,8 +76,8 @@ module.exports = async function (params, dbClient) {
 
     const explainInfo = await cursor.explain();
 
-
     return {
+        documentsTotal: documentsTotal,
         pagesTotal: Math.ceil(documentsTotal / pageSize),
         pageNumber: pageNumber,
         records: records,

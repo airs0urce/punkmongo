@@ -11,6 +11,14 @@ import * as a from 'awaiting'
 
 Vue.use(Vuex)
 
+const defaultQueryResult = {
+    error: null,
+    records: [],
+    recordsTimestamps: [],
+    explain: null,
+    documentsTotal: 0,
+}
+
 export default new Vuex.Store({
     plugins: [
         createPersistedState({
@@ -30,7 +38,8 @@ export default new Vuex.Store({
             stats: {},
             collections: [],
             activeCollection: null,
-        }
+            queryResult: defaultQueryResult,
+        },
     },
     mutations: {
         [mutations.SET_LOADING_DB](state, bool) {
@@ -82,6 +91,27 @@ export default new Vuex.Store({
                 state.activeDb.collections[i].stats = stats[state.activeDb.collections[i].name];
             }
         },
+        [mutations.SET_COLLECTION_QUERY_RESULT](state, {collName, result}) {
+            /*
+            result.records
+            result.recordsTimestamps
+            result.explain
+            result.documentsTotal
+            */
+
+            // set result
+            state.activeDb.queryResult = result;
+
+            // update collection records count
+            for (let i = 0; i <  state.activeDb.collections.length; i++) {
+                if (state.activeDb.collections[i].name == collName) {
+                    state.activeDb.collections[i].stats.objects = result.documentsTotal;
+                }
+            }
+        },    
+        [mutations.RESET_COLLECTION_QUERY_RESULT](state) {
+            state.activeDb.queryResult = {...defaultQueryResult};
+        }, 
     },
     actions: {
         [actions.ACTION_RELOAD_DB_LIST]: async ({
@@ -126,8 +156,54 @@ export default new Vuex.Store({
             commit(mutations.SET_ACTIVE_DB, dbInfo);
             commit(mutations.SET_LOADING_DB, null);
         },
+        [actions.ACTION_COLLECTION_QUERY]: async ({commit, state}, query) => {
+
+            const response = await api.request('collectionQuery', {
+                db: state.activeDb.name,
+                collection: state.activeDb.activeCollection,
+                query: query
+            });
+
+            if (!response.error) {
+                commit(mutations.SET_COLLECTION_QUERY_RESULT, {
+                    collName: state.activeDb.activeCollection,
+                    result: {
+                        error: null,
+                        records: response.records,
+                        recordsTimestamps: response.recordsTimestamps,
+                        explain: response.explain,
+                        documentsTotal: response.documentsTotal,
+                    }
+                });
+
+            } else {
+                commit(mutations.SET_COLLECTION_QUERY_RESULT, {
+                    collName: state.activeDb.activeCollection,
+                    result: {...defaultQueryResult, error: response.error}
+                });
+            }
+
+        },
     },
     modules: {
 
     }
-})
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -6,6 +6,11 @@
                 <!-- <div class="options-label">options</div> -->
                 <div class="filter-content-left">
                     <div>filter</div>
+
+                    <div class="mongo-query-editor language-mongoquery">
+
+                    </div>
+                    <!--
                     <AceEditor
                         width="500px"
                         mode="mongodb"
@@ -24,6 +29,7 @@
                         :value="this.query.filter.text"
                         :editorProps="{$blockScrolling: Infinity}"
                         />
+                    -->
                     <div class="sort-and-limit query-row-margin">
                         <div>
                             <div>sort</div>
@@ -71,11 +77,11 @@
                     <div class="filter-row-wrapper footer">
                         <div class="submit-area">
                             <button @click="querySubmit">Submit query</button>
-                            <button @click="resetConditions">Clear Conditions</button>
+                            <button @click="resetQueryInterface">Clear Conditions</button>
                             <Loader v-if="loading" />
                         </div>
                         <div class="rows-and-cost">
-                            <div class="cost-value" v-if="explain">cost: {{explain.executionStats.executionTimeMillis / 1000}} sec</div>
+                            <div class="cost-value" v-if="queryResult.explain">cost: {{queryResult.explain.executionStats.executionTimeMillis / 1000}} sec</div>
                         </div>
                     </div>
                 </div>
@@ -113,10 +119,11 @@
                 </div>
             </div>
         </div>
-        <div v-if="explain">
+        <div v-if="queryResult.explain">
             <div class="gap"></div>
             <div>
                 Explain: 
+                <!--
                 <AceEditor
                     width="100%"
                     mode="mongodb"
@@ -127,7 +134,7 @@
                     :fontSize="11"
                     :showPrintMargin="false"
                     :showGutter="true"
-                    :value="JSON.stringify(explain)"
+                    :value="JSON.stringify(queryResult.explain)"
                     :editorProps="{$blockScrolling: Infinity}"
                     :readOnly="true"
                     :highlightActiveLine="false"
@@ -135,6 +142,7 @@
                     :enableLiveAutocompletion="false"
                     :hideCursorLayer="true"
                     />
+                -->
             </div>
             <div class="gap"></div>
             <div class="pagination">
@@ -142,16 +150,17 @@
                 <div>First | 1 | 2 | 3 | 4 | 5 | Last</div>
             </div>
             <div class="gap"></div>
-            <div v-for="(record, index) in records" class="document">
+            <div v-for="(record, index) in queryResult.records" class="document">
                 <div class="document-header">
                     <router-link :to="''">Update</router-link>
                     <router-link :to="''">Delete</router-link>
                     <router-link :to="''">Refresh</router-link>
                     <router-link :to="''">Expand</router-link>
                     <router-link :to="''">Expand All</router-link>
-                    Timestamp: {{recordsTimestamps[index]}}
+                    Timestamp: {{queryResult.recordsTimestamps[index]}}
                 </div>
                 <div>
+                    <!--
                     <AceEditor
                         width="100%"
                         mode="mongodb"
@@ -169,7 +178,7 @@
                         :enableBasicAutocompletion="false" 
                         :enableLiveAutocompletion="false"
                         :hideCursorLayer="true"
-                        />
+                        /> -->
                 </div>
             </div>
         </div>
@@ -178,24 +187,21 @@
 
 
 <script>
+
 import * as mongodbQueryParser from 'mongodb-query-parser';
 import VueTagsInput from '@johmun/vue-tags-input';
-import {
-    Ace as AceEditor,
-    Split as SplitEditor
-} from 'vue2-brace-editor';
-import 'mongodb-ace-mode';
-import 'mongodb-ace-theme';
 import * as actions from '../store/actions';
+import * as mutations from '../store/mutations';
 import api from '../api/api'
 import Loader from './Loader'
 import * as a from 'awaiting'
 import * as moment from 'moment'
-import {
-    EJSON
-} from 'bson'
+import {EJSON} from 'bson'
 import eventBus from '../eventBus'
 
+import Prism from '@/vendor/prismjs/prism';
+import '@/vendor/prismjs/prism.css'
+import {CodeJar} from '@/vendor/codejar/codejar.js';
 
 
 function getDefaultData() {
@@ -259,15 +265,11 @@ function getDefaultData() {
             },
             hint: ''
         },
-        records: [],
-        recordsTimestamps: [],
-        explain: null
     }
 }
 
 export default {
     components: {
-        AceEditor,
         VueTagsInput,
         Loader,
     },
@@ -287,6 +289,10 @@ export default {
         activeCollectionName() {
             return this.$store.state.activeDb.activeCollection;
         },
+        queryResult() {
+            return this.$store.state.activeDb.queryResult;
+        },
+
     },
     watch: {
         query: {
@@ -307,8 +313,7 @@ export default {
         activeCollectionName: function(newVal, oldVal) {
             if (newVal != oldVal) {
                 this.resetQueryInterface();
-                this.records = [];
-                this.recordsTimestamps = [];
+                this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT);
                 this.querySubmit();
             }
         }
@@ -357,41 +362,27 @@ export default {
                 }
             }
 
-            const response = await api.request('collectionQuery', {
-                db: this.activeDb.name,
-                collection: this.activeDb.activeCollection,
-                query: {
-                    filter: this.query.filter.text,
-                    options: {
-                        sort: sort,
-                        projection: projection,
-                        limit: this.query.limit || false,
-                        timeout: this.query.timeout || false,
-                    },
-                    pagination: {
-                        pageSize: this.query.pagination.pageSize,
-                        pageNumber: this.query.pagination.pageNumber
-                    }
+            const query = {
+                filter: this.query.filter.text,
+                options: {
+                    sort: sort,
+                    projection: projection,
+                    limit: this.query.limit || false,
+                    timeout: this.query.timeout || false,
+                },
+                pagination: {
+                    pageSize: this.query.pagination.pageSize,
+                    pageNumber: this.query.pagination.pageNumber
                 }
-            });
-            if (!response.error) {
-                this.records = response.records;
-                this.explain = response.explain;
+            };
+            await this.$store.dispatch(actions.ACTION_COLLECTION_QUERY, query);
 
-                // this.records = response.records.map((record) => {
-                //   var obj = EJSON.parse(record);
-                //   return mongodbQueryParser.toJSString(obj, '    ');
-                // });
-                this.recordsTimestamps = response.recordsTimestamps;
-            } else {
-                this.records = [];
-                this.recordsTimestamps = [];
-            }
-
-            const diff = moment().valueOf() - this.loading;
-            if (diff < 200) {
-                await a.delay(200 - diff);
-            }
+            /*
+            // this.records = response.records.map((record) => {
+            //   var obj = EJSON.parse(record);
+            //   return mongodbQueryParser.toJSString(obj, '    ');
+            // });
+            */
 
             this.loading = false;
         },
@@ -415,17 +406,57 @@ export default {
         resetQueryInterface() {
             Object.assign(this.$data, getDefaultData())
         },
-        resetConditions() {
-            const defaultData = getDefaultData()
-            delete defaultData.records
-            delete defaultData.recordsTimestamps
-            delete defaultData.explain
-            Object.assign(this.$data, defaultData)
-        }
     },
     mounted: async function() {
         eventBus.$on('reload-collection', this.querySubmit);
         this.querySubmit();
+
+
+
+        let jar = CodeJar(document.querySelector('.mongo-query-editor'), 
+            Prism.highlightElement, 
+            {tab: ' '.repeat(4), enableSelfClosing: false}
+        );
+        jar.updateCode(`{
+   '_id': ObjectId('5ec72ffe00316be87cab3927'),
+   'code': Code('function () { return 22; }'),
+   'binary': BinData(1, '232sa3d323sd232a32sda3s2d3a2s1d23s21d3sa'),
+   'dbref': DBRef('test', ObjectId('5ec72f4200316be87cab3926'), 'nearby_aventura'),
+   timestamp: Timestamp(0, 0),
+   'long': 0,
+   'long1': NumberLong(9223372036854775807),
+   'decimal': NumberDecimal('1000'),
+   'integer': 12,
+   'maxkey': MaxKey(),
+   'minkey': MinKey(),
+   'isodate': ISODate('2012-01-01T00:00:00.000Z'),
+   'regexp': RegExp('test'),
+   'string': 'stringvalue',
+   'array': [
+   1,
+   2,
+   3
+   ],
+   'nulll': null,
+   'object': {
+      'a': 1,
+      'b': 2
+  },
+  'undef': null,
+  'timestamp2': Timestamp(1, 22),
+  'regexp2': RegExp('test2', 'i'),
+  'regexp3': RegExp('test3\/', 'i'),
+  'max_key2': MaxKey(),
+  'code2': Code('function test() { return \'fdkfkdfkdf\'; }'),
+  'code3': Code('function test() { return "fdkfkdfkdf"; }'),
+  'number': 1234,
+  'invalid-key': 123,
+  'tsNew': Timestamp(1, 23)
+}
+`);
+
+
+
     },
     destroyed: async function() {
         eventBus.$off('reload-collection', this.querySubmit);
@@ -441,17 +472,21 @@ export default {
     border: 1px solid #e2e2e2;
     border-top: none;
 }
+.mongo-query-editor {
+    width: 500px;
+    height: 6.7em;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-family: Courier;
+    font-size: 1.1rem;
+}
 .filter-row-wrapper {
     display: flex;
     align-items: flex-start;
     overflow: hidden;
     margin-bottom: 0.3rem;
-
-    // padding: 1rem 0.4rem 0.4rem;
     position: relative;
-    &.filter-invalid .ace_editor {
-        background-color: #fdefef;
-    }
+
     .query-options {
         padding-left: 1rem;
         > div {
@@ -488,26 +523,8 @@ export default {
             width: 9rem;
         }
     }
-
-    // .options-label {
-    //   display: inline-block;
-    //   position: absolute;
-    //   top: 1px;
-    //   left: 515px;
-    //   font-size: 0.8rem;
-    //   font-weight: 200;
-    //   color: #c7c8d2;
-    //   user-select: none;
-    //   font-family: Verdana;
-    // }
 }
 /deep/ {
-    .ace_scroller {
-        border: 1px solid #ddd;
-    }
-    .ace-mongodb {
-        background: #fff;
-    }
     .ti-new-tag-input-wrapper {
         font-size: 1rem;
     }
