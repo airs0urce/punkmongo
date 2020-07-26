@@ -257,7 +257,7 @@ input {
 }
 
 button {
-    font-size: 0.9rem;
+    font-size: 1rem;
     padding: 0.542em;
     position: relative;
     box-shadow: none;
@@ -299,6 +299,25 @@ select {
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+.mongo-query-editor {
+    width: 100%;
+    height: 6.7em;
+    min-height: 6.7em;
+    white-space: nowrap !important;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-family: Courier;
+    font-size: 1.1rem;
+}
+
+.ti-tag {
+    font-size: 1rem !important;
+}
+
+button {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+}
 </style>
 
 

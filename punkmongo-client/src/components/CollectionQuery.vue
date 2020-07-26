@@ -30,7 +30,7 @@
                         :editorProps="{$blockScrolling: Infinity}"
                         />
                     -->
-                    <div class="sort-and-limit query-row-margin">
+                    <div class="sort-and-projection query-row-margin">
                         <div>
                             <div>sort</div>
                             <vue-tags-input
@@ -63,25 +63,15 @@
                                 :class="{'empty-value': isValueEmpty('query.projection')}"
                                 />
                         </div>
-                        <div>
-                            <div>limit</div>
-                            <input type="number" 
-                                class="field-limit" 
-                                min="0"
-                                placeholder="∞"
-                                v-model.number="query.limit" 
-                                :class="{'empty-value': isValueEmpty('query.limit')}"
-                                />
-                        </div>
                     </div>
                     <div class="filter-row-wrapper footer">
                         <div class="submit-area">
-                            <button @click="querySubmit">Submit query</button>
-                            <button @click="resetQueryInterface">Clear Conditions</button>
+                            <button @click="querySubmit">Submit Query</button>
+                            <button @click="resetQueryInterface">Reset Form</button>
                             <Loader v-if="loading" />
                         </div>
                         <div class="rows-and-cost">
-                            <div class="cost-value" v-if="queryResult.explain">cost: {{queryResult.explain.executionStats.executionTimeMillis / 1000}} sec</div>
+                            <div class="cost-value" v-if="!loading && queryResult.explain">{{(queryResult.explain.executionStats.executionTimeMillis / 1000).toFixed(3)}} sec</div>
                         </div>
                     </div>
                 </div>
@@ -106,15 +96,14 @@
                         </select>
                     </div>
                     <div class="query-row-margin">
-                        <div>docs per page</div>
-                        <select class="logs-per-page-select" v-model.number="query.pagination.pageSize">
-                            <option>10</option>
-                            <option>30</option>
-                            <option>50</option>
-                            <option>100</option>
-                            <option>500</option>
-                            <option>1000</option>
-                        </select>
+                        <div>limit</div>
+                        <input type="number" 
+                            class="field-limit" 
+                            min="0"
+                            placeholder="∞"
+                            v-model.number="query.limit" 
+                            :class="{'empty-value': isValueEmpty('query.limit')}"
+                            />
                     </div>
                 </div>
             </div>
@@ -123,6 +112,7 @@
             <div class="gap"></div>
             <div>
                 Explain: 
+                {{queryResult.explain}}
                 <!--
                 <AceEditor
                     width="100%"
@@ -145,6 +135,17 @@
                 -->
             </div>
             <div class="gap"></div>
+            <div class="query-row-margin">
+                <div>docs per page</div>
+                <select class="logs-per-page-select" v-model.number="query.pagination.pageSize">
+                    <option>10</option>
+                    <option>30</option>
+                    <option>50</option>
+                    <option>100</option>
+                    <option>500</option>
+                    <option>1000</option>
+                </select>
+            </div>
             <div class="pagination">
                 <div><button>Go to page</button> <input type="" name="" style="width: 4em;"></div>
                 <div>First | 1 | 2 | 3 | 4 | 5 | Last</div>
@@ -472,14 +473,6 @@ export default {
     border: 1px solid #e2e2e2;
     border-top: none;
 }
-.mongo-query-editor {
-    width: 500px;
-    height: 6.7em;
-    border: 1px solid #ddd;
-    background: #fff;
-    font-family: Courier;
-    font-size: 1.1rem;
-}
 .filter-row-wrapper {
     display: flex;
     align-items: flex-start;
@@ -510,17 +503,12 @@ export default {
     }
     &.footer {
         align-items: baseline;
-        width: 500px;
-        justify-content: space-between;
+        justify-content: flex-start;
         margin-top: 1.2rem;
         .rows-and-cost {
             > div {
                 display: inline-block;
-                margin-left: 1rem;
             }
-        }
-        button {
-            width: 9rem;
         }
     }
 }
@@ -556,11 +544,20 @@ export default {
     width: 6rem;
 }
 
-.sort-and-limit {
+.sort-and-projection {
     display: flex;
     justify-content: space-between;
+    >div {
+        width: calc(50% - 0.5rem);
+        > div {
+            width: 100%;
+        }
+    }
+    
 }
+
 .filter-content-left {
+    width: 600px;
     border-right: 2px solid #cecef94a;
     padding-right: 1rem;
 }
@@ -573,7 +570,7 @@ export default {
     align-items: center;
 }
 .submit-area > * {
-    margin-right: 0.5rem;
+    margin-right: 1rem;
 }
 
 .logs-per-page-select,
