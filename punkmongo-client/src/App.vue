@@ -301,13 +301,17 @@ select {
 
 .mongo-query-editor {
     width: 100%;
-    height: 6.7em;
-    min-height: 6.7em;
+    max-height: 30em;
+    min-height: 4.7em;
     white-space: nowrap !important;
     border: 1px solid #ddd;
     background: #fff;
     font-family: Courier;
-    font-size: 1.1rem;
+    font-size: 1.1em;
+    line-height: 1.3rem;
+    padding-left: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .ti-tag {
@@ -318,6 +322,13 @@ button {
     padding-right: 1.5rem;
     padding-left: 1.5rem;
 }
+
+.language-mongoquery {
+    line-height: 1.3em;
+}
+
+
+
 </style>
 
 

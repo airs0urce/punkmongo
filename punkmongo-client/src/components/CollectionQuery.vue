@@ -7,29 +7,8 @@
                 <div class="filter-content-left">
                     <div>filter</div>
 
-                    <div class="mongo-query-editor language-mongoquery">
-
-                    </div>
-                    <!--
-                    <AceEditor
-                        width="500px"
-                        mode="mongodb"
-                        theme="mongodb"
-                        :cursorStart="2"
-                        :minLines="4"
-                        :maxLines="40"
-                        :fontSize="11"
-                        :showPrintMargin="true"
-                        :showGutter="false"
-                        :highlightActiveLine="false"
-                        :enableBasicAutocompletion="false" 
-                        :enableLiveAutocompletion="true"
-                        :onChange="onChange"
-                        name="mongo-query-editor"
-                        :value="this.query.filter.text"
-                        :editorProps="{$blockScrolling: Infinity}"
-                        />
-                    -->
+                    <div class="mongo-query-editor language-mongoquery"></div>
+                    
                     <div class="sort-and-projection query-row-margin">
                         <div>
                             <div>sort</div>
@@ -160,30 +139,15 @@
                     <router-link :to="''">Expand All</router-link>
                     Timestamp: {{queryResult.recordsTimestamps[index]}}
                 </div>
-                <div>
-                    <!--
-                    <AceEditor
-                        width="100%"
-                        mode="mongodb"
-                        theme="mongodb"
-                        :name="`mongo-record-viewer-${index}`"
-                        :minLines="15"
-                        :maxLines="30"
-                        :fontSize="11"
-                        :showPrintMargin="false"
-                        :showGutter="true"
-                        :value="record"
-                        :editorProps="{$blockScrolling: Infinity}"
-                        :readOnly="true"
-                        :highlightActiveLine="false"
-                        :enableBasicAutocompletion="false" 
-                        :enableLiveAutocompletion="false"
-                        :hideCursorLayer="true"
-                        /> -->
-                </div>
+                <div class="document-body language-mongoquery" v-html="highlight(record)"></div>
             </div>
         </div>
+        <!--
+        Hotkey example: 
+        <button v-shortkey="['ctrl', 'enter']" @shortkey="querySubmit()">Open</button> 
+        -->
     </div>
+
 </template>
 
 
@@ -197,7 +161,6 @@ import api from '../api/api'
 import Loader from './Loader'
 import * as a from 'awaiting'
 import * as moment from 'moment'
-import {EJSON} from 'bson'
 import eventBus from '../eventBus'
 
 import Prism from '@/vendor/prismjs/prism';
@@ -378,13 +341,6 @@ export default {
             };
             await this.$store.dispatch(actions.ACTION_COLLECTION_QUERY, query);
 
-            /*
-            // this.records = response.records.map((record) => {
-            //   var obj = EJSON.parse(record);
-            //   return mongodbQueryParser.toJSString(obj, '    ');
-            // });
-            */
-
             this.loading = false;
         },
         isValueEmpty(field) {
@@ -407,60 +363,31 @@ export default {
         resetQueryInterface() {
             Object.assign(this.$data, getDefaultData())
         },
+        highlight(code) {
+            return Prism.highlight(code, Prism.languages.mongoquery, 'mongoquery')
+        }
     },
     mounted: async function() {
         eventBus.$on('reload-collection', this.querySubmit);
         this.querySubmit();
 
-
-
-        let jar = CodeJar(document.querySelector('.mongo-query-editor'), 
-            Prism.highlightElement, 
-            {tab: ' '.repeat(4), enableSelfClosing: false}
+        this.queryEditor = CodeJar(
+            document.querySelector('.mongo-query-editor'), 
+            Prism.highlightElement,
+            {tab: ' '.repeat(2), enableSelfClosing: false}
         );
-        jar.updateCode(`{
-   '_id': ObjectId('5ec72ffe00316be87cab3927'),
-   'code': Code('function () { return 22; }'),
-   'binary': BinData(1, '232sa3d323sd232a32sda3s2d3a2s1d23s21d3sa'),
-   'dbref': DBRef('test', ObjectId('5ec72f4200316be87cab3926'), 'nearby_aventura'),
-   timestamp: Timestamp(0, 0),
-   'long': 0,
-   'long1': NumberLong(9223372036854775807),
-   'decimal': NumberDecimal('1000'),
-   'integer': 12,
-   'maxkey': MaxKey(),
-   'minkey': MinKey(),
-   'isodate': ISODate('2012-01-01T00:00:00.000Z'),
-   'regexp': RegExp('test'),
-   'string': 'stringvalue',
-   'array': [
-   1,
-   2,
-   3
-   ],
-   'nulll': null,
-   'object': {
-      'a': 1,
-      'b': 2
-  },
-  'undef': null,
-  'timestamp2': Timestamp(1, 22),
-  'regexp2': RegExp('test2', 'i'),
-  'regexp3': RegExp('test3\/', 'i'),
-  'max_key2': MaxKey(),
-  'code2': Code('function test() { return \'fdkfkdfkdf\'; }'),
-  'code3': Code('function test() { return "fdkfkdfkdf"; }'),
-  'number': 1234,
-  'invalid-key': 123,
-  'tsNew': Timestamp(1, 23)
-}
-`);
+        this.queryEditor.updateCode(this.query.filter.text);
+        this.queryEditor.onUpdate(code => {
+            this.query.filter.text = code;
+        })
+        this.queryEditor.updateCode(this.query.filter.text);
 
 
 
     },
     destroyed: async function() {
         eventBus.$off('reload-collection', this.querySubmit);
+        this.queryEditor.destroy();
     }
 
 }
@@ -608,6 +535,14 @@ div.document {
         display: inline-block;
     }
 }
+.document-body {
+    white-space: pre-wrap;
+    padding-left: 0.5em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    font-size: 1.1em;
+}
+
 
 </style>
 

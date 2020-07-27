@@ -17,6 +17,7 @@ const defaultQueryResult = {
     recordsTimestamps: [],
     explain: null,
     documentsTotal: 0,
+    collectionDocumentsTotal: 0,
 }
 
 export default new Vuex.Store({
@@ -105,7 +106,7 @@ export default new Vuex.Store({
             // update collection records count
             for (let i = 0; i <  state.activeDb.collections.length; i++) {
                 if (state.activeDb.collections[i].name == collName) {
-                    state.activeDb.collections[i].stats.objects = result.documentsTotal;
+                    state.activeDb.collections[i].stats.objects = result.collectionDocumentsTotal;
                 }
             }
         },    
@@ -173,6 +174,7 @@ export default new Vuex.Store({
                         recordsTimestamps: response.recordsTimestamps,
                         explain: response.explain,
                         documentsTotal: response.documentsTotal,
+                        collectionDocumentsTotal: response.collectionDocumentsTotal
                     }
                 });
 

@@ -48,8 +48,9 @@ module.exports = async function (params, dbClient) {
     options.limit = pageSize;
 
     const filter = ejsonParser(params.query.filter, {loose: true, allowComments: false});
-
+    
     const cursor = collection.find(filter, options);
+
     const records = [];
     const recordsTimestamps = [];
 
@@ -70,13 +71,17 @@ module.exports = async function (params, dbClient) {
     if (params.query.options.limit > 0) {
         countOptions.limit = params.query.options.limit;
     }
-    const documentsTotal = await collection.countDocuments(filter, countOptions);
+
+    const [documentsTotal, collectionDocumentsTotal] = await Promise.all([
+        collection.countDocuments(filter, countOptions),
+        collection.estimatedDocumentCount()
+    ]);
 
     cursor.rewind();
-
     const explainInfo = await cursor.explain();
 
     return {
+        collectionDocumentsTotal: collectionDocumentsTotal, 
         documentsTotal: documentsTotal,
         pagesTotal: Math.ceil(documentsTotal / pageSize),
         pageNumber: pageNumber,
