@@ -19,7 +19,7 @@
                             <li v-for="collection in state.activeDb.collections">
                                 <router-link 
                                     :to="'/db/' + state.activeDb.name + '/col/' + collection.name"
-                                    @click.native="onCollectionLinkClicked"
+                                    @mousedown.native="onCollectionLinkMouseDown(collection.name)"
                                     >{{collection.name}}</router-link>
                                 ({{numberWithCommas(collection.stats.objects)}})
                             </li>
@@ -103,8 +103,8 @@ export default {
             }
         },
 
-        onCollectionLinkClicked() {
-            eventBus.$emit('reload-collection');
+        onCollectionLinkMouseDown(collectionName) {
+            eventBus.$emit('databaseNavigation:collection-mousedown', collectionName);
         }
 
     },

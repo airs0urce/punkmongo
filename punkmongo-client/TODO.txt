@@ -1,1 +1,2 @@
 Add new Prism.js syntax "prism-mongodocument" to make sure we don't highlight useless things
+

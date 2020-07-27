@@ -7,7 +7,7 @@
                 <div class="filter-content-left">
                     <div>filter</div>
 
-                    <div class="mongo-query-editor language-mongoquery"></div>
+                    <CodeJar v-model="query.filter.text" language="mongoquery" class="mongo-query-editor" />
                     
                     <div class="sort-and-projection query-row-margin">
                         <div>
@@ -46,7 +46,7 @@
                     <div class="filter-row-wrapper footer">
                         <div class="submit-area">
                             <button @click="querySubmit">Submit Query</button>
-                            <button @click="resetQueryInterface">Reset Form</button>
+                            <button @click="resetQueryForm">Reset Form</button>
                             <Loader v-if="loading" />
                         </div>
                         <div class="rows-and-cost">
@@ -165,7 +165,8 @@ import eventBus from '../eventBus'
 
 import Prism from '@/vendor/prismjs/prism';
 import '@/vendor/prismjs/prism.css'
-import {CodeJar} from '@/vendor/codejar/codejar.js';
+
+import CodeJar from '@/components/CodeJar';
 
 
 function getDefaultData() {
@@ -236,6 +237,7 @@ export default {
     components: {
         VueTagsInput,
         Loader,
+        CodeJar
     },
     data: getDefaultData,
     computed: {
@@ -276,7 +278,7 @@ export default {
         },
         activeCollectionName: function(newVal, oldVal) {
             if (newVal != oldVal) {
-                this.resetQueryInterface();
+                this.resetQueryForm();
                 this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT);
                 this.querySubmit();
             }
@@ -339,7 +341,12 @@ export default {
                     pageNumber: this.query.pagination.pageNumber
                 }
             };
+          
             await this.$store.dispatch(actions.ACTION_COLLECTION_QUERY, query);
+
+            // added delay before "finish loading" to prevent 
+            // "visual jumping" of loader animation when it appears for milliseconds
+            await a.delay(100); 
 
             this.loading = false;
         },
@@ -360,7 +367,7 @@ export default {
                 return (this.query.hint == '')
             }
         },
-        resetQueryInterface() {
+        resetQueryForm() {
             Object.assign(this.$data, getDefaultData())
         },
         highlight(code) {
@@ -368,26 +375,17 @@ export default {
         }
     },
     mounted: async function() {
-        eventBus.$on('reload-collection', this.querySubmit);
-        this.querySubmit();
-
-        this.queryEditor = CodeJar(
-            document.querySelector('.mongo-query-editor'), 
-            Prism.highlightElement,
-            {tab: ' '.repeat(2), enableSelfClosing: false}
-        );
-        this.queryEditor.updateCode(this.query.filter.text);
-        this.queryEditor.onUpdate(code => {
-            this.query.filter.text = code;
-        })
-        this.queryEditor.updateCode(this.query.filter.text);
-
-
-
+        eventBus.$on('databaseNavigation:collection-mousedown', (collectionName) => {
+            if (collectionName == this.$route.params.collName) {
+                // user clicked already active collection
+                // let's reset form and reload data in collection
+                this.resetQueryForm();
+                this.querySubmit();
+            }
+        });
     },
     destroyed: async function() {
-        eventBus.$off('reload-collection', this.querySubmit);
-        this.queryEditor.destroy();
+        eventBus.$off('databaseNavigation:collection-mousedown');
     }
 
 }
