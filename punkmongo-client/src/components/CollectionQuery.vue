@@ -50,7 +50,7 @@
                             <Loader v-if="loading" />
                         </div>
                         <div class="rows-and-cost">
-                            <div class="cost-value" v-if="!loading && queryResult.explain">{{(queryResult.explain.executionStats.executionTimeMillis / 1000).toFixed(3)}} sec</div>
+                            <div class="cost-value" v-if="!loading && queryResult.explain">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
                         </div>
                     </div>
                 </div>
