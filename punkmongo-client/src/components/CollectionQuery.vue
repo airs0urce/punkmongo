@@ -137,6 +137,7 @@
                     <router-link :to="''">Refresh</router-link>
                     <router-link :to="''">Expand</router-link>
                     <router-link :to="''">Expand All</router-link>
+                    <router-link :to="''">Copy document</router-link>
                     Timestamp: {{queryResult.recordsTimestamps[index]}}
                 </div>
                 <div class="document-body language-mongoquery" v-html="highlight(record)"></div>
