@@ -133,21 +133,28 @@
                 :totalRecords="queryResult.documentsTotal"
                 :pageSize="query.pagination.pageSize"
                 :currentPage="currentResultsPage"
-                :showPagesAround="16"
+                :showPagesAround="10"
                 @change-page="currentResultsPage = $event"
             />
+
+            <div class="query-result-functions">
+                <button>Copy shown docs</button>
+                <button>Copy all {{queryResult.documentsTotal}} docs</button>
+            </div>
             
             <div class="gap"></div>
             <div v-for="(record, index) in queryResult.records" class="document">
                 <div class="document-header">
-                    #{{getResultRecordNumber(index)}}
-                    <router-link :to="''">Update</router-link>
-                    <router-link :to="''">Delete</router-link>
-                    <router-link :to="''">Refresh</router-link>
-                    <router-link :to="''">Expand</router-link>
-                    <router-link :to="''">Expand All</router-link>
-                    <router-link :to="''">Copy document</router-link>
-                    Timestamp: {{queryResult.recordsTimestamps[index]}}
+                    <span class="no-select">
+                        <span class="document-num">#{{getResultRecordNumber(index)}}</span>
+                        <router-link :to="''">Update</router-link>
+                        <router-link :to="''">Delete</router-link>
+                        <router-link :to="''">Refresh</router-link>
+                        <router-link :to="''">Expand</router-link>
+                        <router-link :to="''">Expand All</router-link>
+                        <router-link :to="''">Copy document</router-link>
+                    </span>
+                    <span class="no-select timestamp-label">Timestamp: </span>{{queryResult.recordsTimestamps[index]}}
                 </div>
                 <div class="document-body language-mongoquery" v-html="highlight(record)"></div>
             </div>
@@ -241,7 +248,8 @@ export default {
     },
     methods: {
         getResultRecordNumber(index) {
-            return index + 1;
+            const recordNumber = this.query.pagination.pageSize * (this.currentResultsPage - 1) + index;
+            return recordNumber + 1;
         },
         onChange(newValue) {
             this.query.filter.text = newValue;
@@ -565,8 +573,12 @@ div.document {
     padding-bottom: 0.25em;
     font-size: 1.1em;
 }
-
-
+.document-num {
+    padding-left: 0.3em;
+}
+.timestamp-label {
+    padding-left: 0.5em; 
+}
 </style>
 
 

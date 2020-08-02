@@ -256,6 +256,7 @@ input {
 }
 
 button {
+    user-select: none;
     font-size: 1rem;
     padding: 0.542em;
     position: relative;
@@ -328,6 +329,9 @@ button {
 
 .nowrap {
     white-space: nowrap;
+}
+.no-select {
+    user-select: none;
 }
 
 </style>

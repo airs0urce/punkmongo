@@ -1,14 +1,23 @@
 
 
 <template>
-    <div class="pagination">
-        <a class="pagination-btn control" @click="changePage(1)"><font-awesome-icon class="pagination-arrows" icon="angle-double-left" /></a>
+    <div class="pagination no-select">
         <a class="pagination-btn control" @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
+        
+        <a v-if="!pagesToShow.includes(1)" class="pagination-btn" @click="changePage(1)">1</a>
+        <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">...</span>
 
-        <a v-for="n in getPagesToShow()" class="pagination-btn" :class="{'active': currentPage == n}" @click="changePage(n)">{{n}}</a>
+        <a v-for="n in pagesToShow" class="pagination-btn" :class="{'active': currentPage == n}" @click="changePage(n)">{{n}}</a>
+        
+        <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">...</span>
+        <a v-if="!pagesToShow.includes(totalPages)" class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
 
         <a class="pagination-btn control" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
-        <a class="pagination-btn control" @click="changePage(totalPages)"><font-awesome-icon class="pagination-arrows" icon="angle-double-right" /></a>
+
+        <span class="goto">
+            Page <input type="number" v-model.number="goPageNumber" />    
+            <button @click="changePage(goPageNumber)">Go</button>
+        </span>
     </div>
 </template>
 
@@ -27,19 +36,14 @@
         },
         data: function() {
             return {
-                
+                goPageNumber: ''
             }
         },
-        methods: {
-            changePage(pageNumber) { 
-                this.$emit('change-page', pageNumber);
-            },
-            getTotalPages() {
-                return Math.ceil(this.totalRecords/this.pageSize);
-            },
-            getPagesToShow() {
+        computed: {
+
+            pagesToShow() {
                 const pagesToShow = [];
-                const totalPages = this.getTotalPages();                
+                const totalPages = this.totalPages;                
 
                 let fromPage = Math.ceil(this.currentPage - this.showPagesAround/2);
                 if (fromPage < 1) {
@@ -59,16 +63,26 @@
                 }
 
                 return pagesToShow;
+            },
+            totalPages() {
+                return Math.ceil(this.totalRecords/this.pageSize);
             }
+        },
+        methods: {
+            changePage(pageNumber) { 
+                if (pageNumber > this.totalPages) {
+                    pageNumber = this.totalPages;
+                }
+                this.$emit('change-page', pageNumber);
+            },
             
-
         }
     }
 
 </script>
 
 <style lang="scss" scoped>
-    a.pagination-btn {
+    .pagination-btn {
         display: inline-block;
         min-width: 2em;
         line-height: 1.5;
@@ -78,6 +92,9 @@
         margin: 0 0.1em;
         padding: 0.3em;
 
+        &.dots {
+            cursor: default;
+        }
         &:hover {
             background-color: #f7fafc;
         }
@@ -88,6 +105,14 @@
             background-color: #edf2f7;
         }
     }
+
+    .goto {
+        margin-left: 1em;
+        input {
+            width: 6em;    
+        }
+    }
+    
     
 
 </style>
