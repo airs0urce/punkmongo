@@ -47,23 +47,25 @@
                         <div class="submit-area">
                             <button @click="querySubmit">Submit Query</button>
                             <button @click="resetQueryForm">Reset Form</button>
-                            <Loader v-if="loading" />
+                            <Loader v-if="queryLoading" />
                         </div>
                         <div class="rows-and-cost">
-                            <div class="cost-value" v-if="!loading && queryResult.explain">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
+                            <div class="cost-value" v-if="!queryLoading && queryResult.explain">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
                         </div>
                     </div>
                 </div>
                 <div class="query-options">
                     <div>
                         <div>timeout</div>
-                        <input type="number" 
-                            min="0"
-                            placeholder="∞" 
-                            class="timeout-input" 
-                            v-model.number="query.timeout" 
-                            :class="{'empty-value': isValueEmpty('query.timeout')}"
-                            /> sec
+                        <span class="nowrap">
+                            <input type="number" 
+                                min="0"
+                                placeholder="∞" 
+                                class="timeout-input" 
+                                v-model.number="query.timeout" 
+                                :class="{'empty-value': isValueEmpty('query.timeout')}"
+                                /> sec
+                        </span>
                     </div>
                     <div class="query-row-margin">
                         <div>hint</div>
@@ -125,13 +127,20 @@
                     <option>1000</option>
                 </select>
             </div>
-            <div class="pagination">
-                <div><button>Go to page</button> <input type="" name="" style="width: 4em;"></div>
-                <div>First | 1 | 2 | 3 | 4 | 5 | Last</div>
-            </div>
+
+
+            <Pagination 
+                :totalRecords="queryResult.documentsTotal"
+                :pageSize="query.pagination.pageSize"
+                :currentPage="currentResultsPage"
+                :showPagesAround="16"
+                @change-page="currentResultsPage = $event"
+            />
+            
             <div class="gap"></div>
             <div v-for="(record, index) in queryResult.records" class="document">
                 <div class="document-header">
+                    #{{getResultRecordNumber(index)}}
                     <router-link :to="''">Update</router-link>
                     <router-link :to="''">Delete</router-link>
                     <router-link :to="''">Refresh</router-link>
@@ -159,7 +168,6 @@ import VueTagsInput from '@johmun/vue-tags-input';
 import * as actions from '../store/actions';
 import * as mutations from '../store/mutations';
 import api from '../api/api'
-import Loader from './Loader'
 import * as a from 'awaiting'
 import * as moment from 'moment'
 import eventBus from '../eventBus'
@@ -168,79 +176,25 @@ import Prism from '@/vendor/prismjs/prism';
 import '@/vendor/prismjs/prism.css'
 
 import CodeJar from '@/components/CodeJar';
+import Pagination from '@/components/Pagination';
+import Loader from '@/components/Loader'
 
-
-function getDefaultData() {
-    return {
-        loading: false,
-        query: {
-            filter: {
-                text: `{\n  \n}`,
-                valid: true,
-            },
-            sort: {
-                tag: '',
-                tags: [{
-                    text: '_id:-1'
-                }],
-                autocompleteItems: [{
-                        text: '_id:1'
-                    },
-                    {
-                        text: '_id:-1'
-                    },
-                ],
-                validate: [{
-                    classes: 'field-with-direction',
-                    disableAdd: true,
-                    rule: ({
-                        text
-                    }) => {
-                        const invalid = (text.slice(-3) !== ':-1' && text.slice(-2) !== ':1');
-                        return invalid;
-                    }
-                }, ]
-            },
-            projection: {
-                tag: '',
-                tags: [],
-                autocompleteItems: [{
-                        text: '_id:1'
-                    },
-                    {
-                        text: '_id:-1'
-                    },
-                ],
-                validate: [{
-                    classes: 'field-with-include-flag',
-                    disableAdd: true,
-                    rule: ({
-                        text
-                    }) => {
-                        const invalid = (text.slice(-2) !== ':0' && text.slice(-2) !== ':1');
-                        return invalid;
-                    }
-                }, ]
-            },
-
-            limit: '',
-            timeout: '',
-            pagination: {
-                pageSize: 10,
-                pageNumber: 1
-            },
-            hint: ''
-        },
-    }
-}
 
 export default {
     components: {
         VueTagsInput,
         Loader,
-        CodeJar
+        CodeJar,
+        Pagination,
     },
-    data: getDefaultData,
+    data: function() {
+        return {
+            queryLoading: false,
+            query: getDefaultData(),
+            currentResultsPage: 1,
+            pageLoading: false
+        }
+    },
     computed: {
         autosuggestSortFields() {
             return this.autocompleteItems.filter(i => {
@@ -286,6 +240,9 @@ export default {
         }
     },
     methods: {
+        getResultRecordNumber(index) {
+            return index + 1;
+        },
         onChange(newValue) {
             this.query.filter.text = newValue;
             this.query.filter.valid = this.isFilterValid(this.query.filter.text);
@@ -311,7 +268,7 @@ export default {
                 return;
             }
 
-            this.loading = moment().valueOf();
+            this.queryLoading = moment().valueOf();
 
             const sort = {};
             if (this.query.sort.tags.length > 0) {
@@ -349,7 +306,7 @@ export default {
             // "visual jumping" of loader animation when it appears for milliseconds
             await a.delay(100); 
 
-            this.loading = false;
+            this.queryLoading = false;
         },
         isValueEmpty(field) {
             if (field === 'query.limit') {
@@ -369,10 +326,16 @@ export default {
             }
         },
         resetQueryForm() {
-            Object.assign(this.$data, getDefaultData())
+            Object.assign(this.$data.query, getDefaultData())
         },
         highlight(code) {
             return Prism.highlight(code, Prism.languages.mongoquery, 'mongoquery')
+        },
+        pageChange() {
+            console.log('page change');
+        },
+        rangeChange() {
+            console.log('range change');
         }
     },
     mounted: async function() {
@@ -389,6 +352,67 @@ export default {
         eventBus.$off('databaseNavigation:collection-mousedown');
     }
 
+}
+
+function getDefaultData() {
+    return {
+        filter: {
+            text: `{\n  \n}`,
+            valid: true,
+        },
+        sort: {
+            tag: '',
+            tags: [{
+                text: '_id:-1'
+            }],
+            autocompleteItems: [{
+                    text: '_id:1'
+                },
+                {
+                    text: '_id:-1'
+                },
+            ],
+            validate: [{
+                classes: 'field-with-direction',
+                disableAdd: true,
+                rule: ({
+                    text
+                }) => {
+                    const invalid = (text.slice(-3) !== ':-1' && text.slice(-2) !== ':1');
+                    return invalid;
+                }
+            }, ]
+        },
+        projection: {
+            tag: '',
+            tags: [],
+            autocompleteItems: [{
+                    text: '_id:1'
+                },
+                {
+                    text: '_id:-1'
+                },
+            ],
+            validate: [{
+                classes: 'field-with-include-flag',
+                disableAdd: true,
+                rule: ({
+                    text
+                }) => {
+                    const invalid = (text.slice(-2) !== ':0' && text.slice(-2) !== ':1');
+                    return invalid;
+                }
+            }, ]
+        },
+
+        limit: '',
+        timeout: '',
+        pagination: {
+            pageSize: 10,
+            pageNumber: 1
+        },
+        hint: ''
+    }
 }
 </script>
 

@@ -39,8 +39,6 @@ import * as actions from './store/actions'
 import eventBus from './eventBus'
 import utils from './utils'
 
-
-
 export default {
     components: {
         DatabasesNavigation,
@@ -199,6 +197,7 @@ $left-panel-header-height: 2.5rem;
     height: 100vh;
     overflow: auto;
     padding-bottom: 1.5rem;
+    min-width: 550px;
 }
 .right-panel .line {
     border-bottom-color: #999;
@@ -327,7 +326,9 @@ button {
     line-height: 1.3em;
 }
 
-
+.nowrap {
+    white-space: nowrap;
+}
 
 </style>
 

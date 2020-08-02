@@ -1,2 +1,33 @@
 Add new Prism.js syntax "prism-mongodocument" to make sure we don't highlight useless things
+Add document number ijn query results
 
+
+
+Visual Explain 
+-------------------------------
+Query execution statistics for the winning plan
+
+(green) Documents Returned: 100 (nReturn, Number of documents that match the query conditions. Ideally: nReturn = totalKeysExamined = totalDocsExamined)
+(blue) Actual Query Execution Time: 3ms (Total time in milliseconds required for query plan selection and  query execution)
+
+Index Keys Examined: 100 (totalKeysExamined, Ideally: nReturn = totalKeysExamined = totalDocsExamined)
+Documents Examined: 100 (totalDocsExamined Number of documents scanned)
+Sorted in Memory: true/false (If MOngoDB can use an index scan to obtain the requested sorted order, the result will be false, otherwise true)
+
+Query used the folowing index  (If the query planner selects an index, the explain result includes an IXSCAN stage)
+    OR
+No index available for this query
+
+====================================
+
+----- STAGE: IXSCAN -----------
+nReturned: 100  Execution Time: 0 ms
+
+----- STAGE: FETCH -----------
+nReturned: 100  Execution Time: 0 ms
+
+----- STAGE: LIMIT -----------
+nReturned: 100  Execution Time: 0 ms
+
+----- STAGE: ??? -----------
+nReturned: 100  Execution Time: 0 ms
