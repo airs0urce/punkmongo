@@ -1,8 +1,8 @@
 
 
 <template>
-    <div class="pagination no-select">
-        <a class="pagination-btn control" @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
+    <span class="pagination no-select">
+        <a class="pagination-btn" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
         
         <a v-if="!pagesToShow.includes(1)" class="pagination-btn" @click="changePage(1)">1</a>
         <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">...</span>
@@ -10,15 +10,17 @@
         <a v-for="n in pagesToShow" class="pagination-btn" :class="{'active': currentPage == n}" @click="changePage(n)">{{n}}</a>
         
         <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">...</span>
-        <a v-if="!pagesToShow.includes(totalPages)" class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
+        <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
 
-        <a class="pagination-btn control" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
-
+        <a class="pagination-btn" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
+        |
+        <span class="records-count">({{getShownRecordsString()}})</span>
+        |
         <span class="goto">
-            Page <input type="number" v-model.number="goPageNumber" />    
+            Page <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" />    
             <button @click="changePage(goPageNumber)">Go</button>
         </span>
-    </div>
+    </span>
 </template>
 
 <script>
@@ -70,11 +72,18 @@
         },
         methods: {
             changePage(pageNumber) { 
-                if (pageNumber > this.totalPages) {
-                    pageNumber = this.totalPages;
+                if (pageNumber > this.totalPages || pageNumber < 1) {
+                    return;
                 }
                 this.$emit('change-page', pageNumber);
             },
+            getShownRecordsString() {
+                let shownRecords = this.currentPage * this.pageSize
+                if (shownRecords > this.totalRecords) {
+                    shownRecords = this.totalRecords;
+                }
+                return `${shownRecords}/${this.totalRecords}`;
+            }
             
         }
     }
@@ -89,28 +98,35 @@
         text-align: center;
         cursor: pointer;
         color: #000;
-        margin: 0 0.1em;
-        padding: 0.3em;
+        padding: 0.453em 0.5em;
 
         &.dots {
             cursor: default;
+            text-decoration: none !important;
         }
         &:hover {
-            background-color: #f7fafc;
+            // background-color: #eeefff;
+            color: #333;
         }
         &.active {
-            background-color: #38b2ac;
+            background-color: #eeefff;
         }
-        &.control {
-            background-color: #edf2f7;
+        
+        &.disabled {
+            color: #bbb;
+            cursor: default;
         }
     }
 
     .goto {
         margin-left: 1em;
         input {
-            width: 6em;    
+            width: 5em;    
         }
+    }
+    .records-count {
+        margin-left: 1em;
+        margin-right: 1em;
     }
     
     

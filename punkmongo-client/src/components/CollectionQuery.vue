@@ -128,19 +128,26 @@
                 </select>
             </div>
 
+            <div class="results-header">
+                <Pagination 
+                    :totalRecords="queryResult.documentsTotal"
+                    :pageSize="query.pagination.pageSize"
+                    :currentPage="currentResultsPage"
+                    :showPagesAround="6"
+                    @change-page="currentResultsPage = $event"
+                />
 
-            <Pagination 
-                :totalRecords="queryResult.documentsTotal"
-                :pageSize="query.pagination.pageSize"
-                :currentPage="currentResultsPage"
-                :showPagesAround="10"
-                @change-page="currentResultsPage = $event"
-            />
+                <span class="query-result-functions">
+                    ====
+                    <DropdownMenu buttonText="Copy to clipboard" :items="copyDropdownItems"/>
 
-            <div class="query-result-functions">
-                <button>Copy shown docs</button>
-                <button>Copy all {{queryResult.documentsTotal}} docs</button>
+                    
+                    <!-- <DropdownMenu> -->
+                    <!-- <button>Copy All {{queryResult.documentsTotal}} docs</button> -->
+                </span>
+                
             </div>
+
             
             <div class="gap"></div>
             <div v-for="(record, index) in queryResult.records" class="document">
@@ -185,6 +192,8 @@ import '@/vendor/prismjs/prism.css'
 import CodeJar from '@/components/CodeJar';
 import Pagination from '@/components/Pagination';
 import Loader from '@/components/Loader'
+import DropdownMenu from '@/components/DropdownMenu'
+
 
 
 export default {
@@ -193,13 +202,15 @@ export default {
         Loader,
         CodeJar,
         Pagination,
+        DropdownMenu,
     },
     data: function() {
         return {
             queryLoading: false,
             query: getDefaultData(),
             currentResultsPage: 1,
-            pageLoading: false
+            pageLoading: false,
+            copyDropdownItems:[],
         }
     },
     computed: {
@@ -344,6 +355,12 @@ export default {
         },
         rangeChange() {
             console.log('range change');
+        },
+        copyToClipboardShown() {
+
+        },
+        copyToClipboardAll() {
+
         }
     },
     mounted: async function() {
@@ -355,6 +372,11 @@ export default {
                 this.querySubmit();
             }
         });
+
+        this.copyDropdownItems = [
+            {text: 'Shown documents', click: this.copyToClipboardShown}, 
+            {text: 'All ' + this.queryResult.documentsTotal, click: this.copyToClipboardAll}
+        ]
     },
     destroyed: async function() {
         eventBus.$off('databaseNavigation:collection-mousedown');
@@ -578,6 +600,13 @@ div.document {
 }
 .timestamp-label {
     padding-left: 0.5em; 
+}
+.query-result-functions {
+    margin-left: 0.3em; 
+}
+.results-header {
+    display: flex;
+    justify-content: space-between;
 }
 </style>
 

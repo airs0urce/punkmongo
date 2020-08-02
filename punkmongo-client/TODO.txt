@@ -1,6 +1,7 @@
 Add new Prism.js syntax "prism-mongodocument" to make sure we don't highlight useless things
 Add document number ijn query results
 
+prolong :hover effect on buttons to improve effect when tap used on touchpad
 
 
 Visual Explain 
@@ -19,6 +20,12 @@ Query used the folowing index  (If the query planner selects an index, the expla
 No index available for this query
 
 ====================================
+
+----- STAGE: COLLSCAN -----------
+nReturned: 100  Execution Time: 0 ms
+
+----- STAGE: SORT_KE_GENERATOR -----------
+nReturned: 100  Execution Time: 0 ms
 
 ----- STAGE: IXSCAN -----------
 nReturned: 100  Execution Time: 0 ms
