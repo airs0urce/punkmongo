@@ -13,13 +13,10 @@
         <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
         <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
         <span class="separator"></span>        
-        <font-awesome-icon class="edit-page" icon="pen" />
-        
-
+        <font-awesome-icon class="edit-page" icon="pen" @click="togleGotoPage()" />
         <span class="separator"></span>
-        <span class="goto" v-if="false">
-            <span>page number</span> 
-            <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber"/>    
+        <span class="goto" v-show="showGotoPage">
+            <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" />    
             <button @click="changePage(goPageNumber)">Go</button>
         </span>
         <span class="separator"></span>
@@ -58,7 +55,8 @@
         },
         data: function() {
             return {
-                goPageNumber: ''
+                goPageNumber: '',
+                showGotoPage: false
             }
         },
         computed: {
@@ -92,17 +90,30 @@
         },
         methods: {
             changePage(pageNumber) { 
-                if (pageNumber > this.totalPages || pageNumber < 1) {
+                if (pageNumber < 1) {
                     return;
                 }
+                if (pageNumber > this.totalPages) {
+                    pageNumber = this.totalPages;
+                }
                 this.$emit('change-page', pageNumber);
+                this.showGotoPage = false;
             },
             changePageSize(event) {
                 let pageSize = +event.target.value;
                 this.$emit('change-page-size', pageSize);
+                this.changePage(1);
                 
             },
-            numberWithCommas: utils.numberWithCommas
+            numberWithCommas: utils.numberWithCommas,
+            togleGotoPage() {
+                this.showGotoPage = !this.showGotoPage;
+                if (this.showGotoPage) {
+                    this.$nextTick(() => {
+                        this.$refs.pageNumInput.focus();
+                    });
+                }
+            }
             
         }
     }
@@ -165,6 +176,7 @@
         color: #777;
     }
     .edit-page {
+        cursor: pointer;
         color: #777;
     }    
 
