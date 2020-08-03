@@ -13,7 +13,11 @@
         <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
         <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
         <span class="separator"></span>        
-        <font-awesome-icon class="edit-page" icon="pen" @click="togleGotoPage()" />
+        
+        <div class="edit-wrapper" @click="togleGotoPage()">
+            <font-awesome-icon class="edit-page" icon="pen" />    
+        </div>
+        
         <span class="separator"></span>
         <span class="goto" v-show="showGotoPage">
             <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
@@ -176,8 +180,17 @@
     .page-size span {
         color: #777;
     }
-    .edit-page {
+    .edit-wrapper {
+        display: inline-block;
+        padding: 0.453em 0.5em;
         cursor: pointer;
+        &:hover {
+            .edit-page {
+                color: #666;
+            }
+        }
+    }
+    .edit-page {
         color: #888;
     }    
 
