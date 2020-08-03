@@ -1,50 +1,47 @@
 
 
-
 <template>
     <span class="pagination no-select">
-            
-            <span class="separator"></span>
-            <span class="goto">
-                <span>page number</span> 
-                <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber"/>    
-                <button @click="changePage(goPageNumber)">Go</button>
-            </span> 
-            <span class="separator"></span>
-            <span class="page-size">
-                <span>docs per page</span> 
-                <select :value="pageSize" @input="changePageSize">
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="500">500</option>
-                    <option value="1000">1000</option>
-                    <option value="2000">2000</option>
-                </select>
-            </span>
-           
+        <a class="pagination-btn" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
+        
+        <a v-if="!pagesToShow.includes(1)" class="pagination-btn" @click="changePage(1)">1</a>
+        <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">...</span>
 
-            <a class="pagination-btn pagination-btn-prev" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
-            <a class="pagination-btn pagination-btn-next" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
+        <a v-for="n in pagesToShow" class="pagination-btn" :class="{'active': currentPage == n}" @click="changePage(n)">{{n}}</a>
+        
+        <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">...</span>
+        <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
 
-            <a v-if="!pagesToShow.includes(1)" class="pagination-btn" @click="changePage(1)">1</a>
-            <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">...</span>
-            <a v-for="n in pagesToShow" class="pagination-btn" :class="{'active': currentPage == n}" @click="changePage(n)">{{n}}</a>
-            <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">...</span>
-            <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
-            
-
-            <span class="separator"></span>
-            
+        <a class="pagination-btn" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
+        <span class="separator"></span>
+        <span class="records-count">total records {{this.totalRecords}}</span>
+        <span class="separator"></span>
+        <span class="goto">
+            <span>page number</span> 
+            <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber"/>    
+            <button @click="changePage(goPageNumber)">Go</button>
+        </span>
+        <span class="separator"></span>
+        <span class="page-size">
+            <span>page size</span> 
+            <select :value="pageSize" @input="changePageSize">
+                <option value="10">10</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+                <option value="2000">2000</option>
+                <option value="3000">3000</option>
+                <option value="5000">5000</option>
+            </select>
+        </span>
 
     </span>
 </template>
 
 <script>
-    import utils from '@/utils'
-
+    
     export default {
         props: {
             totalRecords: Number,
@@ -101,8 +98,7 @@
                 let pageSize = +event.target.value;
                 this.$emit('change-page-size', pageSize);
                 
-            },
-            numberWithCommas: utils.numberWithCommas,
+            }
             
         }
     }
@@ -110,10 +106,6 @@
 </script>
 
 <style lang="scss" scoped>
-    .pagination {
-        // display: flex;
-        // justify-content: space-between;
-    }
     .pagination-btn {
         display: inline-block;
         min-width: 2em;
@@ -129,7 +121,7 @@
         }
         &:hover {
             // background-color: #eeefff;
-            color: #444;
+            color: #333;
         }
         &.active {
             background-color: #eeefff;
@@ -148,14 +140,11 @@
         }
     }
     .separator {
-        margin-left: 1.5em;
+        margin-left: 1em;
     }
     .page-size {
         position: relative;
         width: 8rem;
-        select {
-            width: 7em;
-        }
     }
 
     .goto span,
@@ -170,13 +159,7 @@
         color: #777;
     }
     
-    .pagination-btn-prev {
-        padding-right: 0;
-    }
-    .pagination-btn-next {
-        padding-left: 0;
-    }
-    
+
 </style>
 
 

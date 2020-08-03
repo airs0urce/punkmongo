@@ -115,11 +115,10 @@
                     />
                 -->
             </div>
+            
+            
 
-
-            <div class="results-container results-header">
-                <div class="records-count">{{numberWithCommas(queryResult.documentsTotal)}} docs found</div>
-
+            <div class="results-header">
                 <Pagination 
                     :totalRecords="queryResult.documentsTotal"
                     :pageSize="query.pagination.pageSize"
@@ -130,16 +129,11 @@
                 />
 
                 <span class="query-result-functions">
-                    <DropdownMenu buttonText="Copy results to clipboard" :items="copyDropdownItems"/>
+                    <DropdownMenu buttonText="Copy docs to clipboard" :items="copyDropdownItems"/>
                     <!-- <DropdownMenu> -->
                     <!-- <button>Copy All {{queryResult.documentsTotal}} docs</button> -->
                 </span>
                 
-            </div>
-
-            <div>
-                Hide "page number" and "doc per page" by default. show only when needed (some icon)
-            N docs found - think where better to place
             </div>
 
             <div v-for="(record, index) in queryResult.records" class="document">
@@ -158,7 +152,7 @@
                 <div class="document-body language-mongoquery" v-html="highlight(record)"></div>
             </div>
 
-            <div class="results-container results-footer">
+            <div class="results-footer">
                 <Pagination 
                     :totalRecords="queryResult.documentsTotal"
                     :pageSize="query.pagination.pageSize"
@@ -196,7 +190,7 @@ import CodeJar from '@/components/CodeJar';
 import Pagination from '@/components/Pagination';
 import Loader from '@/components/Loader'
 import DropdownMenu from '@/components/DropdownMenu'
-import utils from '@/utils'
+
 
 
 export default {
@@ -364,8 +358,7 @@ export default {
         },
         copyToClipboardAll() {
 
-        },
-        numberWithCommas: utils.numberWithCommas
+        }
     },
     mounted: async function() {
         eventBus.$on('databaseNavigation:collection-mousedown', (collectionName) => {
@@ -613,16 +606,6 @@ div.document {
     margin-bottom: 1em;
     display: flex;
     justify-content: space-between;
-}
-.results-footer {
-    margin-top: 1.5em;
-}
-.results-container {
-    display: flex;
-    justify-content: space-between;
-    >span.pagination {
-        flex-grow: 1;
-    }
 }
 </style>
 
