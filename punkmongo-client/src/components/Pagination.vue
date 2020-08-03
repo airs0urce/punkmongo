@@ -177,7 +177,7 @@
     }
     .edit-page {
         cursor: pointer;
-        color: #777;
+        color: #888;
     }    
 
 </style>
