@@ -16,7 +16,7 @@
         <font-awesome-icon class="edit-page" icon="pen" @click="togleGotoPage()" />
         <span class="separator"></span>
         <span class="goto" v-show="showGotoPage">
-            <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" />    
+            <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
             <button @click="changePage(goPageNumber)">Go</button>
         </span>
         <span class="separator"></span>
@@ -98,6 +98,7 @@
                 }
                 this.$emit('change-page', pageNumber);
                 this.showGotoPage = false;
+                this.goPageNumber = '';
             },
             changePageSize(event) {
                 let pageSize = +event.target.value;
