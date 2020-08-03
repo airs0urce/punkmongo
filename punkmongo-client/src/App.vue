@@ -197,7 +197,7 @@ $left-panel-header-height: 2.5rem;
     height: 100vh;
     overflow: auto;
     padding-bottom: 1.5rem;
-    min-width: 80rem;
+    min-width: 75rem;
 }
 .right-panel .line {
     border-bottom-color: #999;
@@ -265,6 +265,7 @@ button {
     color: #555;
     cursor: default;
     border: 1px solid #ddd;
+    white-space: nowrap;
     &:active {
         background-color: #fdffee;
         top: 1px;

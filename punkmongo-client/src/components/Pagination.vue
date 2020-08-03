@@ -3,27 +3,29 @@
 <template>
     <span class="pagination no-select">
         <a class="pagination-btn" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
-        
+        <a class="pagination-btn" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
+
         <a v-if="!pagesToShow.includes(1)" class="pagination-btn" @click="changePage(1)">1</a>
-        <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">...</span>
+        <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">…</span>
 
         <a v-for="n in pagesToShow" class="pagination-btn" :class="{'active': currentPage == n}" @click="changePage(n)">{{n}}</a>
         
-        <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">...</span>
+        <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
         <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
+        <span class="separator"></span>        
+        <font-awesome-icon class="edit-page" icon="pen" />
+        
 
-        <a class="pagination-btn" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
         <span class="separator"></span>
-        <span class="records-count">total records {{this.totalRecords}}</span>
-        <span class="separator"></span>
-        <span class="goto">
+        <span class="goto" v-if="false">
             <span>page number</span> 
             <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber"/>    
             <button @click="changePage(goPageNumber)">Go</button>
         </span>
         <span class="separator"></span>
+        <span class="separator"></span>
         <span class="page-size">
-            <span>page size</span> 
+            <span>total {{numberWithCommas(this.totalRecords)}} docs by </span> 
             <select :value="pageSize" @input="changePageSize">
                 <option value="10">10</option>
                 <option value="30">30</option>
@@ -41,6 +43,7 @@
 </template>
 
 <script>
+    import utils from '@/utils'
     
     export default {
         props: {
@@ -98,7 +101,8 @@
                 let pageSize = +event.target.value;
                 this.$emit('change-page-size', pageSize);
                 
-            }
+            },
+            numberWithCommas: utils.numberWithCommas
             
         }
     }
@@ -118,6 +122,9 @@
         &.dots {
             cursor: default;
             text-decoration: none !important;
+            padding-left: 0;
+            padding-right: 0;
+            min-width: 0;
         }
         &:hover {
             // background-color: #eeefff;
@@ -149,16 +156,17 @@
 
     .goto span,
     .page-size span {
-        position: absolute;
-        top: -1.7em;
+        // position: absolute;
+        // top: -1.7em;
         
     }
     .goto span,
-    .page-size span,
-    .records-count {
+    .page-size span {
         color: #777;
     }
-    
+    .edit-page {
+        color: #777;
+    }    
 
 </style>
 

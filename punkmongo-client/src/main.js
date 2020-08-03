@@ -8,11 +8,14 @@ import {
     faAngleLeft, 
     faAngleRight,
     faCaretDown,
+    faPen,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faAngleLeft)
 library.add(faAngleRight)
 library.add(faCaretDown)
+library.add(faPen)
+
 
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
