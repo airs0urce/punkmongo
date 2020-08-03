@@ -5,11 +5,11 @@
                 <!-- <div class="filter-label">filter</div> -->
                 <!-- <div class="options-label">options</div> -->
                 <div class="filter-content-left">
-                    <div>filter</div>
+                    <div class="no-select">filter</div>
 
                     <CodeJar v-model="query.filter.text" language="mongoquery" class="mongo-query-editor" />
                     
-                    <div class="sort-and-projection query-row-margin">
+                    <div class="sort-and-projection query-row-margin no-select">
                         <div>
                             <div>sort</div>
                             <vue-tags-input
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="query-options">
+                <div class="query-options no-select">
                     <div>
                         <div>timeout</div>
                         <span class="nowrap">
@@ -91,7 +91,7 @@
         </div>
         <div v-if="queryResult.explain">
             <div class="gap"></div>
-            <div>
+            <div class="no-select" v-if="false">
                 Explain: 
                 {{queryResult.explain}}
                 <!--
@@ -115,18 +115,8 @@
                     />
                 -->
             </div>
-            <div class="gap"></div>
-            <div class="query-row-margin">
-                <div>docs per page</div>
-                <select class="logs-per-page-select" v-model.number="query.pagination.pageSize">
-                    <option>10</option>
-                    <option>30</option>
-                    <option>50</option>
-                    <option>100</option>
-                    <option>500</option>
-                    <option>1000</option>
-                </select>
-            </div>
+            
+            
 
             <div class="results-header">
                 <Pagination 
@@ -135,21 +125,17 @@
                     :currentPage="currentResultsPage"
                     :showPagesAround="6"
                     @change-page="currentResultsPage = $event"
+                    @change-page-size="query.pagination.pageSize = $event"
                 />
 
                 <span class="query-result-functions">
-                    ====
-                    <DropdownMenu buttonText="Copy to clipboard" :items="copyDropdownItems"/>
-
-                    
+                    <DropdownMenu buttonText="Copy docs to clipboard" :items="copyDropdownItems"/>
                     <!-- <DropdownMenu> -->
                     <!-- <button>Copy All {{queryResult.documentsTotal}} docs</button> -->
                 </span>
                 
             </div>
 
-            
-            <div class="gap"></div>
             <div v-for="(record, index) in queryResult.records" class="document">
                 <div class="document-header">
                     <span class="no-select">
@@ -164,6 +150,17 @@
                     <span class="no-select timestamp-label">Timestamp: </span>{{queryResult.recordsTimestamps[index]}}
                 </div>
                 <div class="document-body language-mongoquery" v-html="highlight(record)"></div>
+            </div>
+
+            <div class="results-footer">
+                <Pagination 
+                    :totalRecords="queryResult.documentsTotal"
+                    :pageSize="query.pagination.pageSize"
+                    :currentPage="currentResultsPage"
+                    :showPagesAround="6"
+                    @change-page="currentResultsPage = $event"
+                    @change-page-size="query.pagination.pageSize = $event"
+                />
             </div>
         </div>
         <!--
@@ -553,7 +550,7 @@ function getDefaultData() {
     margin-right: 1rem;
 }
 
-.logs-per-page-select,
+
 .timeout-input,
 .hint-select {
     width: 8rem;
@@ -605,6 +602,8 @@ div.document {
     margin-left: 0.3em; 
 }
 .results-header {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
     display: flex;
     justify-content: space-between;
 }

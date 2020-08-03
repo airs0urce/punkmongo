@@ -4,7 +4,7 @@
 <template>
     <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
         <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px', width: $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
-            <div class="left-panel-header">
+            <div class="left-panel-header no-select">
                 <router-link class="left-panel-header-link overview" to="/overview/databases">Overview</router-link>
                 <router-link class="left-panel-header-link settings" to="/settings">Settings</router-link>
             </div>
@@ -330,10 +330,25 @@ button {
 .nowrap {
     white-space: nowrap;
 }
+a {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    -webkit-app-region: no-drag; 
+}
 .no-select {
     user-select: none;
 }
 
+.arrow-separator {
+    color: #bbb;
+    margin: 0 0.5em;
+}
+.collection-header {
+    margin-bottom: 1em;
+}
 </style>
 
 

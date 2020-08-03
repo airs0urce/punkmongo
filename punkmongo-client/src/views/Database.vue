@@ -1,11 +1,17 @@
 <template>
     <div>
-    <div v-if="activeDb.name == ''">
-        Loading...
-    </div>
+    <div v-if="activeDb.name == ''">Loading...</div>
     <div v-if="activeDb.name != ''">
-    Databases » {{activeDb.name}}
-    <div class="line" />
+
+        <h1 class="collection-header no-select">
+            <div v-if="activeDb.name != ''">
+                <router-link :to="`/overview/databases`">Databases</router-link>
+                <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.name}}
+            </div>
+        </h1>
+
+
+        
         Statistics | New Collection | Command | 
         <div class="line" />
             <table cellpadding="2" cellspacing="1" width="480px">

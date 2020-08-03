@@ -14,6 +14,7 @@ library.add(faAngleLeft)
 library.add(faAngleRight)
 library.add(faCaretDown)
 
+
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 

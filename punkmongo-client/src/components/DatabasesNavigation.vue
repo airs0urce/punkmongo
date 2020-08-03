@@ -4,7 +4,7 @@
             Loading databases...
         </div>
         <div v-if="state.persistent.dbList.length > 0">
-            <router-link class="new-database" :to="'/new-database'">New database</router-link>
+            <router-link class="new-database no-select" :to="'/new-database'">New database</router-link>
             <ul class="left-panel-dbs">
                 <li v-for="db in state.persistent.dbList">
                     <router-link 
@@ -24,7 +24,7 @@
                                 ({{numberWithCommas(collection.stats.objects)}})
                             </li>
                         </ul>
-                        <router-link class="new-collection" :to="'/db/' + state.activeDb.name + '/new-collection'">New collection</router-link>
+                        <router-link class="new-collection no-select" :to="'/db/' + state.activeDb.name + '/new-collection'">New collection</router-link>
                     </div>
                 </li>
             </ul>

@@ -13,13 +13,30 @@
         <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
 
         <a class="pagination-btn" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
-        |
-        <span class="records-count">({{getShownRecordsString()}})</span>
-        |
+        <span class="separator"></span>
+        <span class="records-count">total records {{this.totalRecords}}</span>
+        <span class="separator"></span>
         <span class="goto">
-            Page <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" />    
+            <span>page number</span> 
+            <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber"/>    
             <button @click="changePage(goPageNumber)">Go</button>
         </span>
+        <span class="separator"></span>
+        <span class="page-size">
+            <span>page size</span> 
+            <select :value="pageSize" @input="changePageSize">
+                <option value="10">10</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+                <option value="2000">2000</option>
+                <option value="3000">3000</option>
+                <option value="5000">5000</option>
+            </select>
+        </span>
+
     </span>
 </template>
 
@@ -77,12 +94,10 @@
                 }
                 this.$emit('change-page', pageNumber);
             },
-            getShownRecordsString() {
-                let shownRecords = this.currentPage * this.pageSize
-                if (shownRecords > this.totalRecords) {
-                    shownRecords = this.totalRecords;
-                }
-                return `${shownRecords}/${this.totalRecords}`;
+            changePageSize(event) {
+                let pageSize = +event.target.value;
+                this.$emit('change-page-size', pageSize);
+                
             }
             
         }
@@ -119,16 +134,30 @@
     }
 
     .goto {
-        margin-left: 1em;
+        position: relative;
         input {
             width: 5em;    
         }
     }
-    .records-count {
+    .separator {
         margin-left: 1em;
-        margin-right: 1em;
     }
-    
+    .page-size {
+        position: relative;
+        width: 8rem;
+    }
+
+    .goto span,
+    .page-size span {
+        position: absolute;
+        top: -1.7em;
+        
+    }
+    .goto span,
+    .page-size span,
+    .records-count {
+        color: #777;
+    }
     
 
 </style>

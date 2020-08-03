@@ -1,15 +1,16 @@
 <template>
     <div>
-        <h1>
+        <h1 class="collection-header no-select">
             <div v-if="activeDb.name != ''">
-                Databases » 
+                <router-link :to="`/overview/databases`">Databases</router-link>
+                <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
                 <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
-                » {{activeDb.activeCollection}}
+                <font-awesome-icon icon="angle-right" class="arrow-separator" />
+                {{activeDb.activeCollection}}
             </div>
         </h1>
-        <br/>
 
-        <ul class="tabs">
+        <ul class="tabs no-select">
             <router-link :to="{name: 'collection-manager-query'}">Query/Update/Delete/Distinct</router-link>
             <router-link :to="{name: 'collection-manager-insert'}">Insert</router-link>
             <router-link :to="{name: 'collection-manager-aggregate'}">Aggregate</router-link>
@@ -106,8 +107,6 @@ export default {
         }
     }
 }
-
-
 
 </style>
 
