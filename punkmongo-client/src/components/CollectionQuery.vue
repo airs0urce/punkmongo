@@ -145,7 +145,7 @@
                         <router-link :to="''">Refresh</router-link>
                         <router-link :to="''">Expand</router-link>
                         <router-link :to="''">Expand All</router-link>
-                        <router-link :to="''">Copy document</router-link>
+                        <a @click="copyToClipboard(record)">Copy to clipboard</a>
                     </span>
                     <span class="no-select timestamp-label">Timestamp: </span>{{queryResult.recordsTimestamps[index]}}
                 </div>
@@ -182,6 +182,7 @@ import api from '../api/api'
 import * as a from 'awaiting'
 import * as moment from 'moment'
 import eventBus from '../eventBus'
+import utils from '@/utils'
 
 import Prism from '@/vendor/prismjs/prism';
 import '@/vendor/prismjs/prism.css'
@@ -354,10 +355,13 @@ export default {
             console.log('range change');
         },
         copyToClipboardShown() {
-
+            ;
         },
         copyToClipboardAll() {
-
+            ;
+        },
+        copyToClipboard(record) {
+            utils.copyToClipboard(record);
         }
     },
     mounted: async function() {
