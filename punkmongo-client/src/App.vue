@@ -324,7 +324,7 @@ button {
     padding-left: 1.5rem;
 }
 
-.language-mongoquery {
+.language-mongodb-query {
     line-height: 1.3em;
 }
 

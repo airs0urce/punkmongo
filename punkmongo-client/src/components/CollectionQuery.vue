@@ -7,7 +7,7 @@
                 <div class="filter-content-left">
                     <div class="no-select">filter</div>
 
-                    <CodeJar v-model="query.filter.text" language="mongoquery" class="mongo-query-editor" />
+                    <CodeJar v-model="query.filter.text" language="mongodb-query" class="mongo-query-editor" ref="filterTextInput" autofocus />
                     
                     <div class="sort-and-projection query-row-margin no-select">
                         <div>
@@ -149,7 +149,7 @@
                     </span>
                     <span class="no-select timestamp-label">Timestamp: </span>{{queryResult.recordsTimestamps[index]}}
                 </div>
-                <div class="document-body language-mongoquery" v-html="highlight(record)"></div>
+                <div class="document-body language-mongodb-query" v-html="highlight(record)"></div>
             </div>
 
             <div class="results-footer">
@@ -252,6 +252,7 @@ export default {
                 this.resetQueryForm();
                 this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT);
                 this.querySubmit();
+                this.$refs.filterTextInput.$el.focus()
             }
         }
     },
@@ -346,7 +347,7 @@ export default {
             Object.assign(this.$data.query, getDefaultData())
         },
         highlight(code) {
-            return Prism.highlight(code, Prism.languages.mongoquery, 'mongoquery')
+            return Prism.highlight(code, Prism.languages['mongodb-query'], 'mongodb-query')
         },
         pageChange() {
             console.log('page change');

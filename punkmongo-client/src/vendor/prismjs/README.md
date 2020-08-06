@@ -4,7 +4,7 @@ In forked version I added "monoquery" syntax.
 ## How to edit, rebuild and add new "prism.js" to Punkmongo project:
 
 ### Preparations
-Clone repo https://github.com/airs0urce/prism. This is Prism.js with new language definition - mongoquery
+Clone repo https://github.com/airs0urce/prism. This is Prism.js with new language definition - mongodb-query
 ```
 $ git clone https://github.com/airs0urce/prism  
 $ cd prism  
@@ -23,13 +23,13 @@ See what address http server started on and go to test.html, for example:
 Open http://127.0.0.1:8080/test.html
 
 On this page select "Mongo Query" and then you can test how highlight works.
-Edit "components/prism-mongoquery.js" and refresh page.
+Edit "components/prism-mongodb-query.js" and refresh page.
 
 ### How to build new version of syntax
 
 Delete old minified version:
 ```
-$ rm -f components/prism-mongoquery.min.js
+$ rm -f components/prism-mongodb-query.min.js
 ```
 
 Build:
