@@ -64,7 +64,8 @@
                                 class="timeout-input" 
                                 v-model.number="query.timeout" 
                                 :class="{'empty-value': isValueEmpty('query.timeout')}"
-                                /> sec
+                            /> sec
+                            <font-awesome-icon class="reset-btn" icon="times" @click="resetTimeout()" v-if="query.timeout > 0" />
                         </span>
                     </div>
                     <div class="query-row-margin">
@@ -84,7 +85,8 @@
                             placeholder="∞"
                             v-model.number="query.limit" 
                             :class="{'empty-value': isValueEmpty('query.limit')}"
-                            />
+                        />
+                        <font-awesome-icon class="reset-btn" icon="times" @click="resetLimit()" v-if="query.limit > 0" />
                     </div>
                 </div>
             </div>
@@ -359,6 +361,12 @@ export default {
         },
         copyToClipboard(record) {
             utils.copyToClipboard(record);
+        },
+        resetLimit() {
+            this.query.limit = 0
+        },
+        resetTimeout() {
+            this.query.timeout = 0
         }
     },
     mounted: async function() {
@@ -604,6 +612,12 @@ div.document {
     display: flex;
     justify-content: space-between;
 }
+.reset-btn {
+    margin-left: 0.5em;
+    color: #888;
+    cursor: pointer;
+}
+
 </style>
 
 

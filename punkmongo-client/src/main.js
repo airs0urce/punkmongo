@@ -9,12 +9,14 @@ import {
     faAngleRight,
     faCaretDown,
     faPen,
+    faTimes
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faAngleLeft)
 library.add(faAngleRight)
 library.add(faCaretDown)
 library.add(faPen)
+library.add(faTimes)
 
 
 

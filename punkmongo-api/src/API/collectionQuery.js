@@ -60,8 +60,6 @@ module.exports = async function (params, dbClient) {
         setSkipAndLimit(options, params);
     }
 
-    
-
     const cursor = collection.find(filter, options);
     const records = [];
     const recordsTimestamps = [];
@@ -85,9 +83,6 @@ module.exports = async function (params, dbClient) {
     cursor.rewind();
     const explainInfo = await cursor.explain();
 
-    await a.delay(1000);
-
-
     return {
         collectionDocumentsTotal: collectionDocumentsTotal, 
         resultDocumentsTotal: resultDocumentsTotal,
@@ -95,7 +90,6 @@ module.exports = async function (params, dbClient) {
         pageNumber: params.query.pagination.pageNumber,
         records: records,
         recordsTimestamps: recordsTimestamps,
-        // timeCost: 
         explain: explainInfo
     }
 }
@@ -105,5 +99,11 @@ function setSkipAndLimit(options, params) {
     const pageNumber = params.query.pagination.pageNumber;
 
     options.skip = pageSize * (pageNumber - 1);
-    options.limit = pageSize;
+    
+
+    if (params.query.options.limit && params.query.options.limit < pageSize) {
+        options.limit = params.query.options.limit;
+    } else {
+        options.limit = pageSize;
+    }
 }
