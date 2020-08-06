@@ -5,7 +5,7 @@
         <a class="pagination-btn" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
         <a class="pagination-btn" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
 
-        <a v-if="!pagesToShow.includes(1)" class="pagination-btn" @click="changePage(1)">1</a>
+        <a v-if="!pagesToShow.includes(1)" :class="{'active': currentPage == 1, 'loading': (1 == loadingPage)}" class="pagination-btn" @click="changePage(1)">1</a>
         <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">…</span>
 
         <a v-for="n in pagesToShow" 
@@ -14,7 +14,7 @@
             @click="changePage(n)">{{n}}</a>
         
         <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
-        <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
+        <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
         <span class="separator"></span>        
         
         <div class="edit-wrapper" @click="toggleGotoPage()">

@@ -28,9 +28,8 @@ class API {
             throw Error(error);
         }
 
-        console.log('|', method);
-        console.log('|', JSON.stringify(params, null, '  '));
-        console.log('|', responseData);
+        console.log('| ', method, JSON.stringify(params, null, '  '));
+        console.log('| res: ', responseData.result);
         console.log('===');
         
         
