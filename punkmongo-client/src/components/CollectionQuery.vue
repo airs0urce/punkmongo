@@ -7,8 +7,8 @@
                 <div class="filter-content-left">
                     <div class="no-select">filter</div>
 
-                    <CodeJar v-model="query.filter.text" language="mongodb-query" class="mongo-query-editor" ref="filterTextInput" autofocus />
-                    
+                    <CodeJar v-model="query.filter.text" language="mongodb-query" class="mongo-query-editor" ref="filterTextInput" />
+
                     <div class="sort-and-projection query-row-margin no-select">
                         <div>
                             <div>sort</div>
@@ -50,7 +50,7 @@
                             <Loader v-if="queryLoading" />
                         </div>
                         <div class="rows-and-cost">
-                            <div class="cost-value" v-if="!queryLoading && queryResult.explain">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
+                            <div class="cost-value" v-if="!queryLoading && queryResult.explain.executionStats">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
                         </div>
                     </div>
                 </div>
@@ -89,49 +89,28 @@
                 </div>
             </div>
         </div>
-        <div v-if="queryResult.explain">
+        <div v-if="queryResult.initialLoadFinished">
             <div class="gap"></div>
             <div class="no-select" v-if="false">
                 Explain: 
                 {{queryResult.explain}}
-                <!--
-                <AceEditor
-                    width="100%"
-                    mode="mongodb"
-                    theme="mongodb"
-                    :name="'mongo-explain'"
-                    :minLines="4"
-                    :maxLines="10"
-                    :fontSize="11"
-                    :showPrintMargin="false"
-                    :showGutter="true"
-                    :value="JSON.stringify(queryResult.explain)"
-                    :editorProps="{$blockScrolling: Infinity}"
-                    :readOnly="true"
-                    :highlightActiveLine="false"
-                    :enableBasicAutocompletion="false" 
-                    :enableLiveAutocompletion="false"
-                    :hideCursorLayer="true"
-                    />
-                -->
             </div>
-            
-            
 
-            <div class="results-header">
+            <div class="results-header" >
                 <Pagination 
-                    :totalRecords="queryResult.documentsTotal"
-                    :pageSize="query.pagination.pageSize"
-                    :currentPage="currentResultsPage"
+                    :totalRecords="queryResult.resultDocumentsTotal"
+                    :pageSize="paginationPageSize"
+                    :currentPage="paginationPageNumber"
+                    :loadingPage="paginationPageNumberLoading"
                     :showPagesAround="6"
-                    @change-page="currentResultsPage = $event"
-                    @change-page-size="query.pagination.pageSize = $event"
+                    @change-page="paginationPageNumberLoading = $event"
+                    @change-page-size="paginationPageSize = $event"
                 />
 
                 <span class="query-result-functions">
                     <DropdownMenu buttonText="Copy docs to clipboard" :items="copyDropdownItems"/>
                     <!-- <DropdownMenu> -->
-                    <!-- <button>Copy All {{queryResult.documentsTotal}} docs</button> -->
+                    <!-- <button>Copy All {{queryResult.resultDocumentsTotal}} docs</button> -->
                 </span>
                 
             </div>
@@ -154,12 +133,12 @@
 
             <div class="results-footer">
                 <Pagination 
-                    :totalRecords="queryResult.documentsTotal"
-                    :pageSize="query.pagination.pageSize"
-                    :currentPage="currentResultsPage"
+                    :totalRecords="queryResult.resultDocumentsTotal"
+                    :pageSize="paginationPageSize"
+                    :currentPage="paginationPageNumber"
                     :showPagesAround="6"
-                    @change-page="currentResultsPage = $event"
-                    @change-page-size="query.pagination.pageSize = $event"
+                    @change-page="paginationPageNumber = $event"
+                    @change-page-size="paginationPageSize = $event"
                 />
             </div>
         </div>
@@ -206,7 +185,9 @@ export default {
         return {
             queryLoading: false,
             query: getDefaultData(),
-            currentResultsPage: 1,
+            paginationPageNumber: 1,
+            paginationPageNumberLoading: null,
+            paginationPageSize: 10,
             pageLoading: false,
             copyDropdownItems:[],
         }
@@ -233,7 +214,7 @@ export default {
     },
     watch: {
         query: {
-            handler: function() {
+            handler: function(newValue, oldValue) {
                 if (this.query.limit <= 0) {
                     this.query.limit = '';
                 }
@@ -249,16 +230,26 @@ export default {
         },
         activeCollectionName: function(newVal, oldVal) {
             if (newVal != oldVal) {
-                this.resetQueryForm();
-                this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT);
-                this.querySubmit();
+                this.resetQueryForm()
+                this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT)              
+                this.querySubmit()
                 this.$refs.filterTextInput.$el.focus()
+            }
+        },
+        async paginationPageNumberLoading(newValue, oldValue) {
+            if (newValue !== oldValue && newValue) {
+                await this.querySubmit()
+            }
+        },
+        paginationPageSize(newValue, oldValue) { 
+            if (newValue !== oldValue) {
+                this.paginationPageNumber = this.paginationPageNumber;
             }
         }
     },
     methods: {
         getResultRecordNumber(index) {
-            const recordNumber = this.query.pagination.pageSize * (this.currentResultsPage - 1) + index;
+            const recordNumber = this.paginationPageSize * (this.paginationPageNumber - 1) + index;
             return recordNumber + 1;
         },
         onChange(newValue) {
@@ -313,13 +304,18 @@ export default {
                     timeout: this.query.timeout || false,
                 },
                 pagination: {
-                    pageSize: this.query.pagination.pageSize,
-                    pageNumber: this.query.pagination.pageNumber
+                    pageSize: this.paginationPageSize,
+                    pageNumber: this.paginationPageNumberLoading || this.paginationPageNumber
                 }
             };
           
             await this.$store.dispatch(actions.ACTION_COLLECTION_QUERY, query);
 
+            
+            this.paginationPageNumber = this.queryResult.pageNumber;
+            this.paginationPageNumberLoading = null;
+            
+            
             // added delay before "finish loading" to prevent 
             // "visual jumping" of loader animation when it appears for milliseconds
             await a.delay(100); 
@@ -377,7 +373,7 @@ export default {
 
         this.copyDropdownItems = [
             {text: 'Shown documents', click: this.copyToClipboardShown}, 
-            {text: 'All ' + this.queryResult.documentsTotal, click: this.copyToClipboardAll}
+            {text: 'All ' + this.queryResult.resultDocumentsTotal, click: this.copyToClipboardAll}
         ]
     },
     destroyed: async function() {
@@ -439,10 +435,6 @@ function getDefaultData() {
 
         limit: '',
         timeout: '',
-        pagination: {
-            pageSize: 10,
-            pageNumber: 1
-        },
         hint: ''
     }
 }

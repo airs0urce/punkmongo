@@ -27,6 +27,14 @@ class API {
             console.log(`${error} - ${responseData.error.data}`);
             throw Error(error);
         }
+
+        console.log('|', method);
+        console.log('|', JSON.stringify(params, null, '  '));
+        console.log('|', responseData);
+        console.log('===');
+        
+        
+
         return responseData.result;
     }
 

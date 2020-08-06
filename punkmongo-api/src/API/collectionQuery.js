@@ -28,6 +28,9 @@ pagination: {pageSize: 10, pageNumber: 1}
 module.exports = async function (params, dbClient) {  
     const collection = dbClient.db(params.db).collection(params.collection);
 
+    let resultDocumentsTotal;
+    let pagesTotal;
+
     const options = {};
     if (params.query.options.sort) {
         options.sort = params.query.options.sort;
@@ -39,18 +42,27 @@ module.exports = async function (params, dbClient) {
         options.maxTimeMS = params.query.options.timeout * 1000;
     }
 
-    let {pageSize, pageNumber} = params.query.pagination;
-    if (!pageNumber) {
-        pageNumber = 1;
-    }
-
-    options.skip = pageSize * (pageNumber - 1);
-    options.limit = pageSize;
-
     const filter = ejsonParser(params.query.filter, {loose: true, allowComments: false});
     
-    const cursor = collection.find(filter, options);
+    if (!params.query.pagination.pageNumber) {
+        params.query.pagination.pageNumber = 1;
+    }
+    setSkipAndLimit(options, params);
 
+    const countOptions = {};
+    if (params.query.options.limit > 0) {
+        countOptions.limit = params.query.options.limit;
+    }
+    resultDocumentsTotal = await collection.countDocuments(filter, countOptions);
+    pagesTotal = Math.ceil(resultDocumentsTotal / params.query.pagination.pageSize);
+    if (params.query.pagination.pageNumber > pagesTotal) {
+        params.query.pagination.pageNumber = pagesTotal;
+        setSkipAndLimit(options, params);
+    }
+
+    
+
+    const cursor = collection.find(filter, options);
     const records = [];
     const recordsTimestamps = [];
 
@@ -67,24 +79,20 @@ module.exports = async function (params, dbClient) {
         }
     }
 
-    const countOptions = {};
-    if (params.query.options.limit > 0) {
-        countOptions.limit = params.query.options.limit;
-    }
 
-    const [documentsTotal, collectionDocumentsTotal] = await Promise.all([
-        collection.countDocuments(filter, countOptions),
-        collection.estimatedDocumentCount()
-    ]);
+    const collectionDocumentsTotal = await collection.estimatedDocumentCount();
 
     cursor.rewind();
     const explainInfo = await cursor.explain();
 
+    await a.delay(1000);
+
+
     return {
         collectionDocumentsTotal: collectionDocumentsTotal, 
-        documentsTotal: documentsTotal,
-        pagesTotal: Math.ceil(documentsTotal / pageSize),
-        pageNumber: pageNumber,
+        resultDocumentsTotal: resultDocumentsTotal,
+        pagesTotal: pagesTotal,
+        pageNumber: params.query.pagination.pageNumber,
         records: records,
         recordsTimestamps: recordsTimestamps,
         // timeCost: 
@@ -92,4 +100,10 @@ module.exports = async function (params, dbClient) {
     }
 }
 
+function setSkipAndLimit(options, params) {
+    const pageSize = params.query.pagination.pageSize;
+    const pageNumber = params.query.pagination.pageNumber;
 
+    options.skip = pageSize * (pageNumber - 1);
+    options.limit = pageSize;
+}

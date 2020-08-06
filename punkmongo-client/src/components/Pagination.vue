@@ -8,13 +8,16 @@
         <a v-if="!pagesToShow.includes(1)" class="pagination-btn" @click="changePage(1)">1</a>
         <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">…</span>
 
-        <a v-for="n in pagesToShow" class="pagination-btn" :class="{'active': currentPage == n}" @click="changePage(n)">{{n}}</a>
+        <a v-for="n in pagesToShow" 
+            class="pagination-btn" 
+            :class="{'active': currentPage == n, 'loading': (n == loadingPage)}" 
+            @click="changePage(n)">{{n}}</a>
         
         <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
         <a v-if="!pagesToShow.includes(totalPages)"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
         <span class="separator"></span>        
         
-        <div class="edit-wrapper" @click="togleGotoPage()">
+        <div class="edit-wrapper" @click="toggleGotoPage()">
             <font-awesome-icon class="edit-page" icon="pen" />    
         </div>
         
@@ -51,16 +54,24 @@
             totalRecords: Number,
             pageSize: Number,
             currentPage: Number,
-            // loadingPage: [Number, Boolean],
+            loadingPage: Number,
             showPagesAround: {
                 type: Number,
                 default: 5
             },
+
         },
         data: function() {
             return {
                 goPageNumber: '',
                 showGotoPage: false
+            }
+        },
+        watch: {
+            pageSize: function() {
+                if (this.currentPage > this.totalPages) {
+                    this.changePage(this.totalPages);
+                }
             }
         },
         computed: {
@@ -107,11 +118,9 @@
             changePageSize(event) {
                 let pageSize = +event.target.value;
                 this.$emit('change-page-size', pageSize);
-                this.changePage(1);
-                
             },
             numberWithCommas: utils.numberWithCommas,
-            togleGotoPage() {
+            toggleGotoPage() {
                 this.showGotoPage = !this.showGotoPage;
                 if (this.showGotoPage) {
                     this.$nextTick(() => {
@@ -148,6 +157,9 @@
         }
         &.active {
             background-color: #eeefff;
+        }
+        &.loading {
+            color: #777;
         }
         
         &.disabled {

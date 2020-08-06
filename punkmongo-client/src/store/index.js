@@ -13,11 +13,14 @@ Vue.use(Vuex)
 
 const defaultQueryResult = {
     error: null,
+    initialLoadFinished: false,
+    collectionDocumentsTotal: 0,
+    resultDocumentsTotal: 0,
+    explain: {},
+    pageNumber: 1,
+    pagesTotal: 1,
     records: [],
     recordsTimestamps: [],
-    explain: null,
-    documentsTotal: 0,
-    collectionDocumentsTotal: 0,
 }
 
 export default new Vuex.Store({
@@ -93,13 +96,6 @@ export default new Vuex.Store({
             }
         },
         [mutations.SET_COLLECTION_QUERY_RESULT](state, {collName, result}) {
-            /*
-            result.records
-            result.recordsTimestamps
-            result.explain
-            result.documentsTotal
-            */
-
             // set result
             state.activeDb.queryResult = result;
 
@@ -170,11 +166,14 @@ export default new Vuex.Store({
                     collName: state.activeDb.activeCollection,
                     result: {
                         error: null,
+                        initialLoadFinished: true,
+                        collectionDocumentsTotal: response.collectionDocumentsTotal,
+                        resultDocumentsTotal: response.resultDocumentsTotal,
+                        explain: response.explain,
+                        pageNumber: response.pageNumber,
+                        pagesTotal: response.pagesTotal,
                         records: response.records,
                         recordsTimestamps: response.recordsTimestamps,
-                        explain: response.explain,
-                        documentsTotal: response.documentsTotal,
-                        collectionDocumentsTotal: response.collectionDocumentsTotal
                     }
                 });
 

@@ -129,6 +129,7 @@ a {
     text-decoration: none;
     color: #004499;
     outline: none;
+    cursor: pointer;
 }
 a,
 a:active,

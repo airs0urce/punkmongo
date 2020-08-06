@@ -23,7 +23,14 @@ const app = new Koa();
         const methodFunction = require(apiMethodsPath + methodFile);
 
         jrpc.use(methodName, async (params) => {
-            return await methodFunction(params, dbClient);
+            let response;
+            try {
+                response = await methodFunction(params, dbClient);
+            } catch (e) {
+                console.error(e);
+            }
+
+            return response;
         });
     }
 
