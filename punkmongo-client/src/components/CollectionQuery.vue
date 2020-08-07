@@ -326,7 +326,7 @@ export default {
             
             const response = await api.request('collectionQuery', {
                 db: this.activeDb.name,
-                collection: this.activeDb.activeCollection,
+                collection: this.activeDb.activeCollection.name,
                 query: query
             });
 
@@ -348,7 +348,7 @@ export default {
 
             } else {
                 this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
-                    collName: this.activeDb.activeCollection,
+                    collName: this.activeDb.activeCollection.name,
                     result: {...defaultQueryResult, error: response.error}
                 });
             }
