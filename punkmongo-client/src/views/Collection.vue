@@ -6,7 +6,7 @@
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
                 <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" />
-                {{activeDb.activeCollection}}
+                {{activeDb.activeCollection.name}}
             </div>
         </h1>
 

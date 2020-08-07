@@ -70,12 +70,10 @@
                         </span>
                     </div>
                     <div class="query-row-margin">
-                        <div>hint</div>
+
+                        <div>index hint</div>
                         <select class="hint-select" v-model.number="query.hint" :class="{'empty-value': isValueEmpty('query.hint')}">
-                            <option>10</option>
-                            <option>30</option>
-                            <option>50</option>
-                            <option>100</option>
+                            <option v-for="index in activeDb.activeCollection.indexes" :key="index.name">{{index.name}}</option>
                         </select>
                     </div>
                     <div class="query-row-margin">
@@ -119,7 +117,7 @@
                 
             </div>
 
-            <div v-for="(record, index) in queryResult.records" class="document">
+            <div v-for="(record, index) in queryResult.records" :key="record._id" class="document">
                 <div class="document-header">
                     <span class="no-select">
                         <span class="document-num">#{{getResultRecordNumber(index)}}</span>
@@ -208,7 +206,7 @@ export default {
             return this.$store.state.activeDb.name;
         },
         activeCollectionName() {
-            return this.$store.state.activeDb.activeCollection;
+            return this.$store.state.activeDb.activeCollection.name;
         },
         queryResult() {
             return this.$store.state.activeDb.queryResult;
@@ -228,8 +226,12 @@ export default {
             },
             deep: true
         },
-        activeDbName: function() {
+        activeDbName: function(newVal, oldVal) {
             this.querySubmit();
+
+            if (newVal !== oldVal) {
+                this.updateIndexes()
+            }
         },
         activeCollectionName: function(newVal, oldVal) {
             if (newVal != oldVal) {
@@ -238,6 +240,10 @@ export default {
                 this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT)              
                 this.querySubmit()
                 this.$refs.filterTextInput.$el.focus()
+            }
+
+            if (newVal !== oldVal) {
+                this.updateIndexes()
             }
         },
         async paginationPageNumberLoading(newValue, oldValue) {
@@ -281,7 +287,7 @@ export default {
         },
         async querySubmit() {
 
-            if (!this.activeDb.name || !this.activeDb.activeCollection) {
+            if (!this.activeDb.name || !this.activeDb.activeCollection.name) {
                 return;
             }
 
@@ -407,6 +413,18 @@ export default {
         },
         resetTimeout() {
             this.query.timeout = 0
+        },
+        async updateIndexes(force = false) {
+            if (!force && (!this.activeDb.name || !this.activeDb.activeCollection.name)) {
+                return;
+            }
+
+            const indexes = await api.request('getIndexes', {
+                db: this.activeDb.name, 
+                collection: this.activeDb.activeCollection.name
+            });
+
+            this.$store.commit(mutations.SET_COLLECTION_INDEXES, indexes)
         }
     },
     mounted: async function() {
@@ -429,6 +447,8 @@ export default {
             {text: 'Shown documents', click: this.copyToClipboardShown}, 
             {text: 'All ' + this.queryResult.resultDocumentsTotal, click: this.copyToClipboardAll}
         ]
+
+        await this.updateIndexes();
     },
     destroyed: async function() {
         eventBus.$off('databaseNavigation:collection-mousedown');

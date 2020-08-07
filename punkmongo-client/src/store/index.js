@@ -41,7 +41,7 @@ export default new Vuex.Store({
             name: '',
             stats: {},
             collections: [],
-            activeCollection: null,
+            activeCollection: {name: '', indexes: []},
             queryResult: defaultQueryResult,
         },
     },
@@ -78,7 +78,7 @@ export default new Vuex.Store({
             });
         },
         [mutations.SET_ACTIVE_COLLECTION](state, collName) {
-            state.activeDb.activeCollection = collName;
+            state.activeDb.activeCollection.name = collName;
         },
         [mutations.TOGGLE_LEFT_PANEL](state) {
             state.persistent.showLeftPanel = !state.persistent.showLeftPanel;
@@ -109,6 +109,10 @@ export default new Vuex.Store({
         [mutations.RESET_COLLECTION_QUERY_RESULT](state) {
             state.activeDb.queryResult = {...defaultQueryResult};
         }, 
+        [mutations.SET_COLLECTION_INDEXES](state, indexes) {
+            state.activeDb.activeCollection.indexes = indexes;
+        }, 
+        
     },
     actions: {
         [actions.ACTION_RELOAD_DB_LIST]: async ({
