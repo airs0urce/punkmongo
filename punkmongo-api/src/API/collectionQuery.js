@@ -100,10 +100,27 @@ function setSkipAndLimit(options, params) {
 
     options.skip = pageSize * (pageNumber - 1);
     
-
-    if (params.query.options.limit && params.query.options.limit < pageSize) {
-        options.limit = params.query.options.limit;
+    
+    if (params.query.options.limit !== false && params.query.options.limit < pageSize) {
+        options.limit = params.query.options.limit - options.skip;
+        if (options.limit > pageSize) {
+            options.limit = pageSize;
+        }
     } else {
         options.limit = pageSize;
     }
+
+    if (params.query.options.limit !== false) {
+        const diffRecordsAmount = (options.skip + options.limit) - params.query.options.limit;
+        if (diffRecordsAmount > 0) {
+            options.limit = options.limit - diffRecordsAmount;
+        }
+    }
+    
 }
+
+
+
+
+
+

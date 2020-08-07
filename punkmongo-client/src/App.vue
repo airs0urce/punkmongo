@@ -359,6 +359,9 @@ a {
 .collection-header {
     margin-bottom: 1em;
 }
+strong {
+    font-weight: bold;
+}
 </style>
 
 

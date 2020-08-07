@@ -11,6 +11,8 @@ import {
     faPen,
     faTimes
 } from '@fortawesome/free-solid-svg-icons'
+import VueWorker from 'vue-worker'
+
 
 library.add(faAngleLeft)
 library.add(faAngleRight)
@@ -21,13 +23,11 @@ library.add(faTimes)
 
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-
-
-
+// Vue.use(require('vue-shortkey'))
+Vue.use(VueWorker)
 
 Vue.config.productionTip = false
 
-Vue.use(require('vue-shortkey'))
 
 new Vue({
     router,

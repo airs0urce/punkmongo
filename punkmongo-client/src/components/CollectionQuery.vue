@@ -63,6 +63,7 @@
                                 placeholder="∞" 
                                 class="timeout-input" 
                                 v-model.number="query.timeout" 
+                                @keyup.enter="querySubmit()"
                                 :class="{'empty-value': isValueEmpty('query.timeout')}"
                             /> sec
                             <font-awesome-icon class="reset-btn" icon="times" @click="resetTimeout()" v-if="query.timeout > 0" />
@@ -84,6 +85,7 @@
                             min="0"
                             placeholder="∞"
                             v-model.number="query.limit" 
+                            @keyup.enter="querySubmit()"
                             :class="{'empty-value': isValueEmpty('query.limit')}"
                         />
                         <font-awesome-icon class="reset-btn" icon="times" @click="resetLimit()" v-if="query.limit > 0" />
@@ -174,7 +176,6 @@ import Loader from '@/components/Loader'
 import DropdownMenu from '@/components/DropdownMenu'
 
 
-
 export default {
     components: {
         VueTagsInput,
@@ -233,6 +234,7 @@ export default {
         activeCollectionName: function(newVal, oldVal) {
             if (newVal != oldVal) {
                 this.resetQueryForm()
+                this.resetPagination();
                 this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT)              
                 this.querySubmit()
                 this.$refs.filterTextInput.$el.focus()
@@ -246,6 +248,10 @@ export default {
         paginationPageSize(newValue, oldValue) { 
             if (newValue !== oldValue) {
                 this.paginationPageNumber = this.paginationPageNumber;
+                this.$nextTick(() => {
+                    this.querySubmit();
+                });      
+                
             }
         }
     },
@@ -311,7 +317,35 @@ export default {
                 }
             };
           
-            await this.$store.dispatch(actions.ACTION_COLLECTION_QUERY, query);
+            
+            const response = await api.request('collectionQuery', {
+                db: this.activeDb.name,
+                collection: this.activeDb.activeCollection,
+                query: query
+            });
+
+            if (!response.error) {
+                this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
+                    collName: this.activeDb.activeCollection,
+                    result: {
+                        error: null,
+                        initialLoadFinished: true,
+                        collectionDocumentsTotal: response.collectionDocumentsTotal,
+                        resultDocumentsTotal: response.resultDocumentsTotal,
+                        explain: response.explain,
+                        pageNumber: response.pageNumber,
+                        pagesTotal: response.pagesTotal,
+                        records: response.records,
+                        recordsTimestamps: response.recordsTimestamps,
+                    }
+                });
+
+            } else {
+                this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
+                    collName: this.activeDb.activeCollection,
+                    result: {...defaultQueryResult, error: response.error}
+                });
+            }
 
             
             this.paginationPageNumber = this.queryResult.pageNumber;
@@ -344,8 +378,14 @@ export default {
         resetQueryForm() {
             Object.assign(this.$data.query, getDefaultData())
         },
-        highlight(code) {
-            return Prism.highlight(code, Prism.languages['mongodb-query'], 'mongodb-query')
+        resetPagination() {
+            this.paginationPageNumber = 1;
+            this.paginationPageNumberLoading = null;
+            this.paginationPageSize = 10;
+            this.pageLoading = false;
+        },
+        async highlight(code) {
+            return await this.worker.postMessage('highlightMongoDocument', [code]);
         },
         pageChange() {
             console.log('page change');
@@ -370,6 +410,12 @@ export default {
         }
     },
     mounted: async function() {
+        this.worker = this.$worker.create([
+            {message: 'highlightMongoDocument', func: (doc) => {
+                return Prism.highlight(doc, Prism.languages['mongodb-query'], 'mongodb-query')
+            }},
+        ])
+
         eventBus.$on('databaseNavigation:collection-mousedown', (collectionName) => {
             if (collectionName == this.$route.params.collName) {
                 // user clicked already active collection
@@ -386,6 +432,8 @@ export default {
     },
     destroyed: async function() {
         eventBus.$off('databaseNavigation:collection-mousedown');
+
+        this.worker.unregister(['highlightMongoDocument'])
     }
 
 }

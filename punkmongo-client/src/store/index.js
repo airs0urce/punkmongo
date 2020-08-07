@@ -153,38 +153,6 @@ export default new Vuex.Store({
             commit(mutations.SET_ACTIVE_DB, dbInfo);
             commit(mutations.SET_LOADING_DB, null);
         },
-        [actions.ACTION_COLLECTION_QUERY]: async ({commit, state}, query) => {
-
-            const response = await api.request('collectionQuery', {
-                db: state.activeDb.name,
-                collection: state.activeDb.activeCollection,
-                query: query
-            });
-
-            if (!response.error) {
-                commit(mutations.SET_COLLECTION_QUERY_RESULT, {
-                    collName: state.activeDb.activeCollection,
-                    result: {
-                        error: null,
-                        initialLoadFinished: true,
-                        collectionDocumentsTotal: response.collectionDocumentsTotal,
-                        resultDocumentsTotal: response.resultDocumentsTotal,
-                        explain: response.explain,
-                        pageNumber: response.pageNumber,
-                        pagesTotal: response.pagesTotal,
-                        records: response.records,
-                        recordsTimestamps: response.recordsTimestamps,
-                    }
-                });
-
-            } else {
-                commit(mutations.SET_COLLECTION_QUERY_RESULT, {
-                    collName: state.activeDb.activeCollection,
-                    result: {...defaultQueryResult, error: response.error}
-                });
-            }
-
-        },
     },
     modules: {
 
