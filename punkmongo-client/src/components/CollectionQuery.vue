@@ -390,8 +390,9 @@ export default {
             this.paginationPageSize = 10;
             this.pageLoading = false;
         },
-        async highlight(code) {
-            return await this.worker.postMessage('highlightMongoDocument', [code]);
+        highlight(code) {
+            return Prism.highlight(code, Prism.languages['mongodb-query'], 'mongodb-query')
+            // return await this.worker.postMessage('highlightMongoDocument', [code]);
         },
         pageChange() {
             console.log('page change');
