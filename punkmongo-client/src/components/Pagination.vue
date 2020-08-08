@@ -2,30 +2,30 @@
 
 <template>
     <span class="pagination no-select">
-        <a class="pagination-btn" title="Previous Page" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
-        <a class="pagination-btn" title="Next Page" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
+        <span @mouseenter="toggleGotoPage(true)" @mouseleave="toggleGotoPage(false)">
+            <a class="pagination-btn" title="Previous Page" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
+            <a class="pagination-btn" title="Next Page" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
 
-        <a v-if="!pagesToShow.includes(1)" :class="{'active': currentPage == 1, 'loading': (1 == loadingPage)}" class="pagination-btn" @click="changePage(1)">1</a>
-        <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">…</span>
+            <a v-if="!pagesToShow.includes(1)" :class="{'active': currentPage == 1, 'loading': (1 == loadingPage)}" class="pagination-btn" @click="changePage(1)">1</a>
+            <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">…</span>
 
-        <a v-for="n in pagesToShow" 
-            class="pagination-btn" 
-            :class="{'active': currentPage == n, 'loading': (n == loadingPage)}" 
-            @click="changePage(n)">{{n}}</a>
-        
-        <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
-        <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
-        <span class="separator"></span>        
-        
-        <div class="edit-wrapper" @click="toggleGotoPage()" title="Go to Page">
-            <font-awesome-icon class="edit-page" icon="pen" />    
-        </div>
-        
-        <span class="separator"></span>
-        <span class="goto" v-show="showGotoPage">
-            <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
-            <button @click="changePage(goPageNumber)">Go</button>
+            <a v-for="n in pagesToShow" 
+                class="pagination-btn" 
+                :class="{'active': currentPage == n, 'loading': (n == loadingPage)}" 
+                @click="changePage(n)">{{n}}</a>
+            
+            <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
+            <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
+            
+            <span v-show="showGotoPage">
+                <span class="separator"></span>        
+                <span class="goto">
+                    <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
+                    <button @click="changePage(goPageNumber)">Go</button>
+                </span>
+            </span>
         </span>
+        <span class="separator"></span>
         <span class="separator"></span>
         
         <span class="page-size">
@@ -124,12 +124,14 @@
                 this.$emit('change-page-size', pageSize);
             },
             numberWithCommas: utils.numberWithCommas,
-            toggleGotoPage() {
-                this.showGotoPage = !this.showGotoPage;
-                if (this.showGotoPage) {
+            toggleGotoPage(bool) {
+                if (bool) {
+                    this.showGotoPage = true;
                     this.$nextTick(() => {
                         this.$refs.pageNumInput.focus();
                     });
+                } else {
+                    this.showGotoPage = false;
                 }
             }
             

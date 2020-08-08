@@ -56,6 +56,20 @@ export default {
         }
     },
     mounted() {
+        const pressActiveClass = 'press-active';
+        const tagClassDelay = {
+            'BUTTON': 150,
+            'A': 60
+        };
+        document.addEventListener("mousedown", e => {
+            if (tagClassDelay[e.target.tagName]) {
+                e.target.classList.add(pressActiveClass);
+                setTimeout(() => {
+                    e.target.classList.remove(pressActiveClass);
+                }, tagClassDelay[e.target.tagName]);
+            }
+        })
+
         eventBus.$on('load-database', async (dbName) => {
             this.loadDatabase(dbName);
         });
@@ -275,7 +289,8 @@ button {
     cursor: default;
     border: 1px solid #ddd;
     white-space: nowrap;
-    &:active {
+    &:active,
+    &.press-active {
         background-color: #fdffee;
         top: 1px;
         box-shadow: none;

@@ -55,26 +55,12 @@
                     </div>
                 </div>
                 <div class="query-options no-select">
-                    <div>
-                        <div>timeout</div>
-                        <span class="nowrap">
-                            <input type="number" 
-                                min="0"
-                                placeholder="∞" 
-                                class="timeout-input" 
-                                v-model.number="query.timeout" 
-                                @keyup.enter="querySubmit()"
-                                :class="{'empty-value': isValueEmpty('query.timeout')}"
-                            /> sec
-                            <font-awesome-icon class="reset-btn" icon="times" @click="resetTimeout()" v-if="query.timeout > 0" />
-                        </span>
-                    </div>
                     <div class="query-row-margin">
-
                         <div>index hint</div>
                         <select class="hint-select" v-model.number="query.hint" :class="{'empty-value': isValueEmpty('query.hint')}">
                             <option v-for="index in activeDb.activeCollection.indexes" :key="index.name">{{index.name}}</option>
                         </select>
+                        <font-awesome-icon class="reset-btn" icon="times" @click="resetHint()" v-if="query.hint" />
                     </div>
                     <div class="query-row-margin">
                         <div>limit</div>
@@ -86,7 +72,22 @@
                             @keyup.enter="querySubmit()"
                             :class="{'empty-value': isValueEmpty('query.limit')}"
                         />
+
                         <font-awesome-icon class="reset-btn" icon="times" @click="resetLimit()" v-if="query.limit > 0" />
+                    </div>
+                    <div>
+                        <div>execution timeout</div>
+                        <span class="nowrap">
+                            <input type="number" 
+                                min="0"
+                                placeholder="∞" 
+                                class="timeout-input" 
+                                v-model.number="query.timeout" 
+                                @keyup.enter="querySubmit()"
+                                :class="{'empty-value': isValueEmpty('query.timeout')}"
+                            /> sec
+                            <font-awesome-icon class="reset-btn" icon="times" @click="resetTimeout()" v-if="query.timeout > 0" />
+                        </span>
                     </div>
                 </div>
             </div>
@@ -121,16 +122,18 @@
                 <div class="document-header">
                     <span class="no-select">
                         <span class="document-num">#{{getResultRecordNumber(index)}}</span>
-                        <router-link :to="''">Update</router-link>
-                        <router-link :to="''">Delete</router-link>
-                        <router-link :to="''">Refresh</router-link>
-                        <router-link :to="''">Expand</router-link>
-                        <router-link :to="''">Expand All</router-link>
-                        <a @click="copyToClipboard(record)">Copy to clipboard</a>
+                        <a>Update</a>
+                        <a>Delete</a>
+                        <a>Refresh</a>
+                        <a @click.prevent="expandDoc(record)" v-if="!record.expand">Expand</a>
+                        <a @click.prevent="collapseDoc(record)" v-if="record.expand">Collapse</a>
+                        <a @click.prevent="expandAllDocs()">Expand All</a>
+                        <a @click.prevent="collapseAllDocs()">Collapse All</a>
+                        <a @click.prevent="copyToClipboard(record.doc)">Copy to clipboard</a>
                     </span>
-                    <span class="no-select timestamp-label">Timestamp: </span>{{queryResult.recordsTimestamps[index]}}
+                    <span class="no-select timestamp-label">Timestamp: </span>{{record.timestamp}}
                 </div>
-                <div class="document-body language-mongodb-query" v-html="highlight(record)"></div>
+                <div class="document-body language-mongodb-query" :class="{'expanded': record.expand}" v-html="highlight(record.doc)"></div>
             </div>
 
             <div class="results-footer">
@@ -164,6 +167,7 @@ import * as a from 'awaiting'
 import * as moment from 'moment'
 import eventBus from '../eventBus'
 import utils from '@/utils'
+import _ from 'lodash'
 
 import Prism from '@/vendor/prismjs/prism';
 import '@/vendor/prismjs/prism.css'
@@ -191,6 +195,7 @@ export default {
             paginationPageSize: 10,
             pageLoading: false,
             copyDropdownItems:[],
+            worker: null,
         }
     },
     computed: {
@@ -342,7 +347,6 @@ export default {
                         pageNumber: response.pageNumber,
                         pagesTotal: response.pagesTotal,
                         records: response.records,
-                        recordsTimestamps: response.recordsTimestamps,
                     }
                 });
 
@@ -420,12 +424,32 @@ export default {
                 return;
             }
 
-            const indexes = await api.request('getIndexes', {
+            const response = await api.request('getIndexes', {
                 db: this.activeDb.name, 
                 collection: this.activeDb.activeCollection.name
             });
 
-            this.$store.commit(mutations.SET_COLLECTION_INDEXES, indexes)
+            this.$store.commit(mutations.SET_COLLECTION_INDEXES, response.indexes);
+        },
+        resetHint() {
+            this.query.hint = '';
+        },
+        expandAllDocs() {
+            for (let record of this.queryResult.records) {
+                this.$set(record, 'expand', true);
+            }
+        },
+        collapseAllDocs() {
+            for (let record of this.queryResult.records) {
+                this.$set(record, 'expand', false);
+            }
+        },
+        expandDoc(doc) {
+            this.$set(doc, 'expand', true);
+            
+        },
+        collapseDoc(doc) {
+            this.$set(doc, 'expand', false);
         }
     },
     mounted: async function() {
@@ -453,7 +477,6 @@ export default {
     },
     destroyed: async function() {
         eventBus.$off('databaseNavigation:collection-mousedown');
-
         this.worker.unregister(['highlightMongoDocument'])
     }
 
@@ -592,7 +615,7 @@ function getDefaultData() {
 }
 
 .field-limit {
-    width: 6rem;
+    width: 8rem;
 }
 
 .sort-and-projection {
@@ -625,9 +648,11 @@ function getDefaultData() {
 }
 
 
-.timeout-input,
-.hint-select {
+.timeout-input {
     width: 8rem;
+}
+.hint-select {
+    width: 20rem;
 }
 
 div.document {
@@ -657,7 +682,14 @@ div.document {
         border-right: 1px solid #ccc;
         padding: 0.5em;
         display: inline-block;
+        &:active,
+        &.press-active {
+            position: relative;
+            top: 1px;
+            left: 1px;
+        }
     }
+
 }
 .document-body {
     white-space: pre-wrap;
@@ -665,6 +697,11 @@ div.document {
     padding-top: 0.25em;
     padding-bottom: 0.25em;
     font-size: 1.1em;
+    overflow: hidden;
+    max-height: 11.5em;
+    &.expanded {
+        max-height: none;
+    }
 }
 .document-num {
     padding-left: 0.3em;

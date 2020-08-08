@@ -20,7 +20,6 @@ const defaultQueryResult = {
     pageNumber: 1,
     pagesTotal: 1,
     records: [],
-    recordsTimestamps: [],
 }
 
 export default new Vuex.Store({

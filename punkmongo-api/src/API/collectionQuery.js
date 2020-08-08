@@ -66,15 +66,16 @@ module.exports = async function (params, dbClient) {
 
     let record;
     while (record = await cursor.next()) {
-        records.push(mongoDocToString(record));
-
-        if (ObjectID.isValid(record._id)) {
-            recordsTimestamps.push(
-                moment(ObjectID(record._id).getTimestamp()).format('YYYY-MM-DD HH:mm:ss')
-            );
-        } else {
-            recordsTimestamps.push(false);
+        const docItem = {
+            id: record._id.toString(),
+            timestamp: false,
+            doc: mongoDocToString(record),
         }
+        
+        if (ObjectID.isValid(record._id)) {
+            docItem.timestamp = moment(ObjectID(record._id).getTimestamp()).format('YYYY-MM-DD HH:mm:ss');
+        }
+        records.push(docItem);
     }
 
 
@@ -89,7 +90,6 @@ module.exports = async function (params, dbClient) {
         pagesTotal: pagesTotal,
         pageNumber: params.query.pagination.pageNumber,
         records: records,
-        recordsTimestamps: recordsTimestamps,
         explain: explainInfo
     }
 }
