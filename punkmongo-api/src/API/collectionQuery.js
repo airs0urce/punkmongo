@@ -71,9 +71,9 @@ module.exports = async function (params, dbClient) {
             timestamp: false,
             doc: mongoDocToString(record),
         }
-        
+
         if (ObjectID.isValid(record._id)) {
-            docItem.timestamp = moment(ObjectID(record._id).getTimestamp()).format('YYYY-MM-DD HH:mm:ss');
+            docItem.timestamp = moment(ObjectID(record._id).getTimestamp()).unix();
         }
         records.push(docItem);
     }

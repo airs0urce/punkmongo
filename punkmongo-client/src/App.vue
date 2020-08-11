@@ -58,15 +58,24 @@ export default {
     mounted() {
         const pressActiveClass = 'press-active';
         const tagClassDelay = {
-            'BUTTON': 150,
+            'BUTTON': 200,
             'A': 60
         };
         document.addEventListener("mousedown", e => {
-            if (tagClassDelay[e.target.tagName]) {
-                e.target.classList.add(pressActiveClass);
+            const parent = e.target.parentNode;
+            
+            if (tagClassDelay[e.target.tagName] || (parent && tagClassDelay[parent.tagName])) {
+                let target = null;
+                if (tagClassDelay[e.target.tagName]) {
+                    target = e.target;
+                } else {
+                    target = parent;
+                }
+
+                target.classList.add(pressActiveClass);
                 setTimeout(() => {
-                    e.target.classList.remove(pressActiveClass);
-                }, tagClassDelay[e.target.tagName]);
+                    target.classList.remove(pressActiveClass);
+                }, tagClassDelay[target.tagName]);
             }
         })
 

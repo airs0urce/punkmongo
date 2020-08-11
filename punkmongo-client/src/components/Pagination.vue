@@ -1,34 +1,38 @@
 
 
 <template>
-    <span class="pagination no-select">
-        <span @mouseenter="toggleGotoPage(true)" @mouseleave="toggleGotoPage(false)">
-            <a class="pagination-btn" title="Previous Page" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
-            <a class="pagination-btn" title="Next Page" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
+    <span class="pagination">
+        <span class="pages-list" @mouseenter="toggleGotoPage(true)" @mouseleave="toggleGotoPage(false)">
+            <span class="pages no-select">
+                <a class="pagination-btn" title="Previous Page" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
+                <a class="pagination-btn" title="Next Page" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
 
-            <a v-if="!pagesToShow.includes(1)" :class="{'active': currentPage == 1, 'loading': (1 == loadingPage)}" class="pagination-btn" @click="changePage(1)">1</a>
-            <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">…</span>
+                <a v-if="!pagesToShow.includes(1)" :class="{'active': currentPage == 1, 'loading': (1 == loadingPage)}" class="pagination-btn" @click="changePage(1)">1</a>
+                <span v-if="!pagesToShow.includes(1)" class="pagination-btn dots">…</span>
 
-            <a v-for="n in pagesToShow" 
-                class="pagination-btn" 
-                :class="{'active': currentPage == n, 'loading': (n == loadingPage)}" 
-                @click="changePage(n)">{{n}}</a>
-            
-            <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
-            <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
-            
-            <span v-show="showGotoPage">
-                <span class="separator"></span>        
-                <span class="goto">
-                    <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
-                    <button @click="changePage(goPageNumber)">Go</button>
-                </span>
+                <a v-for="n in pagesToShow" 
+                    class="pagination-btn" 
+                    :class="{'active': currentPage == n, 'loading': (n == loadingPage)}" 
+                    @click="changePage(n)">{{n}}</a>
+                
+                <span v-if="!pagesToShow.includes(totalPages)" class="pagination-btn dots">…</span>
+                <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
             </span>
+            
+            <transition name="gotopage" v-on:enter="gotoPageAnimStarted">
+                <span v-show="showGotoPage" class="goto-container">
+                    <span class="separator"></span>        
+                    <span class="goto">
+                        <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
+                        <button @click="changePage(goPageNumber)">Go</button>
+                    </span>
+                </span>
+            </transition>
         </span>
         <span class="separator"></span>
         <span class="separator"></span>
         
-        <span class="page-size">
+        <span class="page-size no-select">
             <span><strong>{{numberWithCommas(this.totalRecords)}}</strong> docs</span> 
             <span class="separator"></span>    
             <span class="separator"></span>    
@@ -68,7 +72,7 @@
         data: function() {
             return {
                 goPageNumber: '',
-                showGotoPage: false
+                showGotoPage: false,
             }
         },
         watch: {
@@ -133,6 +137,9 @@
                 } else {
                     this.showGotoPage = false;
                 }
+            },
+            gotoPageAnimStarted() {
+                console.log('gotoPageAnimStarted');
             }
             
         }
@@ -141,6 +148,11 @@
 </script>
 
 <style lang="scss" scoped>
+    .pagination {
+        strong {
+            display: inline-block;
+        }
+    }
     .pagination-btn {
         display: inline-block;
         min-width: 2em;
@@ -149,7 +161,6 @@
         cursor: pointer;
         color: #000;
         padding: 0.453em 0.5em;
-
         &.dots {
             cursor: default;
             text-decoration: none !important;
@@ -174,28 +185,16 @@
         }
     }
 
-    .goto {
-        position: relative;
-        input {
-            width: 5em;    
-        }
-    }
+    
     .separator {
         margin-left: 0.5em;
         margin-right: 0.5em;
     }
     .page-size {
-        position: relative;
         width: 8rem;
+        white-space: nowrap;
     }
 
-    .goto span,
-    .page-size span {
-        // position: absolute;
-        // top: -1.7em;
-        
-    }
-    .goto span,
     .page-size span {
         color: #777;
     }
@@ -212,6 +211,43 @@
     .edit-page {
         color: #888;
     }    
+
+.pages-list {
+    white-space: nowrap;
+    display: inline-flex;
+    .pages {
+        background-color: #fff;
+    }
+}
+
+.goto-container {
+    z-index: -1;    
+}
+.goto {
+    display: inline !important;
+    overflow: hidden;
+    white-space: nowrap;
+
+    input {
+        width: 5em;    
+    }
+    span {
+        color: #777;    
+    }
+}
+
+
+.gotopage-enter-active {
+    transition: all 0.4s ease 0.5s;
+}
+.gotopage-leave-active {
+    transition: all 0.4s ease-out;   
+}
+.gotopage-enter, .gotopage-leave-to {
+    transform: translateX(-100px);
+    opacity: 0;
+}
+
 
 </style>
 

@@ -23,7 +23,7 @@ library.add(faTimes)
 
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-// Vue.use(require('vue-shortkey'))
+Vue.use(require('vue-shortkey'))
 Vue.use(VueWorker)
 
 Vue.config.productionTip = false

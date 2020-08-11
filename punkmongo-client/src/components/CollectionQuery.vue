@@ -7,7 +7,14 @@
                 <div class="filter-content-left">
                     <div class="no-select">filter</div>
 
-                    <CodeJar v-model="query.filter.text" language="mongodb-query" class="mongo-query-editor" ref="filterTextInput" />
+                    <CodeJar 
+                        v-model="query.filter.text" 
+                        language="mongodb-query" 
+                        class="mongo-query-editor" 
+                        ref="filterTextInput" 
+                        :shortkey="{win: ['ctrl', 'enter'], mac: ['meta', 'enter']}"
+                        @shortkey="querySubmit()"
+                    />
 
                     <div class="sort-and-projection query-row-margin no-select">
                         <div>
@@ -50,14 +57,15 @@
                             <Loader v-if="queryLoading" />
                         </div>
                         <div class="rows-and-cost">
-                            <div class="cost-value" v-if="!queryLoading && queryResult.explain.executionStats">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
+                            <div class="cost-value" v-if="!queryLoading && queryResult.explain.executionStats" title="Query execution took time">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
                         </div>
                     </div>
                 </div>
                 <div class="query-options no-select">
                     <div class="query-row-margin">
                         <div>index hint</div>
-                        <select class="hint-select" v-model.number="query.hint" :class="{'empty-value': isValueEmpty('query.hint')}">
+                        <select class="hint-select" @mousedown="updateIndexes()" v-model.number="query.hint" :class="{'empty-value': isValueEmpty('query.hint')}">
+                            <option></option>
                             <option v-for="index in activeDb.activeCollection.indexes" :key="index.name">{{index.name}}</option>
                         </select>
                         <font-awesome-icon class="reset-btn" icon="times" @click="resetHint()" v-if="query.hint" />
@@ -120,18 +128,23 @@
 
             <div v-for="(record, index) in queryResult.records" :key="record._id" class="document">
                 <div class="document-header">
-                    <span class="no-select">
+                    <span class="doc-actions no-select">
                         <span class="document-num">#{{getResultRecordNumber(index)}}</span>
-                        <a>Update</a>
-                        <a>Delete</a>
-                        <a>Refresh</a>
-                        <a @click.prevent="expandDoc(record)" v-if="!record.expand">Expand</a>
-                        <a @click.prevent="collapseDoc(record)" v-if="record.expand">Collapse</a>
-                        <a @click.prevent="expandAllDocs()">Expand All</a>
-                        <a @click.prevent="collapseAllDocs()">Collapse All</a>
-                        <a @click.prevent="copyToClipboard(record.doc)">Copy to clipboard</a>
+                        <a><span>Update</span></a>
+                        <a><span>Delete</span></a>
+                        <a><span>Refresh</span></a>
+                    </span>                        
+                    <span class="separator">
+                        <span v-if="record.timestamp" title="Created date. We got it from _id field">{{moment(record.timestamp).format('MMMM Do YYYY, h:mm:ss a')}}</span>
+                        <span class="note" v-if="!record.timestamp">-</span>
                     </span>
-                    <span class="no-select timestamp-label">Timestamp: </span>{{record.timestamp}}
+                    <span class="doc-actions no-select">
+                        <a @click.prevent="expandDoc(record)" v-if="!record.expand"><span>Expand</span></a>
+                        <a @click.prevent="collapseDoc(record)" v-if="record.expand"><span>Collapse</span></a>
+                        <a @click.prevent="expandAllDocs()" v-show="showOnlyExpandAll"><span>Expand All</span></a>
+                        <a @click.prevent="collapseAllDocs()" v-show="!showOnlyExpandAll"><span>Collapse All</span></a>
+                        <a @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
+                    </span>
                 </div>
                 <div class="document-body language-mongodb-query" :class="{'expanded': record.expand}" v-html="highlight(record.doc)"></div>
             </div>
@@ -147,10 +160,6 @@
                 />
             </div>
         </div>
-        <!--
-        Hotkey example: 
-        <button v-shortkey="['ctrl', 'enter']" @shortkey="querySubmit()">Open</button> 
-        -->
     </div>
 
 </template>
@@ -196,6 +205,7 @@ export default {
             pageLoading: false,
             copyDropdownItems:[],
             worker: null,
+            showOnlyExpandAll: true,
         }
     },
     computed: {
@@ -360,6 +370,7 @@ export default {
             
             this.paginationPageNumber = this.queryResult.pageNumber;
             this.paginationPageNumberLoading = null;
+            this.showOnlyExpandAll = true;
             
             
             // added delay before "finish loading" to prevent 
@@ -398,12 +409,6 @@ export default {
             return Prism.highlight(code, Prism.languages['mongodb-query'], 'mongodb-query')
             // return await this.worker.postMessage('highlightMongoDocument', [code]);
         },
-        pageChange() {
-            console.log('page change');
-        },
-        rangeChange() {
-            console.log('range change');
-        },
         copyToClipboardShown() {
             ;
         },
@@ -438,11 +443,13 @@ export default {
             for (let record of this.queryResult.records) {
                 this.$set(record, 'expand', true);
             }
+            this.showOnlyExpandAll = false;
         },
         collapseAllDocs() {
             for (let record of this.queryResult.records) {
                 this.$set(record, 'expand', false);
             }
+            this.showOnlyExpandAll = true;
         },
         expandDoc(doc) {
             this.$set(doc, 'expand', true);
@@ -450,7 +457,8 @@ export default {
         },
         collapseDoc(doc) {
             this.$set(doc, 'expand', false);
-        }
+        },
+        moment: moment
     },
     mounted: async function() {
         this.worker = this.$worker.create([
@@ -682,12 +690,15 @@ div.document {
         border-right: 1px solid #ccc;
         padding: 0.5em;
         display: inline-block;
-        &:active,
-        &.press-active {
+        &:active span,
+        &.press-active span {
             position: relative;
             top: 1px;
             left: 1px;
         }
+    }
+    .doc-actions a:first-of-type {
+        border-left: 1px solid #ccc;
     }
 
 }
@@ -705,11 +716,13 @@ div.document {
 }
 .document-num {
     padding-left: 0.3em;
+    padding-right: 0.3em;
 }
 .timestamp-label {
     padding-left: 0.5em; 
 }
 .query-result-functions {
+    display: inline-block;
     margin-left: 0.3em; 
 }
 .results-header {
@@ -718,12 +731,16 @@ div.document {
     display: flex;
     justify-content: space-between;
 }
+
 .reset-btn {
     margin-left: 0.5em;
     color: #888;
     cursor: pointer;
 }
-
+.separator {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
 </style>
 
 

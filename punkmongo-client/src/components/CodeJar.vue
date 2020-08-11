@@ -1,5 +1,10 @@
 <template>
-    <div ref="codejarEl" :class="'language-' + language"></div>
+    <div 
+        ref="codejarEl" 
+        :class="'language-' + language"
+        v-shortkey="shortkey" 
+        @shortkey="onShortkey()"
+    ></div>
 </template>
 
 <script>
@@ -11,6 +16,7 @@ export default {
     props: {
         language: String,
         value: String,
+        shortkey: Object,
     },
     watch: { 
         value: function(newVal) {
@@ -18,6 +24,11 @@ export default {
                 this.queryEditor.updateCode(newVal);
             }
             
+        }
+    },
+    methods: {
+        onShortkey() {
+            this.$emit('shortkey');
         }
     },
     mounted() {
