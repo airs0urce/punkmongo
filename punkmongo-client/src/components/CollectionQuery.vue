@@ -146,7 +146,7 @@
                         <a @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
                     </span>
                 </div>
-                <div class="document-body language-mongodb-query" :class="{'expanded': record.expand}" v-html="highlight(record.doc)"></div>
+                <div class="document-body language-mongodb-filter" :class="{'expanded': record.expand}" v-html="highlight(record.doc)"></div>
             </div>
 
             <div class="results-footer">
@@ -406,7 +406,7 @@ export default {
             this.pageLoading = false;
         },
         highlight(code) {
-            return Prism.highlight(code, Prism.languages['mongodb-query'], 'mongodb-query')
+            return Prism.highlight(code, Prism.languages['mongodb-document'], 'mongodb-document')
             // return await this.worker.postMessage('highlightMongoDocument', [code]);
         },
         copyToClipboardShown() {

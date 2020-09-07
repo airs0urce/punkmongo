@@ -357,7 +357,10 @@ button {
     padding-left: 1.5rem;
 }
 
-.language-mongodb-query {
+.language-mongodb-document,
+.language-mongodb-aggregation,
+.language-mongodb-update,
+.language-mongodb-filter {
     line-height: 1.3em;
 }
 

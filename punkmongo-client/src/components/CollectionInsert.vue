@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="test-editor language-mongodb-query">
+        <div class="test-editor language-mongodb-document">
         </div>
         <button>Insert</button>
     </div>
