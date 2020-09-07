@@ -9,7 +9,7 @@
 
                     <CodeJar 
                         v-model="query.filter.text" 
-                        language="mongodb-query" 
+                        language="mongodb-filter" 
                         class="mongo-query-editor" 
                         ref="filterTextInput" 
                         :shortkey="{win: ['ctrl', 'enter'], mac: ['meta', 'enter']}"
@@ -463,7 +463,7 @@ export default {
     mounted: async function() {
         this.worker = this.$worker.create([
             {message: 'highlightMongoDocument', func: (doc) => {
-                return Prism.highlight(doc, Prism.languages['mongodb-query'], 'mongodb-query')
+                return Prism.highlight(doc, Prism.languages['mongodb-document'], 'mongodb-document')
             }},
         ])
 
