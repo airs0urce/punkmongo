@@ -186,7 +186,6 @@ import Pagination from '@/components/Pagination';
 import Loader from '@/components/Loader'
 import DropdownMenu from '@/components/DropdownMenu'
 
-
 export default {
     components: {
         VueTagsInput,
@@ -482,6 +481,7 @@ export default {
         ]
 
         await this.updateIndexes();
+        
     },
     destroyed: async function() {
         eventBus.$off('databaseNavigation:collection-mousedown');

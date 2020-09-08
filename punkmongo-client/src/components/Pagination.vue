@@ -19,20 +19,18 @@
                 <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
             </span>
             
-            <transition name="gotopage" v-on:enter="gotoPageAnimStarted">
-                <span v-show="showGotoPage" class="goto-container">
-                    <span class="separator"></span>        
-                    <span class="goto">
-                        <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
-                        <button @click="changePage(goPageNumber)">Go</button>
-                    </span>
+            <span class="goto-container" ref="gotoContainer">
+                <span class="separator"></span>        
+                <span class="goto">
+                    <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
+                    <button @click="changePage(goPageNumber)">Go</button>
                 </span>
-            </transition>
+            </span>
         </span>
         <span class="separator"></span>
         <span class="separator"></span>
         
-        <span class="page-size no-select">
+        <span class="page-size no-select" ref="pageSizeEl">
             <span><strong>{{numberWithCommas(this.totalRecords)}}</strong> docs</span> 
             <span class="separator"></span>    
             <span class="separator"></span>    
@@ -56,6 +54,7 @@
 
 <script>
     import utils from '@/utils'
+    import { gsap } from "gsap"
     
     export default {
         props: {
@@ -72,7 +71,6 @@
         data: function() {
             return {
                 goPageNumber: '',
-                showGotoPage: false,
             }
         },
         watch: {
@@ -111,6 +109,9 @@
                 return Math.ceil(this.totalRecords/this.pageSize);
             }
         },
+        mounted: async function() {
+            
+        }, 
         methods: {
             changePage(pageNumber) { 
                 if (pageNumber < 1) {
@@ -120,7 +121,6 @@
                     pageNumber = this.totalPages;
                 }
                 this.$emit('change-page', pageNumber);
-                this.showGotoPage = false;
                 this.goPageNumber = '';
             },
             changePageSize(event) {
@@ -129,17 +129,39 @@
             },
             numberWithCommas: utils.numberWithCommas,
             toggleGotoPage(bool) {
+
                 if (bool) {
-                    this.showGotoPage = true;
+                    gsap.set(this.$refs.gotoContainer, { zIndex: -1 });
+
+                    this.timelineGoto = gsap.timeline({delay: 0.5});
+                    this.timelineGoto.to(
+                        this.$refs.gotoContainer, 
+                        {
+                            x: 0, 
+                            opacity: 1,
+                            duration: 0.3,
+                            onComplete: () => {
+                                gsap.set(this.$refs.gotoContainer, { zIndex: 1 });
+                            }
+                        },
+                    );
+                    this.timelineGoto.to(
+                        this.$refs.pageSizeEl, 
+                        {
+                            x: 0, 
+                            duration: 0.3,
+                        },
+                        '<'
+                    );
+                                        
+
                     this.$nextTick(() => {
                         this.$refs.pageNumInput.focus();
                     });
                 } else {
-                    this.showGotoPage = false;
+                    gsap.set(this.$refs.gotoContainer, { zIndex: '-1' });
+                    this.timelineGoto.reverse();
                 }
-            },
-            gotoPageAnimStarted() {
-                console.log('gotoPageAnimStarted');
             }
             
         }
@@ -193,6 +215,7 @@
     .page-size {
         width: 8rem;
         white-space: nowrap;
+        display: inline-block;
     }
 
     .page-size span {
@@ -220,9 +243,6 @@
     }
 }
 
-.goto-container {
-    z-index: -1;    
-}
 .goto {
     display: inline !important;
     overflow: hidden;
@@ -237,18 +257,13 @@
 }
 
 
-.gotopage-enter-active {
-    transition: all 0.4s ease 0.5s;
-}
-.gotopage-leave-active {
-    transition: all 0.4s ease-out;   
-}
-.gotopage-enter, .gotopage-leave-to {
+.goto-container {
     transform: translateX(-100px);
     opacity: 0;
 }
-
-
+span.page-size {
+    transform: translateX(-100px);
+}
 </style>
 
 
