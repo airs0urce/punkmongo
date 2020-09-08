@@ -258,11 +258,12 @@
 
 
 .goto-container {
-    transform: translateX(-100px);
-    opacity: 0;
+    transform: translateX(-140px);
+    opacity: 1;
+    z-index: -1;
 }
 span.page-size {
-    transform: translateX(-100px);
+    transform: translateX(-140px);
 }
 </style>
 
