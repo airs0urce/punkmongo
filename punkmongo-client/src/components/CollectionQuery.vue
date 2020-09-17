@@ -708,7 +708,8 @@ div.document {
     padding-top: 0.25em;
     padding-bottom: 0.25em;
     font-size: 1.1em;
-    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: auto;
     max-height: 11.5em;
     &.expanded {
         max-height: none;
