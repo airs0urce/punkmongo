@@ -1,4 +1,6 @@
+- Pagination - show page editor only if there are hidden pages
 
+---------------------------
 
 Visual Explain 
 -------------------------------
