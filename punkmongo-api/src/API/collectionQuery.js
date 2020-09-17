@@ -55,6 +55,10 @@ module.exports = async function (params, dbClient) {
     }
     resultDocumentsTotal = await collection.countDocuments(filter, countOptions);
     pagesTotal = Math.ceil(resultDocumentsTotal / params.query.pagination.pageSize);
+    if (pagesTotal === 0) {
+        pagesTotal = 1;
+    }
+
     if (params.query.pagination.pageNumber > pagesTotal) {
         params.query.pagination.pageNumber = pagesTotal;
         setSkipAndLimit(options, params);
@@ -99,7 +103,6 @@ function setSkipAndLimit(options, params) {
     const pageNumber = params.query.pagination.pageNumber;
 
     options.skip = pageSize * (pageNumber - 1);
-    
     
     if (params.query.options.limit !== false && params.query.options.limit < pageSize) {
         options.limit = params.query.options.limit - options.skip;

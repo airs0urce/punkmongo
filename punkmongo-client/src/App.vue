@@ -389,6 +389,9 @@ a {
 strong {
     font-weight: bold;
 }
+.light {
+    color: #777;
+}
 </style>
 
 

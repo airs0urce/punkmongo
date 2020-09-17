@@ -107,7 +107,11 @@
                 {{queryResult.explain}}
             </div>
 
-            <div class="results-header" >
+            <div class="results-header light" v-if="queryResult.resultDocumentsTotal == 0 && !queryLoading">
+                This collection is empty
+            </div>
+
+            <div class="results-header" v-if="queryResult.resultDocumentsTotal > 0">
                 <Pagination 
                     :totalRecords="queryResult.resultDocumentsTotal"
                     :pageSize="paginationPageSize"
@@ -149,7 +153,7 @@
                 <div class="document-body language-mongodb-filter" :class="{'expanded': record.expand}" v-html="highlight(record.doc)"></div>
             </div>
 
-            <div class="results-footer">
+            <div class="results-footer" v-if="queryResult.resultDocumentsTotal > 0">
                 <Pagination 
                     :totalRecords="queryResult.resultDocumentsTotal"
                     :pageSize="paginationPageSize"
