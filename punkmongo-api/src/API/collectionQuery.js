@@ -67,7 +67,7 @@ module.exports = async function (params, dbClient) {
     let record;
     while (record = await cursor.next()) {
         const docItem = {
-            id: record._id.toString(),
+            id: (record._id ? record._id.toString(): null),
             timestamp: false,
             doc: mongoDocToString(record),
         }
