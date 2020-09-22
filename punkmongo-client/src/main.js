@@ -9,7 +9,8 @@ import {
     faAngleRight,
     faCaretDown,
     faPen,
-    faTimes
+    faTimes,
+    faCaretRight
 } from '@fortawesome/free-solid-svg-icons'
 import VueWorker from 'vue-worker'
 
@@ -19,7 +20,7 @@ library.add(faAngleRight)
 library.add(faCaretDown)
 library.add(faPen)
 library.add(faTimes)
-
+library.add(faCaretRight)
 
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

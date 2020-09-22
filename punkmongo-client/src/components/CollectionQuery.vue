@@ -107,7 +107,7 @@
                 {{queryResult.explain}}
             </div>
 
-            <div class="results-header light" v-if="queryResult.resultDocumentsTotal == 0 && !queryLoading">
+            <div class="light" v-if="queryResult.resultDocumentsTotal == 0 && !queryLoading">
                 This collection is empty
             </div>
 
@@ -145,8 +145,8 @@
                     <span class="doc-actions no-select">
                         <a @click.prevent="expandDoc(record)" v-if="!record.expand"><span>Expand</span></a>
                         <a @click.prevent="collapseDoc(record)" v-if="record.expand"><span>Collapse</span></a>
-                        <a @click.prevent="expandAllDocs()" v-show="showOnlyExpandAll"><span>Expand All</span></a>
-                        <a @click.prevent="collapseAllDocs()" v-show="!showOnlyExpandAll"><span>Collapse All</span></a>
+                        <a @click.prevent="expandAllDocs($event)" v-show="showOnlyExpandAll"><span>Expand All</span></a>
+                        <a @click.prevent="collapseAllDocs($event)" v-show="!showOnlyExpandAll"><span>Collapse All</span></a>
                         <a @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
                     </span>
                 </div>
@@ -158,8 +158,9 @@
                     :totalRecords="queryResult.resultDocumentsTotal"
                     :pageSize="paginationPageSize"
                     :currentPage="paginationPageNumber"
+                    :loadingPage="paginationPageNumberLoading"
                     :showPagesAround="6"
-                    @change-page="paginationPageNumber = $event"
+                    @change-page="paginationPageNumberLoading = $event"
                     @change-page-size="paginationPageSize = $event"
                 />
             </div>
@@ -442,17 +443,38 @@ export default {
         resetHint() {
             this.query.hint = '';
         },
-        expandAllDocs() {
+        expandAllDocs(event) {
             for (let record of this.queryResult.records) {
                 this.$set(record, 'expand', true);
             }
             this.showOnlyExpandAll = false;
+
+            this.$nextTick(async () => {
+                await a.delay(10);
+
+                const docEl = event.target.closest('.document');
+
+                docEl.scrollIntoView({
+                    block: 'start', 
+                    behavior: (utils.isInViewport(docEl)? 'smooth': 'auto')
+                });                
+            });
         },
-        collapseAllDocs() {
+        collapseAllDocs(event) {
             for (let record of this.queryResult.records) {
                 this.$set(record, 'expand', false);
             }
             this.showOnlyExpandAll = true;
+
+            this.$nextTick(async () => {
+                await a.delay(10);
+                const docEl = event.target.closest('.document');
+                
+                docEl.scrollIntoView({
+                    block: 'start', 
+                    behavior: (utils.isInViewport(docEl)? 'smooth': 'auto')
+                });
+            });
         },
         expandDoc(doc) {
             this.$set(doc, 'expand', true);

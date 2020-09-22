@@ -1,8 +1,8 @@
 
 
 <template>
-    <span class="pagination">
-        <span class="pages-list" @mouseenter="toggleGotoPage(true)" @mouseleave="toggleGotoPage(false)">
+    <span class="pagination" @mouseleave="toggleGotoPage(false)">
+        <span class="pages-list">
             <span class="pages no-select">
                 <a class="pagination-btn" title="Previous Page" :class="{'disabled': currentPage == 1}"  @click="changePage(currentPage - 1)"><font-awesome-icon class="pagination-arrows" icon="angle-left" /></a>
                 <a class="pagination-btn" title="Next Page" :class="{'disabled': currentPage == totalPages}" @click="changePage(currentPage + 1)"><font-awesome-icon class="pagination-arrows" icon="angle-right" /></a>
@@ -19,17 +19,26 @@
                 <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
             </span>
             
-            <span class="goto-container" ref="gotoContainer">
+            <span class="goto-container" ref="gotoContainer" @mouseenter="toggleGotoPage(true)">
                 <span class="separator"></span>        
                 <span class="goto">
-                    <input type="number" min="0" :max="totalPages" v-model.number="goPageNumber" placeholder="#" ref="pageNumInput" @keyup.enter="changePage(goPageNumber)" />    
+                    <input type="number" 
+                        min="0" 
+                        :max="totalPages" 
+                        v-model.number="goPageNumber" 
+                        placeholder="page #" 
+                        ref="pageNumInput" 
+                        @keyup.enter="changePage(goPageNumber)" 
+
+                        @blur="toggleGotoPage(false)"
+                    />    
                     <button @click="changePage(goPageNumber)">Go</button>
                 </span>
+                <font-awesome-icon  class="btn-show-go-pagenumber" icon="caret-right" />
             </span>
         </span>
         <span class="separator"></span>
         <span class="separator"></span>
-        
         <span class="page-size no-select" ref="pageSizeEl">
             <span><strong>{{numberWithCommas(this.totalRecords)}}</strong> docs</span> 
             <span class="separator"></span>    
@@ -46,7 +55,6 @@
                 <option value="2000">2000</option>
                 <option value="5000">5000</option>
             </select> 
-            
         </span>
 
     </span>
@@ -130,36 +138,34 @@
             numberWithCommas: utils.numberWithCommas,
             toggleGotoPage(bool) {
 
-                if (bool) {
-                    gsap.set(this.$refs.gotoContainer, { zIndex: -1 });
-
-                    this.timelineGoto = gsap.timeline({delay: 0.5});
+                if (!this.timelineGoto) {
+                    this.timelineGoto = gsap.timeline({
+                        paused: true,
+                        onComplete: () => {
+                            gsap.set(this.$refs.pageNumInput, {cursor: 'text'});
+                        },
+                        onStart: () => {
+                            gsap.set(this.$refs.pageNumInput, {cursor: 'default'});
+                        }
+                    });
                     this.timelineGoto.to(
                         this.$refs.gotoContainer, 
-                        {
-                            x: 0, 
-                            opacity: 1,
-                            duration: 0.3,
-                            onComplete: () => {
-                                gsap.set(this.$refs.gotoContainer, { zIndex: 1 });
-                            }
-                        },
+                        {x: 0, opacity: 1, duration: 0.4},
                     );
                     this.timelineGoto.to(
                         this.$refs.pageSizeEl, 
-                        {
-                            x: 0, 
-                            duration: 0.3,
-                        },
+                        {x: 0, duration: 0.4},
                         '<'
                     );
-                                        
-
+                }
+                
+                if (bool) {
+                    this.timelineGoto.play();
                     this.$nextTick(() => {
                         this.$refs.pageNumInput.focus();
                     });
                 } else {
-                    gsap.set(this.$refs.gotoContainer, { zIndex: '-1' });
+                    gsap.set(this.$refs.pageNumInput, {cursor: 'default'});
                     this.timelineGoto.reverse();
                 }
             }
@@ -213,6 +219,7 @@
         margin-right: 0.5em;
     }
     .page-size {
+        transform: translateX(-120px);
         width: 8rem;
         white-space: nowrap;
         display: inline-block;
@@ -240,6 +247,7 @@
     display: inline-flex;
     .pages {
         background-color: #fff;
+        z-index: 2;
     }
 }
 
@@ -250,6 +258,7 @@
 
     input {
         width: 5em;    
+        cursor: default;
     }
     span {
         color: #777;    
@@ -258,12 +267,13 @@
 
 
 .goto-container {
-    transform: translateX(-140px);
+    transform: translateX(-133px);
     opacity: 1;
-    z-index: -1;
 }
-span.page-size {
-    transform: translateX(-140px);
+
+.btn-show-go-pagenumber {
+    margin-left: 1rem;
+    color: #777;
 }
 </style>
 
