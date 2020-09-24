@@ -139,7 +139,7 @@
                         <a><span>Refresh</span></a>
                     </span>                        
                     <span class="separator">
-                        <span v-if="record.timestamp" title="Created date. We got it from _id field">{{moment(record.timestamp).format('MMMM Do YYYY, h:mm:ss a')}}</span>
+                        <span v-if="record.timestamp" title="Creation date from _id field">{{moment(record.timestamp).format('MMMM Do YYYY, h:mm:ss a')}}</span>
                         <span class="note" v-if="!record.timestamp">-</span>
                     </span>
                     <span class="doc-actions no-select">
@@ -454,10 +454,9 @@ export default {
 
                 const docEl = event.target.closest('.document');
 
-                docEl.scrollIntoView({
-                    block: 'start', 
-                    behavior: (utils.isInViewport(docEl)? 'smooth': 'auto')
-                });                
+                if (! utils.isInViewport(docEl)) {
+                    docEl.scrollIntoView({block: 'start'});   
+                }               
             });
         },
         collapseAllDocs(event) {
@@ -470,10 +469,9 @@ export default {
                 await a.delay(10);
                 const docEl = event.target.closest('.document');
                 
-                docEl.scrollIntoView({
-                    block: 'start', 
-                    behavior: (utils.isInViewport(docEl)? 'smooth': 'auto')
-                });
+                if (! utils.isInViewport(docEl)) {
+                    docEl.scrollIntoView({block: 'start'});   
+                } 
             });
         },
         expandDoc(doc) {
