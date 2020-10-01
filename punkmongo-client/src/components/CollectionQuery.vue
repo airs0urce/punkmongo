@@ -751,11 +751,14 @@ div.document {
     margin-left: 0.3em; 
 }
 .results-header {
-    overflow: hidden;
     margin-top: 0.5em;
     margin-bottom: 1em;
     display: flex;
     justify-content: space-between;
+}
+
+.results-header, .results-footer{
+    overflow: hidden;
 }
 
 .reset-btn {
