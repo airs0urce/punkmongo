@@ -8,7 +8,7 @@
 <script>
     import Prism from '@/vendor/prismjs/prism.js';
     import '@/vendor/prismjs/prism.css'
-    import {CodeJar} from '@/vendor/codejar/codejar.js';
+    import CodeJar from '@/components/CodeJar';
 
     export default {
         mounted: function() {

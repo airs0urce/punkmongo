@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {CodeJar} from '@/vendor/codejar/codejar.js';
+import {CodeJar} from 'codejar';
 import Prism from '@/vendor/prismjs/prism';
 import '@/vendor/prismjs/prism.css'
 
@@ -35,7 +35,7 @@ export default {
         this.queryEditor = CodeJar(
             this.$refs.codejarEl,
             Prism.highlightElement,
-            {tab: ' '.repeat(2), enableSelfClosing: false}
+            {tab: ' '.repeat(2), addClosing: false}
         );
         this.queryEditor.updateCode(this.value);
         this.queryEditor.onUpdate(code => {
