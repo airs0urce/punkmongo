@@ -7,7 +7,7 @@
             <router-link class="new-database no-select" :to="'/new-database'">New database</router-link>
             <ul class="left-panel-dbs">
                 <li v-for="db in state.persistent.dbList">
-                    <div class="db-link-wrapper-intersect-detection" :ref="'intersect-' + db.name"></div>
+                    <div class="db-link-wrapper-top" :ref="'intersect-' + db.name"></div>
                     <div class="db-link-wrapper">
                         <router-link 
                             class="db-link loading-animation" 
@@ -74,12 +74,16 @@ export default {
                 const tookSec = moment.now() - dbLoadStartedTs;
                 if (tookSec < loadingDbAnimationMs) {
                     let msDelay = loadingDbAnimationMs - tookSec;
-                    await a.delay(msDelay); // let animation finish
+                     // let animation finish
+                    a.delay(msDelay).then(() => {
+                        this.showLoadingDb = false;
+                    });
                 }
-                this.showLoadingDb = false;
+                
+
                 this.$nextTick(() => {
-                    this.handleDbIntersectionObserver();
                     this.scrollToActiveDB();
+                    this.handleDbIntersectionObserver();
                 });
             }
         },
@@ -101,20 +105,25 @@ export default {
             }
             
             if (this.lastActiveDbName) {
-                this.dbIntersectionObserver.unobserve(this.$refs[`intersect-${this.lastActiveDbName}`][0])
+                const oldEl = this.$refs[`intersect-${this.lastActiveDbName}`][0];
+                oldEl.closest('li').querySelector('.db-link-wrapper').classList.remove('sticky-active');
+                this.dbIntersectionObserver.unobserve(oldEl);
             }
             this.dbIntersectionObserver.observe(this.$refs[`intersect-${this.$store.state.activeDb.name}`][0]);
         },
         scrollToActiveDB() {
-            const activeDbEl = document.querySelector('.db-link.router-link-exact-active');
-            if (activeDbEl) {
+            const activeDbTopEl = document.querySelector('.db-link.router-link-exact-active')
+                .closest('li')
+                .querySelector('.db-link-wrapper-top');
+
+            if (activeDbTopEl) {
                 if ('' === this.lastActiveDbName) {
-                    activeDbEl.scrollIntoView({
+                    activeDbTopEl.scrollIntoView({
                         block: 'start',
                         behavior: 'smooth'
                     });
                 } else {
-                    activeDbEl.scrollIntoView({
+                    activeDbTopEl.scrollIntoView({
                         block: 'nearest'
                     });
                 }
@@ -169,7 +178,7 @@ a {
     }
     li {
         line-height: 1.2;
-        .db-link-wrapper-intersect-detection {
+        .db-link-wrapper-top {
             height: 1px; 
         }
         .db-link-wrapper {
