@@ -187,16 +187,16 @@ a {
             top: 0;
             background-color: #eeefff;
             // border-bottom: 1px solid #ddd;
+            
+            background: url("../assets/imgs/database.png") no-repeat;
+            background-size: 14px;
+            background-position: 0.5em 0.5px;
 
             &.sticky-active {
                 border-bottom: 1px solid #ddd;
                 background: #dcddf9;
             }
             a.db-link {
-                background: url("../assets/imgs/database.png") no-repeat;
-                background-size: 14px;
-                background-position: 0px 0.5px;
-
                 padding-left: 1.7em;
                 cursor: pointer;
                 &:hover {
