@@ -19,7 +19,7 @@
                 <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
             </span>
             
-            <span class="goto-container" ref="gotoContainer" @mouseenter="toggleGotoPage(true)">
+            <span class="goto-container" ref="gotoContainer" @mouseenter="toggleGotoPage(true)" @mouseleave="toggleGotoPage(false)">
                 <span class="separator"></span>        
                 <span class="goto">
                     <input type="number" 
@@ -29,8 +29,6 @@
                         placeholder="page #" 
                         ref="pageNumInput" 
                         @keyup.enter="changePage(goPageNumber)" 
-
-                        @blur="toggleGotoPage(false)"
                     />    
                     <button @click="changePage(goPageNumber)">Go</button>
                 </span>
@@ -43,7 +41,7 @@
             <span><strong>{{numberWithCommas(this.totalRecords)}}</strong> docs</span> 
             <span class="separator"></span>    
             <span class="separator"></span>    
-            <span> per page </span>
+            
             <select :value="pageSize" @input="changePageSize">
                 <option value="10">10</option>
                 <option value="20">20</option>
@@ -55,6 +53,7 @@
                 <option value="2000">2000</option>
                 <option value="5000">5000</option>
             </select> 
+            <span> per page </span>
         </span>
 
     </span>

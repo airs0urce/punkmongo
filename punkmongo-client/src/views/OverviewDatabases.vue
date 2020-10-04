@@ -47,15 +47,7 @@
                 </tr>
             </tbody>
             <tfoot>
-                <tr>
-                    <td>TATAL</td>
-                    <td>{{ statsTotal('collections') }}</td>
-                    <td>{{ statsTotal('views') }}</td>
-                    <td>{{ statsTotal('indexes') }}</td>
-                    <td>{{ bytesFormatted(statsTotal('storageSize')) }}</td>
-                    <td>{{ bytesFormatted(statsTotal('indexSize')) }}</td>
-                    <td>{{ numberWithCommas(statsTotal('objects')) }}</td>
-                </tr>
+          
                 <tr>
                     <th>Database name</th>
                     <th>Collections</th>

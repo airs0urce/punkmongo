@@ -392,6 +392,9 @@ strong {
 .light {
     color: #777;
 }
+.page-header {
+    font-size: 1.5em;
+}
 </style>
 
 

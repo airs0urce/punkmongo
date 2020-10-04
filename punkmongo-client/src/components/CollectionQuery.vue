@@ -121,13 +121,6 @@
                     @change-page="paginationPageNumberLoading = $event"
                     @change-page-size="paginationPageSize = $event"
                 />
-
-                <span class="query-result-functions">
-                    <DropdownMenu buttonText="Copy docs to clipboard" :items="copyDropdownItems"/>
-                    <!-- <DropdownMenu> -->
-                    <!-- <button>Copy All {{queryResult.resultDocumentsTotal}} docs</button> -->
-                </span>
-                
             </div>
 
             <div v-for="(record, index) in queryResult.records" :key="record._id" class="document">
@@ -746,10 +739,7 @@ div.document {
 .timestamp-label {
     padding-left: 0.5em; 
 }
-.query-result-functions {
-    display: inline-block;
-    margin-left: 0.3em; 
-}
+
 .results-header {
     margin-top: 0.5em;
     margin-bottom: 1em;

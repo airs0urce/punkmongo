@@ -1,12 +1,12 @@
 <template>
     <div>
-        <h1 class="collection-header no-select">
+        <h1 class="page-header collection-header no-select">
             <div v-if="activeDb.name != ''">
                 <router-link :to="`/overview/databases`">Databases</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
                 <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" />
-                {{activeDb.activeCollection.name}}
+                {{activeDb.activeCollection.name}} <span class="light">({{numberWithCommas(getCollectionStats().objects)}} documents)</span>
             </div>
         </h1>
 
@@ -33,7 +33,7 @@ import CollectionInsert from '@/components/CollectionInsert';
 import CollectionAggregate from '@/components/CollectionAggregate';
 import CollectionIndexes from '@/components/CollectionIndexes';
 import CollectionValidation from '@/components/CollectionValidation';
-
+import utils from '../utils'
 
 import {
     mapState
@@ -60,6 +60,13 @@ export default {
             const collName = this.$route.params.collName;
             this.$store.commit(mutations.SET_ACTIVE_COLLECTION, collName);
         },
+        numberWithCommas: utils.numberWithCommas,
+        getCollectionStats() {
+            const collection = this.activeDb.collections.find((coll) => {
+                return coll.name == this.activeDb.activeCollection.name;
+            });
+            return collection.stats;
+        }
     },
     mounted() {
 

@@ -27,7 +27,8 @@ const app = new Koa();
             try {
                 response = await methodFunction(params, dbClient);
             } catch (e) {
-                console.error(e);
+                console.error(stackTrace(e));
+                throw e;
             }
 
             return response;
@@ -47,3 +48,12 @@ const app = new Koa();
 // const crypto = require('crypto');
 // const token = crypto.createHmac('sha256', config.api.auth.password).update(config.api.auth.username).digest('hex')
 // console.log('Authorization header:', token)
+
+
+function stackTrace(e) {
+    Error.captureStackTrace(e, stackTrace);
+    return e.stack;
+}
+
+
+

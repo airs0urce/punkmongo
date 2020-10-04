@@ -1,69 +1,18 @@
 <template>
     <div>
-    <div v-if="activeDb.name == ''">Loading...</div>
-    <div v-if="activeDb.name != ''">
+        <div v-if="activeDb.name == ''">Loading...</div>
+        <div v-if="activeDb.name != ''">
+            <h1 class="page-header collection-header no-select">
+                <div v-if="activeDb.name != ''">
+                    <router-link :to="`/overview/databases`">Databases</router-link>
+                    <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.name}}
+                </div>
+            </h1>
 
-        <h1 class="collection-header no-select">
-            <div v-if="activeDb.name != ''">
-                <router-link :to="`/overview/databases`">Databases</router-link>
-                <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.name}}
-            </div>
-        </h1>
 
-
-        
-        Statistics | New Collection | Command | 
-        <div class="line" />
-            <table cellpadding="2" cellspacing="1" width="480px">
-                <colgroup>
-                    <col width="25%" valign="top">
-                    <col width="25%" valign="top">
-                    <col width="25%" valign="top">
-                    <col width="25%" valign="top">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th>Database Statistics</th>
-                        <th>MB</th>
-                        <th>GB</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Data Size</td>
-                        <td>{{ bytesFormatted(activeDb.stats.dataSize, 'MB') }}</td>
-                        <td>{{ bytesFormatted(activeDb.stats.dataSize, 'GB') }}</td>
-                    </tr>
-                    <tr>
-                        <td>Storage Size</td>
-                        <td>{{ bytesFormatted(activeDb.stats.storageSize, 'MB') }}</td>
-                        <td>{{ bytesFormatted(activeDb.stats.storageSize, 'GB') }}</td>
-                    </tr>
-                    <tr>
-                        <td>Index Size</td>
-                        <td>{{ bytesFormatted(activeDb.stats.indexSize, 'MB') }}</td>
-                        <td>{{ bytesFormatted(activeDb.stats.indexSize, 'GB') }}</td>
-                    </tr>
-                    <tr>
-                        <td>Avg Object Size</td>
-                        <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'MB') }}</td>
-                        <td>{{ bytesFormatted(activeDb.stats.avgObjSize, 'GB') }}</td>
-                    </tr>
-                    <tr>
-                        <td>Collections</td>
-                        <td colspan="2">{{activeDb.collections.length}}</td>
-                    </tr>
-                    <tr>
-                        <td>Documents</td>
-                        <td colspan="2">{{ numberWithCommas(activeDb.stats.objects) }}</td>
-                    </tr>
-                    <tr>
-                        <td>Indexes</td>
-                        <td colspan="2">{{ activeDb.stats.indexes }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            Statistics | New Collection | Command | 
             <div class="gap"></div>
+            
             <table cellpadding="2" cellspacing="1" class="full-width-table">
                 <colgroup>
                     <col width="14%" valign="top">
@@ -82,6 +31,22 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
+                    </tr>
+                    <tr class="bold">
+                        <td rowspan="2">TATAL</td>
+                        <td rowspan="2">{{ numberWithCommas(statsTotal('objects')) }}</td>
+                        <td>{{ bytesFormatted(statsTotal('dataSize')) }}</td>
+                        <td>{{ bytesFormatted(statsTotal('storageSize'), 'MB') }}</td>
+                        <td>{{ bytesFormatted(statsTotal('avgObjSize'), 'KB') }}</td>
+                        <td rowspan="2">{{ statsTotal('indexesCount') }}</td>
+                        <td>{{ bytesFormatted(statsTotal('indexesSize'), 'MB') }}</td>
+                    </tr>
+                    <tr class="bold">
+                        <td>{{ bytesFormatted(statsTotal('dataSize'), 'GB') }}</td>
+                        <td>{{ bytesFormatted(statsTotal('storageSize'), 'GB') }}</td>
+                        <td>{{ bytesFormatted(statsTotal('avgObjSize'), 'MB') }}</td>
+                        
+                        <td>{{ bytesFormatted(statsTotal('indexesSize'), 'KB') }}</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -132,6 +97,14 @@ export default {
     methods: {
         bytesFormatted: utils.bytesFormatted,
         numberWithCommas: utils.numberWithCommas,
+        statsTotal(field) {
+            let total = 0;
+            const dbList = this.$store.state.persistent.dbList;
+            for (let collection of this.activeDb.collections) {
+                total += collection.stats[field];
+            }
+            return total;
+        },
     },
     mounted() {
         eventBus.$emit('load-database', this.$route.params.dbName);

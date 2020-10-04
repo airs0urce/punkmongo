@@ -1,6 +1,6 @@
 <template>
     <div>
-    <ul class="x">
+    <ul class="x page-header">
         <li>
             <router-link to="/overview/databases">Databases</router-link>
         </li>
