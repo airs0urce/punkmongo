@@ -10,7 +10,7 @@
             </div>
             <div class="left-panel-scroll">
                 <!-- <div class="line" /> -->
-                <div class="padding">
+                <div class="left-panel-scroll-padding">
                     <DatabasesNavigation />
                 </div>
             </div>
@@ -169,7 +169,7 @@ a:hover {
     min-height: 100vh;
 }
 .padding {
-    padding: 0.8rem;
+    padding: 1rem;
 }
 
 $left-panel-header-height: 2.5rem;
@@ -184,13 +184,13 @@ $left-panel-header-height: 2.5rem;
         padding: 0.8rem;
         height: $left_panel_header_height;
     }
+    .left-panel-scroll-padding {
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+    }
     .left-panel-scroll {
         overflow: auto;
         height: calc(100vh - #{$left-panel-header-height});
-        .padding {
-            padding-top: 1rem;
-            padding-bottom: 2rem;
-        }
     }
 }
 
@@ -250,7 +250,7 @@ table {
 }
 
 div.gap {
-    height: 20px;
+    height: 1rem;
 }
 
 .left-panel-header-link {

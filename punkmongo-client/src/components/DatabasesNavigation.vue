@@ -7,13 +7,17 @@
             <router-link class="new-database no-select" :to="'/new-database'">New database</router-link>
             <ul class="left-panel-dbs">
                 <li v-for="db in state.persistent.dbList">
-                    <router-link 
-                        class="db-link loading-animation" 
-                        :class="{loading: showLoadingDb == db.name, 'router-link-exact-active': state.activeDb.name == db.name}"
-                        :to="'/db/' + db.name"
-                        @click.native="onDbLinkClicked"
-                        >{{db.name}}</router-link>
-                    ({{db.stats.collections}})
+                    <div class="db-link-wrapper-intersect-detection" :ref="'intersect-' + db.name"></div>
+                    <div class="db-link-wrapper">
+                        <router-link 
+                            class="db-link loading-animation" 
+                            :class="{loading: showLoadingDb == db.name, 'router-link-exact-active': state.activeDb.name == db.name}"
+                            :to="'/db/' + db.name"
+                            @click.native="onDbLinkClicked"
+                            >{{db.name}}</router-link>
+                        ({{db.stats.collections}})
+                    </div>
+
                     <div v-if="state.activeDb.name == db.name">
                         <ul class="left-panel-collections">
                             <li v-for="collection in state.activeDb.collections">
@@ -53,7 +57,8 @@ export default {
     data: function() {
         return {
             showLoadingDb: false,
-            lastActiveDbName: ''
+            lastActiveDbName: '',
+            dbIntersectionObserver: null
         }
     },
     computed: mapState({
@@ -73,12 +78,33 @@ export default {
                 }
                 this.showLoadingDb = false;
                 this.$nextTick(() => {
+                    this.handleDbIntersectionObserver();
                     this.scrollToActiveDB();
                 });
             }
         },
     },
     methods: {
+
+        // this method adds "sticky-active" class to element which is wrapper of db name. 
+        // it's needed because I want to change style of that element when position:sticky activated 
+        handleDbIntersectionObserver() {
+            if (! this.dbIntersectionObserver) {
+                this.dbIntersectionObserver = new IntersectionObserver((entries) => {
+                    const dbLinkWrapper = entries[0].target.closest('li').querySelector('.db-link-wrapper');
+                    if (entries[0].intersectionRatio === 0) {
+                        dbLinkWrapper.classList.add('sticky-active');
+                    } else {
+                        dbLinkWrapper.classList.remove('sticky-active');
+                    }
+                }, { threshold: [0,1] });
+            }
+            
+            if (this.lastActiveDbName) {
+                this.dbIntersectionObserver.unobserve(this.$refs[`intersect-${this.lastActiveDbName}`][0])
+            }
+            this.dbIntersectionObserver.observe(this.$refs[`intersect-${this.$store.state.activeDb.name}`][0]);
+        },
         scrollToActiveDB() {
             const activeDbEl = document.querySelector('.db-link.router-link-exact-active');
             if (activeDbEl) {
@@ -92,7 +118,7 @@ export default {
                         block: 'nearest'
                     });
                 }
-                this.lastActiveDbName = this.$store.activeDb && this.$store.activeDb.name;
+                this.lastActiveDbName = (this.$store.state.activeDb ? this.$store.state.activeDb.name: '');
             }
         },
         numberWithCommas: utils.numberWithCommas,
@@ -118,8 +144,8 @@ export default {
 a.new-database {
     background: url("../assets/imgs/add.png") no-repeat;
     background-size: 14px;
-    background-position: 0px 0.5px;
-    padding-left: 1.7em;
+    background-position: 0.5rem 0.5px;
+    padding-left: 2.2em;
     padding-bottom: 0.3em;
     display: inline-block;
 }
@@ -143,22 +169,37 @@ a {
     }
     li {
         line-height: 1.2;
-        background: url("../assets/imgs/database.png") no-repeat;
-        background-size: 14px;
-        background-position: 0px 0.5px;
+        .db-link-wrapper-intersect-detection {
+            height: 1px; 
+        }
+        .db-link-wrapper {
+            padding-left: 0.5rem;
+            position: sticky;
+            top: 0;
+            background-color: #eeefff;
+            // border-bottom: 1px solid #ddd;
 
-        a.db-link {
-            padding-left: 1.7em;
-            cursor: pointer;
-            &:hover {
-                color: blue;
+            &.sticky-active {
+                border-bottom: 1px solid #ddd;
+                background: #dcddf9;
+            }
+            a.db-link {
+                background: url("../assets/imgs/database.png") no-repeat;
+                background-size: 14px;
+                background-position: 0px 0.5px;
+
+                padding-left: 1.7em;
+                cursor: pointer;
+                &:hover {
+                    color: blue;
+                }
             }
         }
     }
 }
 
 ul.left-panel-collections {
-    padding-left: 1.6em;
+    padding-left: 2.1em;
     li {
         padding-left: 1.7em;
         background: url("../assets/imgs/collection.png") no-repeat;
