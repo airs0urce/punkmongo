@@ -39,7 +39,7 @@ module.exports = async function (params, dbClient) {
         options.projection = params.query.options.projection;
     }
     if (params.query.options.timeout) {
-        options.maxTimeMS = params.query.options.timeout * 1000;
+        options.maxTimeMS = params.query.options.timeout;
     }
 
     const filter = ejsonParser(params.query.filter, {loose: true, allowComments: false});

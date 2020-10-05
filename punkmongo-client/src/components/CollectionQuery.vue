@@ -87,13 +87,13 @@
                         <div>execution timeout</div>
                         <span class="nowrap">
                             <input type="number" 
-                                min="0"
+                                min="1"
                                 placeholder="∞" 
                                 class="timeout-input" 
                                 v-model.number="query.timeout" 
                                 @keyup.enter="querySubmit()"
                                 :class="{'empty-value': isValueEmpty('query.timeout')}"
-                            /> sec
+                            /> ms
                             <font-awesome-icon class="reset-btn" icon="times" @click="resetTimeout()" v-if="query.timeout > 0" />
                         </span>
                     </div>
@@ -348,12 +348,12 @@ export default {
                     result: {
                         error: null,
                         initialLoadFinished: true,
-                        collectionDocumentsTotal: response.collectionDocumentsTotal,
-                        resultDocumentsTotal: response.resultDocumentsTotal,
-                        explain: response.explain,
-                        pageNumber: response.pageNumber,
-                        pagesTotal: response.pagesTotal,
-                        records: response.records,
+                        collectionDocumentsTotal: response.result.collectionDocumentsTotal,
+                        resultDocumentsTotal: response.result.resultDocumentsTotal,
+                        explain: response.result.explain,
+                        pageNumber: response.result.pageNumber,
+                        pagesTotal: response.result.pagesTotal,
+                        records: response.result.records,
                     }
                 });
 
@@ -431,7 +431,9 @@ export default {
                 collection: this.activeDb.activeCollection.name
             });
 
-            this.$store.commit(mutations.SET_COLLECTION_INDEXES, response.indexes);
+            if (! response.error) {
+                this.$store.commit(mutations.SET_COLLECTION_INDEXES, response.result.indexes);
+            }
         },
         resetHint() {
             this.query.hint = '';
@@ -498,6 +500,11 @@ export default {
         ]
 
         await this.updateIndexes();
+
+
+        if (! this.queryResult.initialLoadFinished) {
+            this.querySubmit();
+        }
         
     },
     destroyed: async function() {

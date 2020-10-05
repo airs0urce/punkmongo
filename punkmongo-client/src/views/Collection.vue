@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="page-header collection-header no-select">
+        <h1 class="page-header no-select">
             <div v-if="activeDb.name != ''">
                 <router-link :to="`/overview/databases`">Databases</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 

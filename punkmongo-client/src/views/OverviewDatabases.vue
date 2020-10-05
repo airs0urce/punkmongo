@@ -17,19 +17,23 @@
                     <th>Database name</th>
                     <th>Collections</th>
                     <th>Views</th>
-                    <th>Indexes</th>
                     <th>Storage Size</th>
+                    <th>Indexes</th>
                     <th>Indexes Size</th>
                     <th>Documents</th>
                 </tr>
-                <tr class="bold">
-                    <td>TATAL</td>
-                    <td>{{ numberWithCommas(statsTotal('collections')) }}</td>
-                    <td>{{ numberWithCommas(statsTotal('views')) }}</td>
-                    <td>{{ numberWithCommas(statsTotal('indexes')) }}</td>
-                    <td>{{ bytesFormatted(statsTotal('storageSize')) }}</td>
-                    <td>{{ bytesFormatted(statsTotal('indexSize')) }}</td>
-                    <td>{{ numberWithCommas(statsTotal('objects')) }}</td>
+                <tr>
+                    <th rowspan="2">TOTAL</th>
+                    <th rowspan="2">{{ numberWithCommas(statsTotal('collections')) }}</th>
+                    <th rowspan="2">{{ numberWithCommas(statsTotal('views')) }}</th>
+                    <th>{{ bytesFormatted(statsTotal('storageSize')) }}</th>
+                    <th rowspan="2">{{ numberWithCommas(statsTotal('indexes')) }}</th>
+                    <th>{{ bytesFormatted(statsTotal('indexSize')) }}</th>
+                    <th rowspan="2">{{ numberWithCommas(statsTotal('objects')) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ bytesFormatted(statsTotal('storageSize'), 'GB') }}</th>
+                    <th>{{ bytesFormatted(statsTotal('indexSize'), 'GB') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,8 +44,8 @@
                     </td>
                     <td>{{db.stats.collections}}</td>
                     <td>{{db.stats.views}}</td>
-                    <td>{{db.stats.indexes}}</td>
                     <td>{{bytesFormatted(db.stats.storageSize)}}</td>
+                    <td>{{db.stats.indexes}}</td>
                     <td>{{bytesFormatted(db.stats.indexSize)}}</td>
                     <td>{{numberWithCommas(db.stats.objects)}}</td>
                 </tr>

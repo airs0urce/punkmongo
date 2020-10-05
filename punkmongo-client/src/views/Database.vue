@@ -2,15 +2,18 @@
     <div>
         <div v-if="activeDb.name == ''">Loading...</div>
         <div v-if="activeDb.name != ''">
-            <h1 class="page-header collection-header no-select">
+            <h1 class="page-header no-select">
                 <div v-if="activeDb.name != ''">
                     <router-link :to="`/overview/databases`">Databases</router-link>
                     <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.name}}
+                    <span class="light">({{activeDb.collections.length}})</span>
                 </div>
             </h1>
 
 
-            Statistics | New Collection | Command | 
+            
+            <router-link class="new-collection no-select" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">New Collection</router-link>
+
             <div class="gap"></div>
             
             <table cellpadding="2" cellspacing="1" class="full-width-table">
@@ -24,7 +27,7 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>Collections ({{activeDb.collections.length}})</th>
+                        <th>Collections</th>
                         <th>Documents</th>
                         <th>Data Size</th>
                         <th>Storage Size</th>
@@ -32,21 +35,21 @@
                         <th>Indexes</th>
                         <th>Indexes Size</th>
                     </tr>
-                    <tr class="bold">
-                        <td rowspan="2">TATAL</td>
-                        <td rowspan="2">{{ numberWithCommas(statsTotal('objects')) }}</td>
-                        <td>{{ bytesFormatted(statsTotal('dataSize')) }}</td>
-                        <td>{{ bytesFormatted(statsTotal('storageSize'), 'MB') }}</td>
-                        <td>{{ bytesFormatted(statsTotal('avgObjSize'), 'KB') }}</td>
-                        <td rowspan="2">{{ statsTotal('indexesCount') }}</td>
-                        <td>{{ bytesFormatted(statsTotal('indexesSize'), 'MB') }}</td>
+                    <tr>
+                        <th rowspan="2">TOTAL</th>
+                        <th rowspan="2">{{ numberWithCommas(statsTotal('objects')) }}</th>
+                        <th>{{ bytesFormatted(statsTotal('dataSize')) }}</th>
+                        <th>{{ bytesFormatted(statsTotal('storageSize'), 'MB') }}</th>
+                        <th>{{ bytesFormatted(statsTotal('avgObjSize'), 'KB') }}</th>
+                        <th rowspan="2">{{ statsTotal('indexesCount') }}</th>
+                        <th>{{ bytesFormatted(statsTotal('indexesSize'), 'MB') }}</th>
                     </tr>
-                    <tr class="bold">
-                        <td>{{ bytesFormatted(statsTotal('dataSize'), 'GB') }}</td>
-                        <td>{{ bytesFormatted(statsTotal('storageSize'), 'GB') }}</td>
-                        <td>{{ bytesFormatted(statsTotal('avgObjSize'), 'MB') }}</td>
+                    <tr>
+                        <th>{{ bytesFormatted(statsTotal('dataSize'), 'GB') }}</th>
+                        <th>{{ bytesFormatted(statsTotal('storageSize'), 'GB') }}</th>
+                        <th>{{ bytesFormatted(statsTotal('avgObjSize'), 'MB') }}</th>
                         
-                        <td>{{ bytesFormatted(statsTotal('indexesSize'), 'KB') }}</td>
+                        <th>{{ bytesFormatted(statsTotal('indexesSize'), 'GB') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,6 +105,9 @@ export default {
             const dbList = this.$store.state.persistent.dbList;
             for (let collection of this.activeDb.collections) {
                 total += collection.stats[field];
+            }
+            if (isNaN(total)) {
+                return 0;
             }
             return total;
         },

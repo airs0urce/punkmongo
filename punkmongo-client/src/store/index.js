@@ -126,14 +126,18 @@ export default new Vuex.Store({
         [actions.ACTION_RELOAD_DB_LIST]: async ({
             commit
         }) => {
-            const dbList = await api.request('listDatabases');
-            commit(mutations.SET_DB_LIST, dbList);
+            const response = await api.request('listDatabases');
+            if (! response.error) {
+                commit(mutations.SET_DB_LIST, response.result);
+            }
         },
         [actions.ACTION_RELOAD_SERVER_INFO]: async ({
             commit
         }) => {
-            const serverInfo = await api.request('serverInfo');
-            commit(mutations.SET_SERVER_INFO, serverInfo);
+            const response = await api.request('serverInfo');
+            if (! response.error) {
+                commit(mutations.SET_SERVER_INFO, response.result);
+            }
         },
         [actions.ACTION_LOAD_DB]: async ({
             commit,
@@ -144,7 +148,7 @@ export default new Vuex.Store({
 
             api.request('getDbCollectionsStats', {
                 db: dbName
-            }).then(async (dbCollectionsStats) => {
+            }).then(async (response) => {
                 while (state.loadingDb) {
                     await a.delay(70);
                 }
@@ -152,17 +156,21 @@ export default new Vuex.Store({
                 // that getDbCollectionsStats request for DB_1 didn't finish and you already moved to DB_2. 
                 // In this case when we don't need to apply stats from DB_1
                 if (dbName == state.activeDb.name) {
-                    commit(mutations.SET_COLLECTIONS_STATS, {
-                        db: dbName,
-                        stats: dbCollectionsStats
-                    });
+                    if (! response.error) {
+                        commit(mutations.SET_COLLECTIONS_STATS, {
+                            db: dbName,
+                            stats: response.result
+                        });
+                    }
                 }
             });
 
-            const dbInfo = await api.request('getDatabase', {
+            const response = await api.request('getDatabase', {
                 db: dbName
             });
-            commit(mutations.SET_ACTIVE_DB, dbInfo);
+            if (! response.error) {
+                commit(mutations.SET_ACTIVE_DB, response.result);
+            }
             commit(mutations.SET_LOADING_DB, null);
         },
     },

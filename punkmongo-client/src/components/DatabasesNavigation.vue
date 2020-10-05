@@ -28,7 +28,7 @@
                                 ({{numberWithCommas(collection.stats.objects)}})
                             </li>
                         </ul>
-                        <router-link class="new-collection no-select" :to="'/db/' + state.activeDb.name + '/new-collection'">New collection</router-link>
+                        <router-link class="new-collection no-select" :to="'/db/' + state.activeDb.name + '/new-collection'">New Collection</router-link>
                     </div>
                 </li>
             </ul>

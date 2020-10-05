@@ -26,8 +26,6 @@ class API {
         if (responseData.error) {
             const error = `[${responseData.error.code}] - ${responseData.error.message}`;
             store.commit(mutations.SET_ERROR, {error: error});
-            console.log(`${error} - ${responseData.error.data}`);
-            throw Error(error);
         }
 
         console.log('| ', method, JSON.stringify(params, null, '  '));
@@ -36,7 +34,7 @@ class API {
         
         
 
-        return responseData.result;
+        return responseData;
     }
 
 }

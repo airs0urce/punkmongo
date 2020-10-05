@@ -1,14 +1,14 @@
 <template>
     <div>
-    <ul class="x page-header">
-        <li>
-            <router-link to="/overview/databases">Databases</router-link>
-        </li>
-        <li>
-            <router-link to="/overview/server-info">Server</router-link>
-        </li>
-    </ul>
-    <div class="line" />
+        <ul class="x page-header">
+            <li>
+                <router-link to="/overview/databases">Databases</router-link>
+            </li>
+            <li>
+                <router-link to="/overview/server-info">Server</router-link>
+            </li>
+        </ul>
+        <div class="gap"></div>
         <OverviewDatabases v-if="subpage == 'databases'" />
         <OverviewServerInfo v-if="subpage == 'server-info'" />
     </div>

@@ -28,7 +28,7 @@ const app = new Koa();
                 response = await methodFunction(params, dbClient);
             } catch (e) {
                 console.error(stackTrace(e));
-                throw e;
+                throw new Error(stackTrace(e));
             }
 
             return response;

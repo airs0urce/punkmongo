@@ -179,7 +179,7 @@ a:hover {
     min-height: 100vh;
 
     &.error-padding {
-        padding-top: 6rem;
+        padding-top: 8rem;
     }
 }
 .padding {
@@ -397,9 +397,6 @@ a {
     color: #bbb;
     margin: 0 0.5em;
 }
-.collection-header {
-    margin-bottom: 1em;
-}
 strong {
     font-weight: bold;
 }
@@ -408,11 +405,12 @@ strong {
 }
 .page-header {
     font-size: 1.5em;
+    margin-bottom: 1em;
 }
 
 .global-error {
     position: fixed;
-    height: 6rem;
+    height: 8rem;
     top: 0;
     overflow: auto;
     z-index: 100;
@@ -430,13 +428,16 @@ strong {
 .global-error-close {
     cursor: pointer;
     font-size: 1.5em;
-    position: absolute;
+    position: fixed;
     top: 0.2em;
     left: 0.3em;
     z-index: 101;
     &:hover {
         color: #444;
     }
+}
+table th {
+    vertical-align: middle;
 }
 </style>
 
