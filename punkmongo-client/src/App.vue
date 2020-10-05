@@ -172,6 +172,7 @@ a:focus {
 a:hover {
     color: blue;
 }
+
 .main-container {
     display: flex;
     flex-direction: row;
@@ -311,6 +312,7 @@ button {
     color: #555;
     cursor: default;
     border: 1px solid #ddd;
+    border-radius: 3px;
     white-space: nowrap;
     &:active,
     &.press-active {
@@ -439,6 +441,33 @@ strong {
 table th {
     vertical-align: middle;
 }
+
+
+form {
+    border-radius: 0.5em;
+    border: 1px solid #eee;
+    padding: 1em;
+    .form-row {
+        display: block;
+        margin-bottom: 1rem;
+    }
+    .form-row-last {
+        padding-top: 1em;
+        margin-bottom: 0;   
+    }
+    .field-name {
+        display: block;
+    }
+    .error {
+        color: #960505;
+    }
+}
+button, input, select, textarea {
+    vertical-align: bottom;
+}
+
+
+
 </style>
 
 

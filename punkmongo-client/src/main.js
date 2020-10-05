@@ -14,7 +14,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import VueWorker from 'vue-worker'
 
-
 library.add(faAngleLeft)
 library.add(faAngleRight)
 library.add(faCaretDown)

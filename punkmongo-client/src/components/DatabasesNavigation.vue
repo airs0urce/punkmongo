@@ -15,7 +15,7 @@
                             :to="'/db/' + db.name"
                             @click.native="onDbLinkClicked"
                             >{{db.name}}</router-link>
-                        ({{db.stats.collections}})
+                         ({{db.stats.collections}})
                     </div>
 
                     <div v-if="state.activeDb.name == db.name">
@@ -25,7 +25,7 @@
                                     :to="'/db/' + state.activeDb.name + '/col/' + collection.name"
                                     @mousedown.native="onCollectionLinkMouseDown(collection.name)"
                                     >{{collection.name}}</router-link>
-                                ({{numberWithCommas(collection.stats.objects)}})
+                                <span :class="{'no-docs': collection.stats.objects == 0}"> ({{numberWithCommas(collection.stats.objects)}})</span>
                             </li>
                         </ul>
                         <router-link class="new-collection no-select" :to="'/db/' + state.activeDb.name + '/new-collection'">New Collection</router-link>
@@ -194,7 +194,7 @@ a {
 
             &.sticky-active {
                 border-bottom: 1px solid #ddd;
-                background: #dcddf9;
+                background-color: #dcddf9;
             }
             a.db-link {
                 padding-left: 1.7em;
@@ -234,7 +234,9 @@ ul.left-panel-collections {
 .db-link.router-link-exact-active {
     font-weight: bold;
 }
-
+.no-docs {
+    color: #888;
+}
 
 </style>
 

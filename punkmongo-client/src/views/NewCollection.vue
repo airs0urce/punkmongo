@@ -7,51 +7,38 @@
         </div>
             
 
-        <label class="form">Name</label>
-
+        <form class="no-select">
+            <div class="form-row">
+                <label class="field-name">Name</label>
+                <input type="text" ref="test"/>
+            </div>
+            <div class="form-row">
+                <label><input type="checkbox" /> Capped Collection</label>
+            </div>
+            <div class="form-row">
+                <label><input type="checkbox" /> Use Custom Collation</label>
+            </div>
+            <div class="form-row form-row-last">
+                <button>Create Collection</button>
+            </div>
+        </form>
         
 
-        <table cellpadding="2" cellspacing="1" width="400">
-            <colgroup>
-                <col width="20%" valign="top">
-                <col width="80%" valign="top">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th colspan="2">New Collection</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Name</td>
-                    <td>
-                        <input type="" name="" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="checkbox" id="capped-collection" /> 
-                        <label for="capped-collection">Capped Collection</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="checkbox">
-                        <label>Use Custom Collation</label>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    
     </div>
 </template>
 
 <script>
 
 export default {
-  
+    mounted() {
+        this.$refs['test'].focus();
+    }
 }
 </script>
 
 <style lang="scss" scoped>
-
+    .field-name {
+        margin-bottom: 0.3em;
+    }
 </style>
