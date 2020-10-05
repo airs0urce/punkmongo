@@ -463,7 +463,7 @@ form {
     }
 }
 button, input, select, textarea {
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
 
