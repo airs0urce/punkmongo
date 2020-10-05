@@ -38,7 +38,7 @@ ul.x {
      display: flex;
      li {
          margin-right: 0.5rem;
-         border-right: 1px solid #ddd;
+         
          padding: 0.4rem 0.5rem;
     }
 }

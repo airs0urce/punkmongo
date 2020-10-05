@@ -249,7 +249,7 @@ export default {
             if (newVal != oldVal) {
                 this.resetQueryForm()
                 this.resetPagination();
-                this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT)              
+                this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT);
                 this.querySubmit()
                 this.$refs.filterTextInput.$el.focus()
             }

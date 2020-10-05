@@ -43,6 +43,9 @@ export default new Vuex.Store({
             activeCollection: {name: '', indexes: []},
             queryResult: defaultQueryResult,
         },
+        errors: {
+            global: null,
+        }
     },
     mutations: {
         [mutations.SET_LOADING_DB](state, bool) {
@@ -110,6 +113,12 @@ export default new Vuex.Store({
         }, 
         [mutations.SET_COLLECTION_INDEXES](state, indexes) {
             state.activeDb.activeCollection.indexes = indexes;
+        },
+        [mutations.SET_ERROR](state, {type, error}) {
+            if (!type) {
+                type = 'global';
+            }
+            state.errors[type] = error;
         }, 
         
     },

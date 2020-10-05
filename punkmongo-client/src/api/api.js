@@ -1,6 +1,8 @@
 import axios from 'axios'
 import config from '../../../config'
 import uuidv4 from 'uuid/v4'
+import * as mutations from '../store/mutations';
+import store from '../store/index';
 
 class API {
     constructor() {
@@ -23,7 +25,7 @@ class API {
         const responseData = response.data;
         if (responseData.error) {
             const error = `[${responseData.error.code}] - ${responseData.error.message}`;
-            alert(error);
+            store.commit(mutations.SET_ERROR, {error: error});
             console.log(`${error} - ${responseData.error.data}`);
             throw Error(error);
         }

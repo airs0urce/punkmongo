@@ -2,7 +2,14 @@
 <router-link to="/about">About</router-link> -->
 
 <template>
-    <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving">
+    <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving" :class="{'error-padding': $store.state.errors.global}">
+
+        <span class="global-error-close" v-if="$store.state.errors.global" @click="closeError()"><font-awesome-icon icon="times" /></span>
+        <div class="global-error" v-if="$store.state.errors.global">
+            <div class="error-wrapper">
+                <span class="message">{{$store.state.errors.global}}</span>
+            </div>
+        </div>
         <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px', width: $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
             <div class="left-panel-header no-select">
                 <router-link class="left-panel-header-link overview" to="/overview/databases">Overview</router-link>
@@ -134,6 +141,9 @@ export default {
 
             await this.$store.dispatch(actions.ACTION_LOAD_DB, dbName);
         },
+        closeError() {
+            this.$store.commit(mutations.SET_ERROR, {error: null});
+        }
 
     }
 }
@@ -167,6 +177,10 @@ a:hover {
     flex-direction: row;
     flex-wrap: nowrap;
     min-height: 100vh;
+
+    &.error-padding {
+        padding-top: 6rem;
+    }
 }
 .padding {
     padding: 1rem;
@@ -394,6 +408,35 @@ strong {
 }
 .page-header {
     font-size: 1.5em;
+}
+
+.global-error {
+    position: fixed;
+    height: 6rem;
+    top: 0;
+    overflow: auto;
+    z-index: 100;
+    background: #f9bdbd;
+    width: 100%;
+    padding: 0.7em 1em;
+    color: #000;
+    border-bottom: 4px solid #e4a6a7;
+
+    .error-wrapper {
+        padding-left: 1em;
+        white-space: pre-wrap;
+    }
+}
+.global-error-close {
+    cursor: pointer;
+    font-size: 1.5em;
+    position: absolute;
+    top: 0.2em;
+    left: 0.3em;
+    z-index: 101;
+    &:hover {
+        color: #444;
+    }
 }
 </style>
 

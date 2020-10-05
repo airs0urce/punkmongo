@@ -6,7 +6,9 @@
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
                 <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" />
-                {{activeDb.activeCollection.name}} <span class="light">({{numberWithCommas(getCollectionStats().objects)}} documents)</span>
+                {{activeDb.activeCollection.name}} 
+                <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}} documents)</span>
+                <span class="light" v-if="getCollectionStats().objects == 0">(empty)</span>
             </div>
         </h1>
 
@@ -65,6 +67,9 @@ export default {
             const collection = this.activeDb.collections.find((coll) => {
                 return coll.name == this.activeDb.activeCollection.name;
             });
+            if (!collection) {
+                return {};
+            }
             return collection.stats;
         }
     },
