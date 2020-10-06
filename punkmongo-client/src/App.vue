@@ -521,6 +521,13 @@ button.btn-icon {
     }
 }
 
+.icon-help {
+    color: #aaa;
+    margin-left: 0.5em;
+    &:hover {
+        color: #888;
+    }
+}
 </style>
 
 
