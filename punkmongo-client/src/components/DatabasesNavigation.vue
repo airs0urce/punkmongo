@@ -165,7 +165,7 @@ a.new-collection {
     padding-left: 1.7em;
     padding-bottom: 0.3em;
     display: inline-block;
-    margin-left: 1.6em;
+    margin-left: 2.1em;
 }
 
 a {

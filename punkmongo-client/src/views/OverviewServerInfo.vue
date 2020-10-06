@@ -4,6 +4,10 @@
             Loading...
         </div>
         <div v-if="serverInfo.version">
+            <h1 class="page-header no-select">
+                Server Info
+            </h1>
+
             <table cellpadding="2" cellspacing="1">
                 <col width="150" valign="top">
                 <col width="500" valign="top">

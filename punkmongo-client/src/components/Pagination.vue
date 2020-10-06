@@ -272,6 +272,7 @@
 .btn-show-go-pagenumber {
     margin-left: 1rem;
     color: #777;
+    vertical-align: -0.2em;
 }
 </style>
 

@@ -10,9 +10,7 @@
                 </div>
             </h1>
 
-
-            
-            <router-link class="new-collection no-select" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">New Collection</router-link>
+            <router-link tag="button" class="new-collection no-select" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">New Collection</router-link>
 
             <div class="gap"></div>
             

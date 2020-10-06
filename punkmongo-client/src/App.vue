@@ -12,7 +12,9 @@
         </div>
         <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px', width: $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
             <div class="left-panel-header no-select">
-                <router-link class="left-panel-header-link overview" to="/overview/databases">Overview</router-link>
+                <router-link class="left-panel-header-link overview-databases" to="/overview/databases">Databases</router-link>
+                <router-link class="left-panel-header-link overview-server" to="/overview/server-info">Server</router-link>
+
                 <router-link class="left-panel-header-link settings" to="/settings">Settings</router-link>
             </div>
             <div class="left-panel-scroll">
@@ -56,7 +58,7 @@ export default {
         return {
             movingResizer: false,
             leftPanelSizeLimits: {
-                min: 200,
+                min: 220,
                 max: 600
             },
             showLeftPanel: true
@@ -193,10 +195,11 @@ $left-panel-header-height: 2.5rem;
     background-color: #eeefff;
     white-space: nowrap;
     .left-panel-header {
+        overflow: hidden;
         width: 100%;
         background-color: #ddd;
         border-bottom: 1px solid #bbb;
-        padding: 0.8rem;
+        padding: 0.8rem 0.5rem 0 0.5rem;
         height: $left_panel_header_height;
     }
     .left-panel-scroll-padding {
@@ -273,8 +276,12 @@ div.gap {
     padding-bottom: 0.2rem;
     background-size: 13px;
     background-position: 0px 0.5px;
-    &.overview {
+    &.overview-server {
         background: url("./assets/imgs/world.png") no-repeat;
+        margin-right: 0.5rem;
+    }
+    &.overview-databases {
+        background: url("./assets/imgs/database.png") no-repeat;
         margin-right: 0.5rem;
     }
     &.settings {
@@ -461,12 +468,25 @@ form {
     .error {
         color: #960505;
     }
+    .field-name {
+        margin-bottom: 0.3em;
+    }
 }
 button, input, select, textarea {
     vertical-align: middle;
 }
 
-
+h1 {
+    font-size: 1.5em;
+    margin-bottom: 1em;
+}
+h2 {
+    font-size: 1.3em;
+    margin-bottom: 1em;
+}
+h3 {
+    font-size: 1.1em;
+}
 
 </style>
 

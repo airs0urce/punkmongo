@@ -1,9 +1,12 @@
 <template>
     <div>
         <div class="page-header">
+            <router-link :to="`/overview/databases`">Databases</router-link>
+            <font-awesome-icon icon="angle-right" class="arrow-separator" />
             <router-link :to="`/db/${$store.state.activeDb.name}`">{{$store.state.activeDb.name}}</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />
-            New Collection    
+            
+            New Collection
         </div>
             
 
@@ -38,7 +41,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .field-name {
-        margin-bottom: 0.3em;
-    }
+    
 </style>
