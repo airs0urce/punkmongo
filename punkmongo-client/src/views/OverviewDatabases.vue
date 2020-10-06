@@ -9,6 +9,11 @@
                 Databases                
             </h1>
 
+            <router-link tag="button" class="new-collection no-select btn-icon" :to="'/new-database'">
+                <font-awesome-icon icon="plus" /> 
+                New Database
+            </router-link>
+            <div class="gap"></div>
             <table cellpadding="2" cellspacing="1" class="full-width-table">
                 <colgroup>
                     <col width="200" valign="top">

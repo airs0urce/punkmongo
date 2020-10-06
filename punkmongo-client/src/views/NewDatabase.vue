@@ -4,7 +4,6 @@
             New Database    
         </div>
             
-        (see now nosqlbooster creates db)
         <form class="no-select">
             <div class="form-row">
                 <label class="field-name">Name</label>
