@@ -18,13 +18,22 @@
             <div class="form-row">
                 <label><input type="checkbox" /> Capped Collection</label>
             </div>
+            <div class="form-row-padding">
+                <label class="field-name" for="max-docs-num">Max number of documents:</label>
+                <input type="text" id="max-docs-num" />
+            </div>
+            <div class="form-row-padding">
+                <label class="field-name" for="max-size">Max size:</label>
+                <input type="text" id="max-size" /> MB
+            </div>
+
             <div class="form-row">
                 <label><input type="checkbox" /> Use Custom Collation</label>
             </div>
-            <div class="form-row form-row-last">
-                <button>Create Collection</button>
-            </div>
+            
         </form>
+        <div class="gap"></div>
+        <button>Create Collection</button>
         
 
     

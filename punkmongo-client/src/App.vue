@@ -458,6 +458,11 @@ form {
         display: block;
         margin-bottom: 1rem;
     }
+    .form-row-padding {
+        display: block;
+        margin-bottom: 1rem;
+        margin-left: 1.5rem;
+    }
     .form-row-last {
         padding-top: 1em;
         margin-bottom: 0;   
@@ -486,6 +491,34 @@ h2 {
 }
 h3 {
     font-size: 1.1em;
+}
+input[type="checkbox"]:focus, input[type="radio"]:focus {
+    outline: 1px solid #eee;
+}
+
+.info-tag {
+    background-color: #6c757d;
+    cursor: default;
+    color: #fff;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 1rem;
+    
+    &.info {
+        background-color: #17a2b8;
+    }
+    &.disabled {
+        background-color: #e8e8e8;
+        color: #929292;
+    }
+}
+
+button.btn-icon {
+    padding-left: 1.3rem;    
+    svg {
+        margin-right: 0.1rem;
+    }
 }
 
 </style>

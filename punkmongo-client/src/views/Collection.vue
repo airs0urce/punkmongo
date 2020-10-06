@@ -7,8 +7,11 @@
                 <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" />
                 {{activeDb.activeCollection.name}} 
-                <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}} documents)</span>
-                <span class="light" v-if="getCollectionStats().objects == 0">(empty)</span>
+                <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}})</span>
+                <span class="collection-tags">
+                    <div class="info-tag disabled">not capped</div>
+                    <div class="info-tag info">capped (100 documents OR 4 MB)</div>
+                </span>
             </div>
         </h1>
 
@@ -120,6 +123,10 @@ export default {
     }
 }
 
+.collection-tags {
+    margin-left: 1.5rem;
+    vertical-align: bottom;
+}
 </style>
 
 

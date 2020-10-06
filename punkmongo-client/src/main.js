@@ -11,6 +11,7 @@ import {
     faPen,
     faTimes,
     faCaretRight,
+    faPlus
 } from '@fortawesome/free-solid-svg-icons'
 import VueWorker from 'vue-worker'
 
@@ -20,6 +21,7 @@ library.add(faCaretDown)
 library.add(faPen)
 library.add(faTimes)
 library.add(faCaretRight)
+library.add(faPlus)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(require('vue-shortkey'))
