@@ -241,10 +241,6 @@ export default {
         },
         activeDbName: function(newVal, oldVal) {
             this.querySubmit();
-
-            if (newVal !== oldVal) {
-                this.updateIndexes()
-            }
         },
         activeCollectionName: function(newVal, oldVal) {
             if (newVal != oldVal) {
@@ -254,10 +250,6 @@ export default {
                 this.querySubmit()
                 this.$refs.filterTextInput.$el.focus()
                 utils.setCaret(this.$refs.filterTextInput.$el, 1, 3);
-            }
-
-            if (newVal !== oldVal) {
-                this.updateIndexes()
             }
         },
         async paginationPageNumberLoading(newValue, oldValue) {
@@ -336,7 +328,9 @@ export default {
                     pageNumber: this.paginationPageNumberLoading || this.paginationPageNumber
                 }
             };
-          
+
+            this.$store.commit(mutations.SET_COLLECTION_INDEXES, []);
+            this.updateIndexes();
             
             const response = await api.request('collectionQuery', {
                 db: this.activeDb.name,
@@ -501,8 +495,6 @@ export default {
             {text: 'Shown documents', click: this.copyToClipboardShown}, 
             {text: 'All ' + this.queryResult.resultDocumentsTotal, click: this.copyToClipboardAll}
         ]
-
-        await this.updateIndexes();
 
 
         if (! this.queryResult.initialLoadFinished) {
