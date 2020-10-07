@@ -12,7 +12,7 @@
                     <div class="info-tag disabled" v-if="!collectionOptions.capped">not capped</div>
                     <div class="info-tag info" v-if="collectionOptions.capped">
                         capped
-                        <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{collectionOptions.max}}</strong> documents OR <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}})</strong></span>
+                        <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}})</strong></span>
                         <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents maximum)</span>
                         <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
                         
