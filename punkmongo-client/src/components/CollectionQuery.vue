@@ -169,20 +169,21 @@ import * as mongodbQueryParser from 'mongodb-query-parser';
 import VueTagsInput from '@johmun/vue-tags-input';
 import * as actions from '../store/actions';
 import * as mutations from '../store/mutations';
-import api from '../api/api'
-import * as a from 'awaiting'
-import * as moment from 'moment'
-import eventBus from '../eventBus'
-import utils from '@/utils'
-import _ from 'lodash'
+import api from '../api/api';
+import * as a from 'awaiting';
+import * as moment from 'moment';
+import eventBus from '../eventBus';
+import utils from '@/utils';
+import _ from 'lodash';
 
 import Prism from '@/vendor/prismjs/prism';
-import '@/vendor/prismjs/prism.css'
+import '@/vendor/prismjs/prism.css';
 
 import CodeJar from '@/components/CodeJar';
 import Pagination from '@/components/Pagination';
-import Loader from '@/components/Loader'
-import DropdownMenu from '@/components/DropdownMenu'
+import Loader from '@/components/Loader';
+import DropdownMenu from '@/components/DropdownMenu';
+
 
 export default {
     components: {
@@ -252,6 +253,7 @@ export default {
                 this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT);
                 this.querySubmit()
                 this.$refs.filterTextInput.$el.focus()
+                utils.setCaret(this.$refs.filterTextInput.$el, 1, 3);
             }
 
             if (newVal !== oldVal) {
@@ -478,7 +480,8 @@ export default {
         },
         moment: moment
     },
-    mounted: async function() {
+    mounted: async function() {        
+
         this.worker = this.$worker.create([
             {message: 'highlightMongoDocument', func: (doc) => {
                 return Prism.highlight(doc, Prism.languages['mongodb-document'], 'mongodb-document')

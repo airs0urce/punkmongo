@@ -5,12 +5,11 @@
                 <router-link :to="`/overview/databases`">Databases</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
                 <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
-                <font-awesome-icon icon="angle-right" class="arrow-separator" />
-                {{activeDb.activeCollection.name}} 
+                <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.activeCollection.name}} 
                 <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}})</span>
                 <span class="collection-tags">
                     <div class="info-tag disabled" v-if="!collectionOptions.capped">not capped</div>
-                    <div class="info-tag info" v-if="collectionOptions.capped">
+                    <div class="info-tag info" v-if="collectionOptions.capped" >
                         capped
                         <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}})</strong></span>
                         <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents maximum)</span>

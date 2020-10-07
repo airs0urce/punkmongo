@@ -69,6 +69,16 @@ export default {
         const isVisible = elemTop < window.innerHeight && elemBottom >= 0;
 
         return isVisible;
+    },
+    setCaret: function(el, childNodeNum, position) {
+        var range = document.createRange();
+        var sel = window.getSelection();
+        
+        range.setStart(el.childNodes[childNodeNum], position);
+        range.collapse(true);
+        
+        sel.removeAllRanges();
+        sel.addRange(range);
     }
  
 }
