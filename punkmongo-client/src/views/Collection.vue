@@ -68,7 +68,10 @@ export default {
             const collection = state.activeDb.collections.find((collection) => {
                 return collection.name == state.activeDb.activeCollection.name;
             });
-            return collection.options;
+            if (collection) {
+                return collection.options;
+            }
+            return {};
         }
     }),
     methods: {

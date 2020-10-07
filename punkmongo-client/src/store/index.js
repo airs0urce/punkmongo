@@ -165,9 +165,7 @@ export default new Vuex.Store({
                 }
             });
 
-            const response = await api.request('getDatabase', {
-                db: dbName
-            });
+            const response = await api.request('getDatabase', {db: dbName});
             if (! response.error) {
                 commit(mutations.SET_ACTIVE_DB, response.result);
             }
