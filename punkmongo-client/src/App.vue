@@ -517,9 +517,6 @@ input[type="checkbox"]:focus, input[type="radio"]:focus {
 
 button.btn-icon {
     padding-left: 1.3rem;    
-    svg {
-        margin-right: 0.1rem;
-    }
 }
 
 .icon-help {
@@ -528,6 +525,10 @@ button.btn-icon {
     &:hover {
         color: #888;
     }
+}
+
+.svg-inline--fa {
+    vertical-align: top;
 }
 </style>
 
