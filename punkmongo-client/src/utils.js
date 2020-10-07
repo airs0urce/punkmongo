@@ -1,30 +1,36 @@
 export default {
-    bytesFormatted: function(bytes, forceUnit) {
+    bytesFormatted: function(bytes, forceUnit, toFixed = 2, space = true) {
+        if (space) {
+            space = ' ';
+        } else {
+            space = '';
+        }
+
         if (typeof bytes == 'undefined') {
             return '...';
         }
         if (forceUnit) {
             switch (forceUnit) {
                 case 'KB':
-                    return (bytes / 1024).toFixed(2) + ' KB'
+                    return (bytes / 1024).toFixed(toFixed) + space + 'KB'
                 case 'MB':
-                    return (bytes / 1024 / 1024).toFixed(2) + ' MB'
+                    return (bytes / 1024 / 1024).toFixed(toFixed) + space + 'MB'
                 case 'GB':
-                    return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB'
+                    return (bytes / 1024 / 1024 / 1024).toFixed(toFixed) + space + 'GB'
                 case 'TB':
-                    return (bytes / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TB'
+                    return (bytes / 1024 / 1024 / 1024 / 1024).toFixed(toFixed) + space + 'TB'
             }
         }
 
         if (bytes <= 1073741824) { // less than 1GB
             // show in MB
-            return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+            return (bytes / 1024 / 1024).toFixed(toFixed) + space + 'MB';
         } else if (bytes <= 1099511627776) { // less than 1TB
             // show in GB
-            return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+            return (bytes / 1024 / 1024 / 1024).toFixed(toFixed) + space + 'GB';
         } else {
             // show in TB
-            return (bytes / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TB';
+            return (bytes / 1024 / 1024 / 1024 / 1024).toFixed(toFixed) + space + 'TB';
         }
     },
     numberWithCommas: function(x) {

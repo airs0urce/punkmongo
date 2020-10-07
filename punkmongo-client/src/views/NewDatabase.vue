@@ -9,11 +9,10 @@
                 <label class="field-name">Name</label>
                 <input type="text" ref="test"/>
             </div>
-            
-            <div class="form-row form-row-last">
-                <button>Create Database</button>
-            </div>
         </form>
+        <div class="gap"></div>
+        <button>Create Database</button>
+        
     </div>
 </template>
 

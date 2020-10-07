@@ -4,9 +4,7 @@
             <router-link :to="`/overview/databases`">Databases</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />
             <router-link :to="`/db/${$store.state.activeDb.name}`">{{$store.state.activeDb.name}}</router-link>
-            <font-awesome-icon icon="angle-right" class="arrow-separator" />
-            
-            New Collection
+            <font-awesome-icon icon="angle-right" class="arrow-separator" />New Collection
         </div>
             
 
@@ -101,6 +99,9 @@ export default {
         this.$refs['test'].focus();
     }
 }
+
+
+
 </script>
 
 <style lang="scss" scoped>

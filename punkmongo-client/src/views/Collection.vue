@@ -9,8 +9,14 @@
                 {{activeDb.activeCollection.name}} 
                 <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}})</span>
                 <span class="collection-tags">
-                    <div class="info-tag disabled">not capped</div>
-                    <div class="info-tag info">capped (100 documents OR 4 MB)</div>
+                    <div class="info-tag disabled" v-if="!collectionOptions.capped">not capped</div>
+                    <div class="info-tag info" v-if="collectionOptions.capped">
+                        capped
+                        <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{collectionOptions.max}}</strong> documents OR <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}})</strong></span>
+                        <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents maximum)</span>
+                        <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
+                        
+                    </div>
                 </span>
             </div>
         </h1>
@@ -59,6 +65,12 @@ export default {
     },
     computed: mapState({
         activeDb: state => state.activeDb,
+        collectionOptions: (state) => {
+            const collection = state.activeDb.collections.find((collection) => {
+                return collection.name == state.activeDb.activeCollection.name;
+            });
+            return collection.options;
+        }
     }),
     methods: {
         setActiveCollection() {
@@ -66,6 +78,7 @@ export default {
             this.$store.commit(mutations.SET_ACTIVE_COLLECTION, collName);
         },
         numberWithCommas: utils.numberWithCommas,
+        bytesFormatted: utils.bytesFormatted,
         getCollectionStats() {
             const collection = this.activeDb.collections.find((coll) => {
                 return coll.name == this.activeDb.activeCollection.name;
@@ -74,6 +87,9 @@ export default {
                 return {};
             }
             return collection.stats;
+        },
+        collOptionExists(key) {
+            return (typeof this.collectionOptions[key] != 'undefined');
         }
     },
     mounted() {
@@ -124,7 +140,7 @@ export default {
 }
 
 .collection-tags {
-    margin-left: 1.5rem;
+    margin-left: 1rem;
     vertical-align: bottom;
 }
 </style>

@@ -2,6 +2,7 @@
     <div>
         <div class="test-editor language-mongodb-document">
         </div>
+        <div class="gap"></div>
         <button>Insert</button>
     </div>
 </template>
