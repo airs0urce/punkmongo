@@ -6,7 +6,7 @@
         <div v-if="state.persistent.dbList.length > 0">
             <router-link class="new-database no-select" :to="'/new-database'">New database</router-link>
             <ul class="left-panel-dbs">
-                <li v-for="db in state.persistent.dbList">
+                <li v-for="db in state.persistent.dbList" :key="db.name">
                     <div class="db-link-wrapper-top" :ref="'intersect-' + db.name"></div>
                     <div class="db-link-wrapper">
                         <router-link 
