@@ -19,7 +19,7 @@
                 <a v-if="!pagesToShow.includes(totalPages)" :class="{'active': currentPage == totalPages, 'loading': (totalPages == loadingPage)}"  class="pagination-btn" @click="changePage(totalPages)">{{totalPages}}</a>
             </span>
             
-            <span class="goto-container" ref="gotoContainer" @mouseenter="toggleGotoPage(true)" @mouseleave="toggleGotoPage(false)">
+            <span class="goto-container" ref="gotoContainer" @mouseenter="toggleGotoPage(true)" >
                 <span class="separator"></span>        
                 <span class="goto">
                     <input type="number" 
