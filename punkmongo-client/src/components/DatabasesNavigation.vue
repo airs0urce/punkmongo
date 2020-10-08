@@ -79,11 +79,10 @@ export default {
                         this.showLoadingDb = false;
                     });
                 }
-                
 
                 this.$nextTick(() => {
-                    this.scrollToActiveDB();
                     this.handleDbIntersectionObserver();
+                    this.scrollToActiveDB();                    
                 });
             }
         },
@@ -92,10 +91,10 @@ export default {
 
         // this method adds "sticky-active" class to element which is wrapper of db name. 
         // it's needed because I want to change style of that element when position:sticky activated 
-        handleDbIntersectionObserver() {
+        handleDbIntersectionObserver() {        
             if (! this.dbIntersectionObserver) {
                 this.dbIntersectionObserver = new IntersectionObserver((entries) => {
-                    const dbLinkWrapper = entries[0].target.closest('li').querySelector('.db-link-wrapper');
+                    const dbLinkWrapper = entries[0].target.closest('li').querySelector('.db-link-wrapper');               
                     if (entries[0].intersectionRatio === 0) {
                         dbLinkWrapper.classList.add('sticky-active');
                     } else {
