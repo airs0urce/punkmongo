@@ -574,7 +574,7 @@ button.btn-icon {
 }
 
 .svg-inline--fa {
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 

@@ -143,7 +143,6 @@ export default {
 
 .collection-tags {
     margin-left: 1rem;
-    vertical-align: bottom;
 }
 </style>
 
