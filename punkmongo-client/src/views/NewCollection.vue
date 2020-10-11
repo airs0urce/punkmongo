@@ -6,7 +6,11 @@
             <router-link :to="`/db/${$store.state.activeDb.name}`">{{$store.state.activeDb.name}}</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />New Collection
         </div>
-            
+
+        <div class="local-notice bottom-gap" v-if="!selectedDatabaseExists">
+            Before MongoDB can save your new database, a collection name must also be specified at the time of creation.
+            <a href="https://docs.mongodb.com/manual/faq/fundamentals/#how-do-i-create-a-database-and-a-collection" target="_blank">More Information</a>
+        </div>
 
         <form class="no-select">
             <div class="form-row">
@@ -94,6 +98,19 @@ export default {
             cappedCollection: false,
             userCustomCollation: false
         }
+    },
+    computed: {
+        selectedDatabaseExists() {
+            let exists = false;
+            for (let db of this.$store.state.persistent.dbList) {
+                if (db.name == this.$store.state.activeDb.name) {
+                    exists = true;
+                    break;
+                }
+            }
+            return exists;
+        }
+
     },
     mounted() {
         this.$refs['test'].focus();

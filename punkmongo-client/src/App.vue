@@ -417,23 +417,6 @@ strong {
     margin-bottom: 1em;
 }
 
-.global-error {
-    position: fixed;
-    height: 8rem;
-    top: 0;
-    overflow: auto;
-    z-index: 100;
-    background: #f9bdbd;
-    width: 100%;
-    padding: 0.7em 1em;
-    color: #000;
-    border-bottom: 4px solid #e4a6a7;
-
-    .error-wrapper {
-        padding-left: 1em;
-        white-space: pre-wrap;
-    }
-}
 .global-error-close {
     cursor: pointer;
     font-size: 1.5em;
@@ -445,6 +428,60 @@ strong {
         color: #444;
     }
 }
+
+.global-error {
+    position: fixed;
+    height: 8rem;
+    top: 0;
+    overflow: auto;
+    z-index: 100;
+    background: #f9bdbd;
+    width: 100%;
+    padding: 0.7em 1em;
+    color: #3e1111;
+    border-bottom: 4px solid #e4a6a7;
+    &.top-gap {
+        margin-top: 1rem;
+    }
+    &.bottom-gap {
+        margin-bottom: 1rem;
+    }
+    .error-wrapper {
+        padding-left: 1em;
+        white-space: pre-wrap;
+    }
+}
+
+.local-notice {
+    overflow: auto;
+    background: #bddff9;
+    width: 100%;
+    padding: 0.7em 1em;
+    color: #163c58;
+    border-bottom: 4px solid #a6c9e4;
+    &.top-gap {
+        margin-top: 1rem;
+    }
+    &.bottom-gap {
+        margin-bottom: 1rem;
+    }
+}
+.local-error {
+    overflow: auto;
+    background: #f9bdbd;
+    width: 100%;
+    padding: 0.7em 1em;
+    color: #3e1111;
+    border-bottom: 4px solid #e4a6a7;
+
+    &.top-gap {
+        margin-top: 1rem;
+    }
+    &.bottom-gap {
+        margin-bottom: 1rem;
+    }
+}
+
 table th {
     vertical-align: middle;
 }

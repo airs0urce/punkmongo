@@ -7,6 +7,14 @@ import store from '../store/index';
 class API {
     constructor() {
         this.endpoint = `${config.client.protocol}${config.client.host}:${config.client.port}`;
+        this.jsonRPCErrorCodes = {
+            '-32601': 'Method not found', 
+            '-32603': 'Internal error',
+            '-32604': 'Unauthorized', 
+            '-32602': 'Invalid params', 
+            '-32700': 'Parse error',
+            '-32600': 'Invalid request', 
+        };
     }
 
     // you can send JSON RPC 2.0 notification if you pass undefined in "id" parameter
@@ -24,8 +32,11 @@ class API {
         });
         const responseData = response.data;
         if (responseData.error) {
-            const error = `[${responseData.error.code}] - ${responseData.error.message}`;
-            store.commit(mutations.SET_ERROR, {error: error});
+            if (this.jsonRPCErrorCodes[responseData.error.code]) {
+                const errorCodeMeaning = this.jsonRPCErrorCodes[responseData.error.code];
+                const error = `[${responseData.error.code} ${errorCodeMeaning}] - ${responseData.error.message}`;
+                store.commit(mutations.SET_ERROR, {error: error});
+            }
         }
 
         console.log('| ', method, JSON.stringify(params, null, '  '));
