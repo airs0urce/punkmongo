@@ -6,8 +6,8 @@
             
         <form class="no-select">
             <div class="form-row">                
-                <label class="field-name">Name</label>
-                <input type="text" v-model="databaseName" ref="test"/>
+                <label class="field-name">Database Name</label>
+                <input type="text" v-model="databaseName" ref="databaseName"/>
                 <div v-if="errors.databaseName" class="local-error-text inline">{{errors.databaseName}}</div>
             </div>
         </form>
@@ -36,24 +36,27 @@ export default {
         createDatabase: async function() {
             this.errors.databaseName = null;
 
-            const dbName = this.$store.state.activeDb.name;
-            const validateNameRes = await this.validateDbName(dbName);
+            const validateNameRes = await this.validateDbName(this.databaseName);
             
             if (!validateNameRes.result.canCreate) {
                 this.errors.databaseName = validateNameRes.result.reason
             } else {
-                this.databaseName = '';
-                this.errors.databaseName = null;
                 this.$router.push({
                     name: 'new_collection', 
-                    params: {dbName: dbName}
+                    params: {dbName: this.databaseName}
                 });
+
+                this.databaseName = '';
+                this.errors.databaseName = null;
             }
         },
         validateDbName: async function() {
             const response = await api.request('checkCanCreateDatabase', {dbName: this.databaseName});
             return response;
         }
+    },
+    mounted() {
+        this.$refs['databaseName'].focus();
     }
 }
 </script>

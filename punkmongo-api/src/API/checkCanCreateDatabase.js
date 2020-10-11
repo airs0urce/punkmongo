@@ -22,9 +22,19 @@ module.exports = async function (params, dbClient) {
     // check if database already exists
     const result = await dbClient.db('admin').admin().listDatabases();
     const databases = result.databases.map(db => db.name);
-    if (databases.includes(params.dbName)) {
-        response.canCreate = false;
-        response.reason = `Database "${params.dbName}" already exists`;
+    
+    for (let database of databases) {
+        if (database == params.dbName) {
+            response.canCreate = false;
+            response.reason = `Database "${params.dbName}" already exists`;
+            return response;
+        }
+        if (database.toLowerCase() == params.dbName.toLowerCase()) {
+            response.canCreate = false;
+            response.reason = `Database "${params.dbName}" already exists with different letter case: "${database}"`;
+            return response;
+        }
+
         return response;
     }
 

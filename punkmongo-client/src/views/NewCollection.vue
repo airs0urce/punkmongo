@@ -14,8 +14,8 @@
 
         <form class="no-select">
             <div class="form-row">
-                <label class="field-name">Name</label>
-                <input type="text" ref="test" class="collection-name" />
+                <label class="field-name">Collection Name</label>
+                <input type="text" ref="collectionName" class="collection-name" />
             </div>
             <div class="form-row">
                 <label><input v-model="cappedCollection" type="checkbox" /> Capped Collection</label>
@@ -113,7 +113,7 @@ export default {
 
     },
     mounted() {
-        this.$refs['test'].focus();
+        this.$refs['collectionName'].focus();
     }
 }
 
