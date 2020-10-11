@@ -5,12 +5,10 @@
         </div>
             
         <form class="no-select">
-            <div class="form-row">
-                <div>
-                    <label class="field-name">Name</label>
-                    <input type="text" v-model="databaseName" ref="test"/>
-                </div>
-                <div v-if="error" class="local-error top-gap">{{error}}</div>
+            <div class="form-row">                
+                <label class="field-name">Name</label>
+                <input type="text" v-model="databaseName" ref="test"/>
+                <div v-if="errors.databaseName" class="local-error-text inline">{{errors.databaseName}}</div>
             </div>
         </form>
         <div class="gap"></div>
@@ -29,21 +27,23 @@ export default {
     data: function() {
         return {
             databaseName: '',
-            error: null
+            errors: {
+                databaseName: ''
+            }
         };
     },
     methods: {
         createDatabase: async function() {
-            this.error = null;
+            this.errors.databaseName = null;
 
             const dbName = this.$store.state.activeDb.name;
             const validateNameRes = await this.validateDbName(dbName);
             
             if (!validateNameRes.result.canCreate) {
-                this.error = validateNameRes.result.reason
+                this.errors.databaseName = validateNameRes.result.reason
             } else {
                 this.databaseName = '';
-                this.error = null;
+                this.errors.databaseName = null;
                 this.$router.push({
                     name: 'new_collection', 
                     params: {dbName: dbName}

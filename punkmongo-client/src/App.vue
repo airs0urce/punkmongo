@@ -48,6 +48,7 @@ import * as actions from './store/actions'
 import eventBus from './eventBus'
 import utils from './utils'
 
+
 export default {
     components: {
         DatabasesNavigation,
@@ -481,6 +482,17 @@ strong {
         margin-bottom: 1rem;
     }
 }
+.local-error-text {
+    position: absolute;
+    color: #d80808;
+    margin-top: 0.5em;
+    &.inline {
+        position: static;
+        display: inline;
+        margin-left: 0.5em;
+        margin-top: 0;
+    }
+}
 
 table th {
     vertical-align: middle;
@@ -513,9 +525,6 @@ form {
     .field-name {
         margin-bottom: 0.3em;
     }
-}
-button, input, select, textarea {
-    vertical-align: middle;
 }
 
 h1 {
@@ -567,6 +576,10 @@ button.btn-icon {
 .svg-inline--fa {
     vertical-align: top;
 }
+
+
+
+
 </style>
 
 

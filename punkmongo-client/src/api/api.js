@@ -3,6 +3,11 @@ import config from '../../../config'
 import uuidv4 from 'uuid/v4'
 import * as mutations from '../store/mutations';
 import store from '../store/index';
+import utils from '../utils';
+
+import 'nprogress/nprogress.css'
+import nprogress from 'nprogress/nprogress.js'
+
 
 class API {
     constructor() {
@@ -21,6 +26,7 @@ class API {
     async request(method, params = {}, timeout = 30 * 60000) {
         let response;
 
+        nprogress.start();
         response = await axios.post(this.endpoint, {
             jsonrpc: '2.0',
             method: method,
@@ -30,6 +36,9 @@ class API {
             responseType: 'json',
             timeout: timeout
         });
+
+        nprogress.done();
+        
         const responseData = response.data;
         if (responseData.error) {
             if (this.jsonRPCErrorCodes[responseData.error.code]) {

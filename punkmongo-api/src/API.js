@@ -4,15 +4,19 @@ const koaJsonRpc = require('koa-jsonrpc');
 const config = require('./../../config');
 const DBFactory = require('./DBFactory');
 const fs = require('mz/fs');
+const a = require('awaiting');
 
 const app = new Koa();
 
 (async () => {  
     const dbClient = await DBFactory.connectMongo();
 
-    const jrpc = koaJsonRpc({
-        limit: '20mb',
-    });
+
+    /**
+    *    JSON RPC API
+    */
+    const jrpc = koaJsonRpc({limit: '30mb'});
+
     const apiMethodsPath = __dirname + '/API/';
     const methodFiles = await fs.readdir(apiMethodsPath);
     for (let methodFile of methodFiles) {

@@ -25,5 +25,6 @@ module.exports = {
             val: true,
             reason: null
         };
-    }
+    },
+
 }
