@@ -34,8 +34,6 @@ module.exports = async function (params, dbClient) {
             response.reason = `Database "${params.dbName}" already exists with different letter case: "${database}"`;
             return response;
         }
-
-        return response;
     }
 
     // check if database name is valid
