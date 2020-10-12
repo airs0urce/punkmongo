@@ -43,7 +43,7 @@ export default {
             } else {
                 this.$router.push({
                     name: 'new_collection', 
-                    params: {db: this.databaseName}
+                    params: {dbName: this.databaseName}
                 });
 
                 this.databaseName = '';
