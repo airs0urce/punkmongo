@@ -1,21 +1,22 @@
 
 const a = require('awaiting');
-const ServerError = require('koa-jsonrpc').ServerError;
-const utils = require('../utils');
+const {ServerError, InvalidParamsError} = require('koa-jsonrpc');
+const mongoHelpers = require('../mongoHelpers');
 
-
+// params.db
 module.exports = async function (params, dbClient) {  
-    // params.dbName
-
+   
     const response = {
         canCreate: true,
         reason: null
     };
 
+    params.db = params.db.trim();
+
     // check if name is empty
-    if (params.dbName.trim() == '') {
+    if (params.db == '') {
         response.canCreate = false;
-        response.reason = `Enter database name`;
+        response.reason = `Database name can't be empty`;
         return response;
     }
 
@@ -24,20 +25,20 @@ module.exports = async function (params, dbClient) {
     const databases = result.databases.map(db => db.name);
     
     for (let database of databases) {
-        if (database == params.dbName) {
+        if (database == params.db) {
             response.canCreate = false;
-            response.reason = `Database "${params.dbName}" already exists`;
+            response.reason = `Database "${params.db}" already exists`;
             return response;
         }
-        if (database.toLowerCase() == params.dbName.toLowerCase()) {
+        if (database.toLowerCase() == params.db.toLowerCase()) {
             response.canCreate = false;
-            response.reason = `Database "${params.dbName}" already exists with different letter case: "${database}"`;
+            response.reason = `Database "${params.db}" already exists with different letter case: "${database}"`;
             return response;
         }
     }
 
     // check if database name is valid
-    const validationRes = await utils.validateDatabaseName(params.dbName);
+    const validationRes = await mongoHelpers.validateDatabaseName(params.db);
     if (!validationRes.val) {
         response.canCreate = false;
         response.reason = validationRes.reason;

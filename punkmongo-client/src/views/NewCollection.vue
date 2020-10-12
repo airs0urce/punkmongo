@@ -3,19 +3,20 @@
         <div class="page-header">
             <router-link :to="`/overview/databases`">Databases</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />
-            <router-link :to="`/db/${$store.state.activeDb.name}`">{{$store.state.activeDb.name}}</router-link>
+            <router-link :to="`/db/${dbName}`">{{dbName}}</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />New Collection
         </div>
 
+
         <div class="local-notice bottom-gap" v-if="!selectedDatabaseExists">
-            Before MongoDB can save your new database, a collection name must also be specified at the time of creation.
+            MongoDB will create database only if you add at least one collection in the database.
             <a href="https://docs.mongodb.com/manual/faq/fundamentals/#how-do-i-create-a-database-and-a-collection" target="_blank">More Information</a>
         </div>
 
         <form class="no-select">
             <div class="form-row">
                 <label class="field-name">Collection Name</label>
-                <input type="text" ref="collectionName" class="collection-name" />
+                <input type="text" ref="collectionName" class="collection-name" v-shortkey="['enter']" @shortkey="createCollection()" />
             </div>
             <div class="form-row">
                 <label><input v-model="cappedCollection" type="checkbox" /> Capped Collection</label>
@@ -83,7 +84,7 @@
             
         </form>
         <div class="gap"></div>
-        <button>Create Collection</button>
+        <button @click="createCollection()">Create Collection</button>
         
 
     
@@ -109,11 +110,19 @@ export default {
                 }
             }
             return exists;
+        },
+        dbName() {
+            return this.$route.params.dbName;
         }
 
     },
     mounted() {
         this.$refs['collectionName'].focus();
+    },
+    methods: {
+        createCollection() {
+            alert('create coll');
+        }
     }
 }
 

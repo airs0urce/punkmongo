@@ -7,7 +7,7 @@
         <form class="no-select">
             <div class="form-row">                
                 <label class="field-name">Database Name</label>
-                <input type="text" v-model="databaseName" ref="databaseName"/>
+                <input type="text" v-model="databaseName" v-shortkey="['enter']" @shortkey="createDatabase()" ref="databaseName"/>
                 <div v-if="errors.databaseName" class="local-error-text inline">{{errors.databaseName}}</div>
             </div>
         </form>
@@ -43,7 +43,7 @@ export default {
             } else {
                 this.$router.push({
                     name: 'new_collection', 
-                    params: {dbName: this.databaseName}
+                    params: {db: this.databaseName}
                 });
 
                 this.databaseName = '';

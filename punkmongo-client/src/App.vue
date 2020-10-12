@@ -574,10 +574,8 @@ button.btn-icon {
 }
 
 .svg-inline--fa {
-    vertical-align: middle;
+    height: 0.95em;
 }
-
-
 
 
 </style>

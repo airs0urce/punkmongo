@@ -725,6 +725,9 @@ div.document {
     }
     .doc-actions.clipboard {
         float: right;
+        a {
+            border-right: 0;
+        }
     }
 
 }
