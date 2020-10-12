@@ -16,7 +16,8 @@
         <form class="no-select">
             <div class="form-row">
                 <label class="field-name">Collection Name</label>
-                <input type="text" ref="collectionName" class="collection-name" v-shortkey="['enter']" @shortkey="createCollection()" />
+                <input type="text" v-model="collectionName" ref="collectionName" class="collection-name" v-shortkey="['enter']" @shortkey="createCollection()" />
+                <div v-if="errors.collectionName" class="local-error-text inline">{{errors.collectionName}}</div>
             </div>
             <div class="form-row">
                 <label><input v-model="cappedCollection" type="checkbox" /> Capped Collection</label>
@@ -92,12 +93,17 @@
 </template>
 
 <script>
+import api from '../api/api';
 
 export default {
     data: function() {
         return {
             cappedCollection: false,
-            userCustomCollation: false
+            userCustomCollation: false,
+            collectionName: '',
+            errors: {
+                collectionName: ''
+            }
         }
     },
     computed: {
@@ -120,8 +126,25 @@ export default {
         this.$refs['collectionName'].focus();
     },
     methods: {
-        createCollection() {
-            alert('create coll');
+        async createCollection() {
+            this.errors.collectionName = null;
+
+            const validateNameRes = await this.validateCollectionName(this.collectionName);
+            if (!validateNameRes.result.canCreate) {
+                this.errors.collectionName = validateNameRes.result.reason
+            } else {
+                alert('create collection');
+
+                this.collectionName = '';
+                this.errors.collectionName = null;
+            }
+        },
+        validateCollectionName: async function() {
+            const response = await api.request(
+                'checkCanCreateCollection', 
+                {db: this.dbName, collection: this.collectionName}
+            );
+            return response;
         }
     }
 }

@@ -27,8 +27,22 @@ module.exports = {
         };
     },
 
-    async validateCollectionName(name) {
-
+    async validateCollectionName(dbName, collName) {
+        const dbClient = await DBFactory.connectMongo();       
+        
+        try {
+            dbClient.db(dbName).collection(collName);
+        } catch (e) {
+            return {
+                val: false,
+                reason: e.message
+            };
+        }
+        
+        return {
+            val: true,
+            reason: null
+        };
     }
 
 }

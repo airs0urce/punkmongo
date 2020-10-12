@@ -51,7 +51,7 @@ export default {
             }
         },
         validateDbName: async function() {
-            const response = await api.request('checkCanCreateDatabase', {dbName: this.databaseName});
+            const response = await api.request('checkCanCreateDatabase', {db: this.databaseName});
             return response;
         }
     },

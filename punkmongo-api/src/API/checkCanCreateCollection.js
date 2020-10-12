@@ -34,7 +34,7 @@ module.exports = async function (params, dbClient) {
     }
     
     // check if collection name is valid
-    const validationRes = await mongoHelpers.validateCollectionName(params.dbName);
+    const validationRes = await mongoHelpers.validateCollectionName(params.db, params.collection);
     if (!validationRes.val) {
         response.canCreate = false;
         response.reason = validationRes.reason;
