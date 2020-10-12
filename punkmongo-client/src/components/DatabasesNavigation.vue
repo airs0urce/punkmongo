@@ -108,12 +108,18 @@ export default {
                 oldEl.closest('li').querySelector('.db-link-wrapper').classList.remove('sticky-active');
                 this.dbIntersectionObserver.unobserve(oldEl);
             }
-            this.dbIntersectionObserver.observe(this.$refs[`intersect-${this.$store.state.activeDb.name}`][0]);
+            const intersectRef = this.$refs[`intersect-${this.$store.state.activeDb.name}`];
+            // check intersectRef, because when you create new database there is no ref for it yet
+            if (intersectRef) {
+                this.dbIntersectionObserver.observe(intersectRef[0]);
+            }
         },
         scrollToActiveDB() {
-            const activeDbTopEl = document.querySelector('.db-link.router-link-exact-active')
-                .closest('li')
-                .querySelector('.db-link-wrapper-top');
+            const activeDb = document.querySelector('.db-link.router-link-exact-active');
+            if (! activeDb) {
+                return;
+            }
+            const activeDbTopEl = activeDb.closest('li').querySelector('.db-link-wrapper-top');
 
             if (activeDbTopEl) {
                 if ('' === this.lastActiveDbName) {

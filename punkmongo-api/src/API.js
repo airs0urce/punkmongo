@@ -55,7 +55,9 @@ const app = new Koa();
 
 
 function stackTrace(e) {
-    Error.captureStackTrace(e, stackTrace);
+    if (! e.stack) {
+        Error.captureStackTrace(e, stackTrace);
+    }
     return e.stack;
 }
 

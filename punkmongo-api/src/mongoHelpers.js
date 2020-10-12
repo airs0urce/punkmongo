@@ -10,7 +10,7 @@ module.exports = {
             if (e.codeName == 'InvalidNamespace') {
                 return {
                     val: false,
-                    reason: `Invalid database name: "${params.dbName}"`
+                    reason: `Invalid database name: "${dbName}"`
                 };
             } else if (e.message.includes('database name')) {
                 return {
