@@ -140,8 +140,12 @@
                         <a @click.prevent="collapseDoc(record)" v-if="record.expand"><span>Collapse</span></a>
                         <a @click.prevent="expandAllDocs($event)" v-show="showOnlyExpandAll"><span>Expand All</span></a>
                         <a @click.prevent="collapseAllDocs($event)" v-show="!showOnlyExpandAll"><span>Collapse All</span></a>
-                        <a @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
+                        
                     </span>
+
+                    <span class="doc-actions no-select clipboard">
+                        <a @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
+                    </span>                        
                 </div>
                 <div class="document-body language-mongodb-filter" :class="{'expanded': record.expand}" v-html="highlight(record.doc)"></div>
             </div>
@@ -718,6 +722,9 @@ div.document {
     }
     .doc-actions a:first-of-type {
         border-left: 1px solid #ccc;
+    }
+    .doc-actions.clipboard {
+        float: right;
     }
 
 }
