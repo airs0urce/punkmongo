@@ -143,6 +143,8 @@
 import api from '../api/api'
 import collectionOptions from '../collectionOptions'
 import eventBus from '../eventBus'
+import * as actions from '../store/actions'
+import * as a from 'awaiting';
 
 export default {
     data: function() {
@@ -256,12 +258,12 @@ export default {
                 const response = await api.request('createCollection', createCollectionParams);
 
                 if (! response.error) {
+                    await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
+
                     this.$router.push({
                         name: 'collection-manager', 
                         params: {dbName: this.dbName, collName: this.collectionName}
                     });
-                    
-                    eventBus.$emit('load-database', this.dbName); // reload db
                     this.resetForm();
                 }
 
