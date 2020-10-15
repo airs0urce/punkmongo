@@ -45,7 +45,7 @@ export default {
                 this.errors.databaseName = validateNameRes.result.reason
             } else {
                 this.$router.push({
-                    name: 'new_collection', 
+                    name: 'new-collection', 
                     params: {dbName: this.databaseName}
                 });
 

@@ -1,9 +1,8 @@
 module.exports = {
     locale: {
-        default: '?',
-        description: '?',
+        default: 'simple',
         values: [
-            {value: 'simple', text: 'Simple binary comparison'},
+            {value: 'simple', text: 'Simple binary comparison (DEFAULT)'},
             {value: 'af', text: 'Afrikaans'},
             {value: 'sq', text: 'Albanian'},
             {value: 'am', text: 'Amharic'},
@@ -118,69 +117,62 @@ module.exports = {
     },
     strength: {
         default: 3,
-        description: '?',
         values: [
-            {value: 1, text: `Primary level of comparison. Collation performs comparisons of the base characters only, ignoring other differences such as diacritics and case.`},
-            {value: 2, text: `Secondary level of comparison. Collation performs comparisons up to secondary differences, such as diacritics. That is, collation performs comparisons of base characters (primary differences) and diacritics (secondary differences). Differences between base characters takes precedence over secondary differences.`},
-            {value: 3, text: `Tertiary level of comparison. Collation performs comparisons up to tertiary differences, such as case and letter variants. That is, collation performs comparisons of base characters (primary differences), diacritics (secondary differences), and case and variants (tertiary differences). Differences between base characters takes precedence over secondary differences, which takes precedence over tertiary differences. This is the default level.`},
-            {value: 4, text: `Quaternary Level. Limited for specific use case to consider punctuation when levels 1-3 ignore punctuation or for processing Japanese text.`},
-            {value: 5, text: `Identical Level. Limited for specific use case of tie breaker.`},
+            {value: 1, text: `Primary level of comparison`},
+            {value: 2, text: `Secondary level of comparison`},
+            {value: 3, text: `Tertiary level of comparison (DEFAULT)`},
+            {value: 4, text: `Quaternary Level`},
+            {value: 5, text: `Identical Level. Limited for specific use case of tie breaker`},
         ]
     },
     caseLevel: {
         default: false,
-        description: 'Flag that determines whether to include case comparison at strength level 1 or 2.',
         values: [
-            {value: true, text: `When used with strength:1, collation compares base characters and case. When used with strength:2, collation compares base characters, diacritics (and possible other secondary differences) and case.`},
-            {value: false, text: `Do not include case comparison at strength level 1 or 2.`}
+            {value: true, text: `Include case comparison at Strength level 1 or 2`},
+            {value: false, text: `Do not include case comparison at Strength level 1 or 2 (DEFAULT)`}
         ]
     },
     caseFirst: {
         default: 'off',
         values: [
-            {value: 'upper', text: 'Uppercase sorts before lowercase.'},
-            {value: 'lower', text: 'Lowercase sorts before uppercase.'},
-            {value: 'off', text: 'Similar to "lower" with slight differences.'},
+            {value: 'upper', text: 'Uppercase sorts before lowercase'},
+            {value: 'lower', text: 'Lowercase sorts before uppercase'},
+            {value: 'off', text: 'Similar to "lower" with slight differences (DEFAULT)'},
         ]
     },
     numericOrdering: {
         default: false,
-        description: '?',
         values: [
-            {value: true, text: `compare as numbers; i.e. "10" is greater than "2".`},
-            {value: false, text: `compare as strings; i.e. "10" is less than "2".`}
+            {value: true, text: `Compare numeric strings as numbers; i.e. "10" is greater than "2"`},
+            {value: false, text: `Compare numeric strings as strings; i.e. "10" is less than "2" (FALSE)`}
         ]
     },
     alternate: {
         default: 'non-ignorable',
-        description: '?',
         values: [
-            {value: 'non-ignorable', text: `Whitespace and punctuation are considered base characters.`},
-            {value: 'shifted', text: `Whitespace and punctuation are not considered base characters and are only distinguished at strength levels greater than 3.`}
+            {value: 'non-ignorable', text: `Whitespace and punctuation are considered base characters (DEFAULT)`},
+            {value: 'shifted', text: `Whitespace and punctuation are not considered base characters and are only distinguished at strength levels greater than 3`}
         ]
     },
     maxVariable: {
-        default: '?',
-        description: 'Field that determines up to which characters are considered ignorable when alternate: "shifted". Has no effect if alternate: "non-ignorable"',
+        default: 'punct',
         values: [
-            {value: 'punct', text: `Both whitespaces and punctuation are “ignorable”, i.e. not considered base characters.`},
-            {value: 'space', text: `Whitespace are “ignorable”, i.e. not considered base characters.`}
+            {value: 'punct', text: `Both whitespaces and punctuation are “ignorable”, i.e. not considered base characters (DEFAULT)`},
+            {value: 'space', text: `Whitespace are “ignorable”, i.e. not considered base characters`}
         ]  
     },
     backwards: {
         default: false,
-        description: 'Flag that determines whether strings with diacritics sort from back of the string, such as with some French dictionary ordering.',
         values: [
-            {value: true, text: `compare from back to front.`},
-            {value: false, text: `compare from front to back.`}
+            {value: true, text: `compare from back to front`},
+            {value: false, text: `compare from front to back (DEFAULT)`}
         ]
     },
     normalization: {
         default: false,
-        description: 'Flag that determines whether to check if text require normalization and to perform normalization. Generally, majority of text does not require this normalization processing.',
         values: [
-            {value: true, text: `Check if fully normalized and perform normalization to compare text.`},
-            {value: false, text: `Do not check.`}
+            {value: true, text: `Check if fully normalized and perform normalization to compare text`},
+            {value: false, text: `Do not check (DEFAULT)`}
         ]
     }
 }

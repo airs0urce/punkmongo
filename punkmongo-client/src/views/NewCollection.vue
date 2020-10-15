@@ -16,7 +16,7 @@
         <form class="no-select">
             <div class="form-row">
                 <label class="field-name">Collection Name</label>
-                <input type="text" v-model="collectionName" ref="collectionName" class="collection-name" v-shortkey="['enter']" @shortkey="createCollection()" />
+                <input type="text" v-model.trim="collectionName" ref="collectionName" class="collection-name" v-shortkey="['enter']" @shortkey="createCollection()" />
                 <div v-if="errors.collectionName" class="local-error-text inline">{{errors.collectionName}}</div>
                 <div v-if="validating" class="local-info-text inline">Validating collection name...</div>
             </div>
@@ -25,16 +25,17 @@
                 <a href="https://docs.mongodb.com/manual/core/capped-collections/" target="_blank">
                     <font-awesome-icon icon="question-circle" class="icon-help" /> 
                 </a>
+                <div v-if="errors.cappedNotSet" class="local-error-text inline">You have to set either "Max size" or "Max number of documents" for capped collection</div>
             </div>
             <div v-if="cappedCollection">
                 <div class="form-row-padding">
-                    <label class="field-name" for="max-docs-num">Max number of documents:</label>
-                    <input type="number" step="1" id="max-docs-num" />
-                </div>
-                <div class="form-row-padding">
                     <label class="field-name" for="max-size">Max size:</label>
-                    <input type="number" step="1" id="max-size" /> MB
-                </div>    
+                    <input type="number" step="1" id="max-size" v-model.number="cappedCollectionSize" :class="{'empty-value': '' === cappedCollectionSize}" /> MB
+                </div>   
+                <div class="form-row-padding">
+                    <label class="field-name" for="max-docs-num">Max number of documents:</label>
+                    <input type="number" step="1" id="max-docs-num" v-model.number="cappedCollectionMax" :class="{'empty-value': '' === cappedCollectionMax}" />
+                </div> 
             </div>
             
             <div class="form-row">
@@ -47,60 +48,60 @@
                 <div>
                     <div class="form-row-padding">
                         <label class="field-name" for="collation-locale">Locale</label>
-                        <select v-model="customCollation.locale" id="collation-locale" :class="{'empty-value': '' === customCollation.locale}">
-                            <option disabled value="">default</option>
+                        <select v-model="customCollation.locale" id="collation-locale">
                             <option v-for="value in collectionOptions.locale.values" :value="value.value">
-                                {{ value.text }}
-                            </option>
-                        </select>
-                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.locale = ''" :class="{'hidden': '' === customCollation.locale}" />
-                    </div>
-                    <div class="form-row-padding">
-                        <label class="field-name" for="collation-strength">Strength</label>
-                        <select v-model="customCollation.strength" id="collation-strength" :class="{'empty-value': '' === customCollation.strength}">
-                            <option disabled value="">default</option>
-                            <option v-for="value in collectionOptions.strength.values" :value="value.value">
-                                {{ value.text }}
-                            </option>
-                        </select>
-                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.strength = ''" :class="{'hidden': '' === customCollation.strength}" />
-                    </div>
-                    <div class="form-row-padding">
-                        <label class="field-name" for="collation-use-case-level">Use Case-Level</label>
-                        <select v-model="customCollation.caseLevel" id="collation-use-case-level" :class="{'empty-value': '' ===customCollation.caseLevel}">
-                            <option disabled value="">default</option>
-                            <option v-for="value in collectionOptions.caseLevel.values" :value="value.value">
-                                {{ value.text }}
-                            </option>
-                        </select>
-                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.caseLevel = ''" :class="{'hidden': '' === customCollation.caseLevel}" />
-                    </div>
-                    <div class="form-row-padding">
-                        <label class="field-name" for="collation-case-first">Case First</label>
-                        <select v-model="customCollation.caseFirst" id="collation-case-first" :class="{'empty-value': '' === customCollation.caseFirst}">
-                            <option disabled value="">default</option>
-                            <option v-for="value in collectionOptions.caseFirst.values" :value="value.value">
                                 {{ value.value }} - {{ value.text }}
                             </option>
                         </select>
-                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.caseFirst = ''" :class="{'hidden': '' === customCollation.caseFirst}" />
                     </div>
-                    <div class="form-row-padding">
-                        <label class="field-name" for="collation-numeric-ordering">Numeric Ordering</label>
-                        <select v-model="customCollation.numericOrdering" id="collation-numeric-ordering" :class="{'empty-value': '' === customCollation.numericOrdering}">
-                            <option disabled value="">default</option>
-                            <option v-for="value in collectionOptions.numericOrdering.values" :value="value.value">
-                                {{ value.text }}
-                            </option>
-                        </select>
-                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.numericOrdering = ''" :class="{'hidden': '' === customCollation.numericOrdering}" />
+                    <div v-if="customCollation.locale != 'simple'">
+                        <div class="form-row-padding">
+                            <label class="field-name" for="collation-strength">Strength</label>
+                            <select v-model="customCollation.strength" id="collation-strength" :class="{'empty-value': '' === customCollation.strength}">
+                                <option value="">default</option>
+                                <option v-for="value in collectionOptions.strength.values" :value="value.value">
+                                    {{ value.value }} - {{ value.text }}
+                                </option>
+                            </select>
+                            <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.strength = ''" :class="{'hidden': '' === customCollation.strength}" />
+                        </div>
+                        <div class="form-row-padding">
+                            <label class="field-name" for="collation-use-case-level" :title="collectionOptions.caseLevel.description">Use Case-Level</label>
+                            <select v-model="customCollation.caseLevel" id="collation-use-case-level" :class="{'empty-value': '' ===customCollation.caseLevel}">
+                                <option value="">default</option>
+                                <option v-for="value in collectionOptions.caseLevel.values" :value="value.value">
+                                    {{ value.value }} - {{ value.text }}
+                                </option>
+                            </select>
+                            <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.caseLevel = ''" :class="{'hidden': '' === customCollation.caseLevel}" />
+                        </div>
+                        <div class="form-row-padding">
+                            <label class="field-name" for="collation-case-first">Case First</label>
+                            <select v-model="customCollation.caseFirst" id="collation-case-first" :class="{'empty-value': '' === customCollation.caseFirst}">
+                                <option value="">default</option>
+                                <option v-for="value in collectionOptions.caseFirst.values" :value="value.value">
+                                    {{ value.value }} - {{ value.text }}
+                                </option>
+                            </select>
+                            <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.caseFirst = ''" :class="{'hidden': '' === customCollation.caseFirst}" />
+                        </div>
                     </div>
                 </div>
-                <div>
+                <div v-if="customCollation.locale != 'simple'">
+                    <div class="form-row-padding">
+                            <label class="field-name" for="collation-numeric-ordering">Numeric Ordering</label>
+                            <select v-model="customCollation.numericOrdering" id="collation-numeric-ordering" :class="{'empty-value': '' === customCollation.numericOrdering}">
+                                <option value="">default</option>
+                                <option v-for="value in collectionOptions.numericOrdering.values" :value="value.value">
+                                    {{ value.text }}
+                                </option>
+                            </select>
+                            <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.numericOrdering = ''" :class="{'hidden': '' === customCollation.numericOrdering}" />
+                        </div>
                     <div class="form-row-padding">
                         <label class="field-name" for="collation-alternate">Alternate</label>
                         <select v-model="customCollation.alternate" id="collation-alternate" :class="{'empty-value': '' === customCollation.alternate}">
-                            <option disabled value="">default</option>
+                            <option value="">default</option>
                             <option v-for="value in collectionOptions.alternate.values" :value="value.value">
                                 {{ value.text }}
                             </option>
@@ -110,7 +111,7 @@
                     <div class="form-row-padding">
                         <label class="field-name" for="collation-max-variable">Max-Variable</label>
                         <select v-model="customCollation.maxVariable" id="collation-max-variable" :class="{'empty-value': '' === customCollation.maxVariable}">
-                            <option disabled value="">default</option>
+                            <option value="">default</option>
                             <option v-for="value in collectionOptions.maxVariable.values" :value="value.value">
                                 {{ value.text }}
                             </option>
@@ -120,23 +121,13 @@
                     <div class="form-row-padding">
                         <label class="field-name" for="collation-backwards">Backwards</label>
                         <select v-model="customCollation.backwards" id="collation-backwards" :class="{'empty-value': '' === customCollation.backwards}">
-                            <option disabled value="">default</option>
+                            <option value="">default</option>
                             <option v-for="value in collectionOptions.backwards.values" :value="value.value">
                                 {{ value.text }}
                             </option>
                         </select>
                         <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.backwards = ''" :class="{'hidden': '' === customCollation.backwards}" />
-                    </div>
-                    <div class="form-row-padding">
-                        <label class="field-name" for="collation-normalization">Normalization</label>
-                        <select v-model="customCollation.normalization" id="collation-normalization" :class="{'empty-value': '' === customCollation.normalization}">
-                            <option disabled value="">default</option>
-                            <option v-for="value in collectionOptions.normalization.values" :value="value.value">
-                                {{ value.text }}
-                            </option>
-                        </select>
-                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.normalization = ''" :class="{'hidden': '' === customCollation.normalization}" />
-                    </div>    
+                    </div>   
                 </div>
             </div>
             
@@ -151,16 +142,20 @@
 <script>
 import api from '../api/api'
 import collectionOptions from '../collectionOptions'
-
+import eventBus from '../eventBus'
 
 export default {
     data: function() {
         return {
             collectionOptions: collectionOptions,
+
+            collectionName: '',
             cappedCollection: false,
-            useCustomCollation: true,
+            cappedCollectionMax: '',
+            cappedCollectionSize: '',
+            useCustomCollation: false,
             customCollation: {
-                locale: '',
+                locale: 'simple',
                 strength: '',
                 caseLevel: '',
                 caseFirst: '',
@@ -168,11 +163,11 @@ export default {
                 alternate: '',
                 maxVariable: '',
                 backwards: '',
-                normalization: '',
             },
-            collectionName: '',
+            
             errors: {
-                collectionName: ''
+                collectionName: '',
+                cappedNotSet: false
             },
             validating: false,
         }
@@ -193,7 +188,13 @@ export default {
         }
 
     },
+    watch: {
+        cappedCollection() {
+            this.errors.cappedNotSet = false;
+        }
+    },
     mounted() {
+        this.resetForm();
         this.$refs['collectionName'].focus();
     },
     methods: {
@@ -202,16 +203,86 @@ export default {
         },
         async createCollection() {
             this.errors.collectionName = null;
+            this.errors.cappedNotSet = false
 
             const validateNameRes = await this.validateCollectionName(this.collectionName);
             if (!validateNameRes.result.canCreate) {
                 this.errors.collectionName = validateNameRes.result.reason
             } else {
-                alert('create collection');
+                if (this.cappedCollection && this.cappedCollectionMax === '' && this.cappedCollectionSize === '') {
+                    this.errors.cappedNotSet = true;
+                    return;
+                }
+                
 
-                this.collectionName = '';
-                this.errors.collectionName = null;
+                const createCollectionParams = {
+                    db: this.dbName, 
+                    collection: this.collectionName,
+                    capped: {
+                        enable: this.cappedCollection,
+                        options: {
+                            max: this.cappedCollectionMax,
+                            size: this.cappedCollectionSize /* MB */ * 1024 * 1024
+                        }
+                    },
+                    collation: {
+                        enable: this.useCustomCollation,
+                        options: {
+                            locale: this.customCollation.locale,
+                            strength: this.customCollation.strength,
+                            caseLevel: this.customCollation.caseLevel,
+                            caseFirst: this.customCollation.caseFirst,
+                            numericOrdering: this.customCollation.numericOrdering,
+                            alternate: this.customCollation.alternate,
+                            maxVariable: this.customCollation.maxVariable,
+                            backwards: this.customCollation.backwards,
+                        }
+                    }
+                };
+
+                if ('' === createCollectionParams.capped.options.max) {
+                    delete createCollectionParams.capped.options.max;
+                }
+                for (let field in createCollectionParams.collation.options) {
+                    if ('' === createCollectionParams.collation.options[field]) {
+                        if (field == 'locale') {
+                            continue;
+                        }
+                        delete createCollectionParams.collation.options[field];
+                    }
+                }
+                
+                
+                const response = await api.request('createCollection', createCollectionParams);
+
+                if (! response.error) {
+                    this.$router.push({
+                        name: 'collection-manager', 
+                        params: {dbName: this.dbName, collName: this.collectionName}
+                    });
+                    
+                    eventBus.$emit('load-database', this.dbName); // reload db
+                    this.resetForm();
+                }
+
             }
+        },
+        resetForm() {
+            this.collectionName = '';
+            this.cappedCollection = false;
+            this.cappedCollectionMax = '';
+            this.cappedCollectionSize = '';
+            this.useCustomCollation = false;
+            this.customCollation = {
+                locale: 'simple',
+                strength: '',
+                caseLevel: '',
+                caseFirst: '',
+                numericOrdering: '',
+                alternate: '',
+                maxVariable: '',
+                backwards: '',
+            };
         },
         validateCollectionName: async function() {
             this.validating = true;
@@ -240,7 +311,7 @@ export default {
         width: 7rem;
     }
     .custom-collation select {
-        width: 25em;
+        width: 20em;
     }
     .custom-collation {
         display: flex;

@@ -30,12 +30,12 @@ const routes = [{
         component: Database
     },
     {
-        name: 'new_database',
+        name: 'new-database',
         path: '/new-database',
         component: NewDatabase
     },
     {
-        name: 'new_collection',
+        name: 'new-collection',
         path: '/db/:dbName/new-collection',
         component: NewCollection
     },
