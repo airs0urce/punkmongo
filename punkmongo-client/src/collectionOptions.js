@@ -1,5 +1,5 @@
 module.exports = {
-    locales: {
+    locale: {
         default: '?',
         description: '?',
         values: [
@@ -140,7 +140,7 @@ module.exports = {
         values: [
             {value: 'upper', text: 'Uppercase sorts before lowercase.'},
             {value: 'lower', text: 'Lowercase sorts before uppercase.'},
-            {value: 'off', text: 'Similar to "lower" with slight differences. See http://userguide.icu-project.org/collation/customization for details of differences.'},
+            {value: 'off', text: 'Similar to "lower" with slight differences.'},
         ]
     },
     numericOrdering: {

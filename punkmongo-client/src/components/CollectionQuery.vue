@@ -693,11 +693,6 @@ div.document {
         background-color: rgb(238, 239, 255);
     }
 }
-.empty-value,
-.empty-value /deep/ input {
-    background-color: #eee !important;
-    color: #aaa;
-}
 
 /deep/ .ti-new-tag-input-wrapper input {
     min-width: fit-content;
@@ -763,11 +758,6 @@ div.document {
     overflow: hidden;
 }
 
-.reset-btn {
-    margin-left: 0.5em;
-    color: #888;
-    cursor: pointer;
-}
 .separator {
     margin-left: 0.5em;
     margin-right: 0.5em;
