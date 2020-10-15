@@ -9,6 +9,8 @@
                 <label class="field-name">Database Name</label>
                 <input type="text" v-model="databaseName" v-shortkey="['enter']" @shortkey="createDatabase()" ref="databaseName"/>
                 <div v-if="errors.databaseName" class="local-error-text inline">{{errors.databaseName}}</div>
+                <div v-if="validating" class="local-info-text inline">Validating database name...</div>
+                
             </div>
         </form>
         <div class="gap"></div>
@@ -26,6 +28,7 @@ import api from '../api/api';
 export default {
     data: function() {
         return {
+            validating: false,
             databaseName: '',
             errors: {
                 databaseName: ''
@@ -51,7 +54,9 @@ export default {
             }
         },
         validateDbName: async function() {
+            this.validating = true;
             const response = await api.request('checkCanCreateDatabase', {db: this.databaseName});
+            this.validating = false;
             return response;
         }
     },

@@ -18,6 +18,7 @@
                 <label class="field-name">Collection Name</label>
                 <input type="text" v-model="collectionName" ref="collectionName" class="collection-name" v-shortkey="['enter']" @shortkey="createCollection()" />
                 <div v-if="errors.collectionName" class="local-error-text inline">{{errors.collectionName}}</div>
+                <div v-if="validating" class="local-info-text inline">Validating collection name...</div>
             </div>
             <div class="form-row">
                 <label><input v-model="cappedCollection" type="checkbox" /> Capped Collection</label>
@@ -88,12 +89,13 @@
         <button @click="createCollection()">Create Collection</button>
         
 
-    
     </div>
 </template>
 
 <script>
-import api from '../api/api';
+import api from '../api/api'
+import collectionOptions from '../collectionOptions'
+
 
 export default {
     data: function() {
@@ -103,7 +105,8 @@ export default {
             collectionName: '',
             errors: {
                 collectionName: ''
-            }
+            },
+            validating: false,
         }
     },
     computed: {
@@ -126,6 +129,9 @@ export default {
         this.$refs['collectionName'].focus();
     },
     methods: {
+        customLabel (option) {
+            return `${option.library} - ${option.language}`
+        },
         async createCollection() {
             this.errors.collectionName = null;
 
@@ -140,10 +146,12 @@ export default {
             }
         },
         validateCollectionName: async function() {
+            this.validating = true;
             const response = await api.request(
                 'checkCanCreateCollection', 
                 {db: this.dbName, collection: this.collectionName}
             );
+            this.validating = false;
             return response;
         }
     }
@@ -163,4 +171,5 @@ export default {
     #max-docs-num, #max-size {
         width: 7rem;
     }
+    
 </style>

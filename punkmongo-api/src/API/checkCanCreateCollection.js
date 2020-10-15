@@ -8,7 +8,6 @@ const mongoHelpers = require('../mongoHelpers');
 // params.collection
 module.exports = async function (params, dbClient) {  
 
-
     const response = {
         canCreate: true,
         reason: null

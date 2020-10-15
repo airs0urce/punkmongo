@@ -10,7 +10,7 @@ module.exports = async function (params, dbClient) {
         canCreate: true,
         reason: null
     };
-
+    
     params.db = params.db.trim();
 
     // check if name is empty

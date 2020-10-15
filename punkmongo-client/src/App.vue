@@ -49,6 +49,7 @@ import eventBus from './eventBus'
 import utils from './utils'
 
 
+
 export default {
     components: {
         DatabasesNavigation,
@@ -190,7 +191,7 @@ a:hover {
     padding: 1rem;
 }
 
-$left-panel-header-height: 2.5rem;
+$left-panel-header-height: 2.7rem;
 
 .left-panel {
     background-color: #eeefff;
@@ -431,6 +432,7 @@ strong {
 }
 
 .global-error {
+    user-select: text;
     position: fixed;
     height: 8rem;
     top: 0;
@@ -451,11 +453,15 @@ strong {
         padding-left: 1em;
         white-space: pre-wrap;
     }
+    a {
+        text-decoration: underline;
+    }
 }
 
 .local-notice {
+    user-select: text;
     overflow: auto;
-    background: #bddff9;
+    background: #d2ecff;
     width: 100%;
     padding: 0.7em 1em;
     color: #163c58;
@@ -466,8 +472,12 @@ strong {
     &.bottom-gap {
         margin-bottom: 1rem;
     }
+    a {
+        text-decoration: underline;
+    }
 }
 .local-error {
+    user-select: text;
     overflow: auto;
     background: #f9bdbd;
     width: 100%;
@@ -481,8 +491,12 @@ strong {
     &.bottom-gap {
         margin-bottom: 1rem;
     }
+    a {
+        text-decoration: underline;
+    }
 }
 .local-error-text {
+    user-select: text;
     position: absolute;
     color: #d80808;
     margin-top: 0.5em;
@@ -491,6 +505,24 @@ strong {
         display: inline;
         margin-left: 0.5em;
         margin-top: 0;
+    }
+    a {
+        text-decoration: underline;
+    }
+}
+.local-info-text {
+    user-select: text;
+    position: absolute;
+    color: #777;
+    margin-top: 0.5em;
+    &.inline {
+        position: static;
+        display: inline;
+        margin-left: 0.5em;
+        margin-top: 0;
+    }
+    a {
+        text-decoration: underline;
     }
 }
 
@@ -579,8 +611,6 @@ button.btn-icon {
 
 
 </style>
-
-
 
 
 
