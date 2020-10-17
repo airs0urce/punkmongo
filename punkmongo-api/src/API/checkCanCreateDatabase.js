@@ -1,6 +1,5 @@
 
 const a = require('awaiting');
-const {ServerError, InvalidParamsError} = require('koa-jsonrpc');
 const mongoHelpers = require('../mongoHelpers');
 
 // params.db

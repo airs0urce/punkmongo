@@ -1,6 +1,6 @@
 
 const a = require('awaiting');
-const {ServerError, InvalidParamsError} = require('koa-jsonrpc');
+const ApiError = require('../errors/ApiError');
 
 /*
 params = {
@@ -53,14 +53,17 @@ module.exports = async function (params, dbClient) {
         collectionOptions.collation = {};
         for (let option in params.collation.options) {
             if (! availableCollationOptions.includes(option)) {
-                throw new InvalidParamsError(`Invalid collation option "${option}"`);
+                throw ApiError(`Invalid collation option "${option}"`, ApiError.ERROR_INPUT);
             }
 
             collectionOptions.collation[option] = params.collation.options[option];
         }
     }
-
-    await db.createCollection(params.collection, collectionOptions);    
+    try {
+        await db.createCollection(params.collection, collectionOptions);    
+    } catch (e) {
+        throw new ApiError(e.message, 1);
+    }
 
     return {}
 }

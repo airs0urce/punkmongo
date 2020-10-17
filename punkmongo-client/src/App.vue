@@ -497,15 +497,11 @@ strong {
 }
 .local-error-text {
     user-select: text;
-    position: absolute;
     color: #d80808;
-    margin-top: 0.5em;
-    &.inline {
-        position: static;
-        display: inline;
-        margin-left: 0.5em;
-        margin-top: 0;
-    }
+    position: static;
+    display: inline;
+    margin-left: 0.5em;
+    margin-top: 0;
     a {
         text-decoration: underline;
     }

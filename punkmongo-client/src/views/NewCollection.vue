@@ -17,7 +17,7 @@
             <div class="form-row">
                 <label class="field-name">Collection Name</label>
                 <input type="text" v-model.trim="collectionName" ref="collectionName" class="collection-name" v-shortkey="['enter']" @shortkey="createCollection()" />
-                <div v-if="errors.collectionName" class="local-error-text inline">{{errors.collectionName}}</div>
+                <div v-if="errors.collectionName" class="local-error-text">{{errors.collectionName}}</div>
                 <div v-if="validating" class="local-info-text inline">Validating collection name...</div>
             </div>
             <div class="form-row">
@@ -25,7 +25,7 @@
                 <a href="https://docs.mongodb.com/manual/core/capped-collections/" target="_blank">
                     <font-awesome-icon icon="question-circle" class="icon-help" /> 
                 </a>
-                <div v-if="errors.cappedNotSet" class="local-error-text inline">You have to set either "Max size" or "Max number of documents" for capped collection</div>
+                <div v-if="errors.cappedNotSet" class="local-error-text">You have to set either "Max size" or "Max number of documents" for capped collection</div>
             </div>
             <div v-if="cappedCollection">
                 <div class="form-row-padding">
@@ -130,6 +130,7 @@
                     </div>   
                 </div>
             </div>
+            <div class="local-error-text top-gap" v-if="errors.createCollectionError">{{errors.createCollectionError}}</div>
             
         </form>
         <div class="gap"></div>
@@ -168,8 +169,9 @@ export default {
             },
             
             errors: {
-                collectionName: '',
-                cappedNotSet: false
+                collectionName: null,
+                cappedNotSet: false,
+                createCollectionError: null
             },
             validating: false,
         }
@@ -206,6 +208,7 @@ export default {
         async createCollection() {
             this.errors.collectionName = null;
             this.errors.cappedNotSet = false
+            this.errors.createCollectionError = null;
 
             const validateNameRes = await this.validateCollectionName(this.collectionName);
             if (!validateNameRes.result.canCreate) {
@@ -256,8 +259,11 @@ export default {
                 
                 
                 const response = await api.request('createCollection', createCollectionParams);
-
-                if (! response.error) {
+                if (response.error) {
+                    if (response.error.code < 100) {
+                        this.errors.createCollectionError = response.error.message;
+                    }
+                } else {
                     await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
 
                     this.$router.push({
@@ -313,7 +319,7 @@ export default {
         width: 7rem;
     }
     .custom-collation select {
-        width: 20em;
+        width: 25em;
     }
     .custom-collation {
         display: flex;
