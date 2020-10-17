@@ -261,7 +261,14 @@ export default {
                         this.errors.createCollectionError = response.error.message;
                     }
                 } else {
-                    await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
+                    const dbNames = this.$store.state.persistent.dbList.map((dbItem) => { return dbItem.name });
+                    if (! dbNames.includes(this.dbName)) {
+                        // reload database list
+                        await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
+                    }
+                    
+                    // relaod collections list 
+                    await this.$store.dispatch(actions.ACTION_LOAD_DB, this.dbName);
 
                     this.$router.push({
                         name: 'collection-manager', 

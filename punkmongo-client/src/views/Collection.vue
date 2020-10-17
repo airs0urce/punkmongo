@@ -14,7 +14,11 @@
                         <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}})</strong></span>
                         <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents maximum)</span>
                         <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
-                        
+                    </div>
+
+                    <div class="info-tag disabled" v-if="!collectionOptions.collation">default collation</div>
+                    <div class="info-tag info" v-if="collectionOptions.collation" >
+                        custom collation
                     </div>
                 </span>
             </div>
@@ -143,6 +147,9 @@ export default {
 
 .collection-tags {
     margin-left: 1rem;
+    .info-tag {
+        margin-right: 0.5em;
+    }
 }
 </style>
 
