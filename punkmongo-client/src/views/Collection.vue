@@ -95,7 +95,7 @@ export default {
             return collection.stats;
         },
         collOptionExists(key) {
-            return (typeof this.collectionOptions[key] != 'undefined');
+            return (typeof this.collectionOptions[key] != 'undefined' && this.collectionOptions[key] != 0);
         }
     },
     mounted() {

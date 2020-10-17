@@ -37,7 +37,7 @@ const availableCollationOptions = [
 
 module.exports = async function (params, dbClient) {  
     const db = dbClient.db(params.db);
-
+    
     const collectionOptions = {}
 
     if (params.capped.enable) {

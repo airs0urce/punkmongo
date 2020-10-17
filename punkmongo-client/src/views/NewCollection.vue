@@ -134,7 +134,7 @@
             
         </form>
         <div class="gap"></div>
-        <button @click="createCollection()">Create Collection</button>
+        <button @click="createCollection()" :disabled="loading">Create Collection</button>
         
 
     </div>
@@ -151,6 +151,7 @@ export default {
     data: function() {
         return {
             collectionOptions: collectionOptions,
+            loading: false,
 
             collectionName: '',
             cappedCollection: false,
@@ -254,7 +255,7 @@ export default {
                     }
                 }
                 
-                
+                this.loading = true;
                 const response = await api.request('createCollection', createCollectionParams);
                 if (response.error) {
                     if (response.error.code < 100) {
@@ -266,7 +267,7 @@ export default {
                         // reload database list
                         await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
                     }
-                    
+
                     // relaod collections list 
                     await this.$store.dispatch(actions.ACTION_LOAD_DB, this.dbName);
 
@@ -276,6 +277,7 @@ export default {
                     });
                     this.resetForm();
                 }
+                this.loading = false;
 
             }
         },
