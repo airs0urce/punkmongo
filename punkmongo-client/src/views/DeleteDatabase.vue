@@ -13,7 +13,7 @@
                 <div class="field-name">
                     <label for="delete-db-name">To delete </label><strong class="with-select">{{dbName}}</strong><label for="delete-db-name"> type the database name </label><strong class="with-select">{{dbName}}</strong>:    
                 </div>
-                <input type="text" v-model.trim="databaseName" ref="databaseName" id="delete-db-name" />
+                <input type="text" v-model.trim="databaseName" ref="databaseName" id="delete-db-name" v-shortkey="['enter']" @shortkey="deleteDatabase()" />
                 <div v-if="errors.databaseName" class="local-error-text">{{errors.databaseName}}</div>
             </div>
         </form>        
