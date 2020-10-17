@@ -6,6 +6,9 @@ import OverviewServerInfo from '../views/OverviewServerInfo.vue'
 import NewCollection from '../views/NewCollection.vue'
 import NewDatabase from '../views/NewDatabase.vue'
 import Collection from '../views/Collection.vue'
+import DeleteCollection from '../views/DeleteCollection.vue'
+import DeleteDatabase from '../views/DeleteDatabase.vue'
+
 
 
 Vue.use(VueRouter)
@@ -30,9 +33,19 @@ const routes = [{
         component: Database
     },
     {
+        name: 'delete-database',
+        path: '/db/:dbName/delete',
+        component: DeleteDatabase
+    },
+    {
         name: 'new-database',
         path: '/new-database',
         component: NewDatabase
+    },
+    {
+        name: 'delete-collection',
+        path: '/db/:dbName/col/:collName/delete',
+        component: DeleteCollection
     },
     {
         name: 'new-collection',

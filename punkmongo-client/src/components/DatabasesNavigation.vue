@@ -94,7 +94,11 @@ export default {
         handleDbIntersectionObserver() {        
             if (! this.dbIntersectionObserver) {
                 this.dbIntersectionObserver = new IntersectionObserver((entries) => {
-                    const dbLinkWrapper = entries[0].target.closest('li').querySelector('.db-link-wrapper');               
+                    const target = entries[0].target;
+                    if (!target) {
+                        return;
+                    }
+                    const dbLinkWrapper = target.closest('li').querySelector('.db-link-wrapper');               
                     if (entries[0].intersectionRatio === 0) {
                         dbLinkWrapper.classList.add('sticky-active');
                     } else {
@@ -105,8 +109,10 @@ export default {
             
             if (this.lastActiveDbName) {
                 const oldEl = this.$refs[`intersect-${this.lastActiveDbName}`][0];
-                oldEl.closest('li').querySelector('.db-link-wrapper').classList.remove('sticky-active');
-                this.dbIntersectionObserver.unobserve(oldEl);
+                if (oldEl) {
+                    oldEl.closest('li').querySelector('.db-link-wrapper').classList.remove('sticky-active');
+                    this.dbIntersectionObserver.unobserve(oldEl);
+                }
             }
             const intersectRef = this.$refs[`intersect-${this.$store.state.activeDb.name}`];
             // check intersectRef, because when you create new database there is no ref for it yet

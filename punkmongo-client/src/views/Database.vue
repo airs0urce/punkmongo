@@ -10,10 +10,20 @@
                 </div>
             </h1>
 
-            <router-link tag="button" class="new-collection no-select btn-icon" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">
-                <font-awesome-icon icon="plus" /> 
-                New Collection
-            </router-link>
+            <div class="action-buttons">
+                <div class="action-buttons-left">
+                    <router-link tag="button" class="new-collection no-select btn-icon" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">
+                        <font-awesome-icon icon="plus" /> 
+                        New Collection
+                    </router-link>
+                </div>
+                <div class="action-buttons-right">
+                    <router-link tag="button" class="no-select btn-icon btn-red" :to="'/db/' + $store.state.activeDb.name + '/delete'">
+                        <font-awesome-icon icon="trash-alt" /> 
+                        Delete Database
+                    </router-link>
+                </div>
+            </div> 
 
             <div class="gap"></div>
             
@@ -120,7 +130,9 @@ export default {
 </script>
 
 
+<style lang="scss">
 
+</style>
 
 
 

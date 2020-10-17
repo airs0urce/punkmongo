@@ -9,7 +9,7 @@
                 <label class="field-name">Database Name</label>
                 <input type="text" v-model="databaseName" v-shortkey="['enter']" @shortkey="createDatabase()" ref="databaseName"/>
                 <div v-if="errors.databaseName" class="local-error-text">{{errors.databaseName}}</div>
-                <div v-if="validating" class="local-info-text inline">Validating database name...</div>
+                <div v-if="validating" class="local-info-text">Validating database name...</div>
                 
             </div>
         </form>

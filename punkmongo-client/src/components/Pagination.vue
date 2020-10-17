@@ -30,7 +30,7 @@
                         ref="pageNumInput" 
                         @keyup.enter="changePage(goPageNumber)" 
                     />    
-                    <button @click="changePage(goPageNumber)">Go</button>
+                    <button @click="changePage(goPageNumber)" class="go-button">Go</button>
                 </span>
                 <font-awesome-icon  class="btn-show-go-pagenumber" icon="caret-right" />
             </span>
@@ -273,6 +273,12 @@
     margin-left: 1rem;
     color: #777;
     vertical-align: -0.2em;
+}
+
+.go-button {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 </style>
 

@@ -18,7 +18,7 @@
                 <label class="field-name">Collection Name</label>
                 <input type="text" v-model.trim="collectionName" ref="collectionName" class="collection-name" v-shortkey="['enter']" @shortkey="createCollection()" />
                 <div v-if="errors.collectionName" class="local-error-text">{{errors.collectionName}}</div>
-                <div v-if="validating" class="local-info-text inline">Validating collection name...</div>
+                <div v-if="validating" class="local-info-text">Validating collection name...</div>
             </div>
             <div class="form-row">
                 <label><input v-model="cappedCollection" type="checkbox" /> Capped Collection</label>
@@ -202,9 +202,6 @@ export default {
         this.$refs['collectionName'].focus();
     },
     methods: {
-        customLabel (option) {
-            return `${option.library} - ${option.language}`
-        },
         async createCollection() {
             this.errors.collectionName = null;
             this.errors.cappedNotSet = false

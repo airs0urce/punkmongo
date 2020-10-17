@@ -241,7 +241,7 @@ $left-panel-header-height: 2.7rem;
     height: 100vh;
     overflow: auto;
     padding-bottom: 1.5rem;
-    min-width: 75rem;
+    min-width: 60rem;
 }
 .right-panel .line {
     border-bottom-color: #999;
@@ -403,6 +403,9 @@ a {
 .no-select {
     user-select: none;
 }
+.with-select {
+    user-select: text;
+}
 
 .arrow-separator {
     color: #bbb;
@@ -507,16 +510,12 @@ strong {
     }
 }
 .local-info-text {
+    position: static;
+    display: inline;
+    margin-left: 0.5em;
+    margin-top: 0;
     user-select: text;
-    position: absolute;
     color: #777;
-    margin-top: 0.5em;
-    &.inline {
-        position: static;
-        display: inline;
-        margin-left: 0.5em;
-        margin-top: 0;
-    }
     a {
         text-decoration: underline;
     }
@@ -546,12 +545,10 @@ form {
     }
     .field-name {
         display: block;
+        margin-bottom: 0.3em;
     }
     .error {
         color: #960505;
-    }
-    .field-name {
-        margin-bottom: 0.3em;
     }
 }
 
@@ -592,7 +589,16 @@ input[type="checkbox"]:focus, input[type="radio"]:focus {
 button.btn-icon {
     padding-left: 1.3rem;    
 }
-
+button.btn-red {
+    color: #a23a3a;
+    background-color: #ffecec;
+    border: 1px solid #a23a3a;
+}
+button[disabled] {
+    color: #848484;
+    background-color: #fbfbfb;
+    border: 1px solid #848484;
+}
 .icon-help {
     color: #aaa;
     margin-left: 0.5em;
@@ -603,6 +609,9 @@ button.btn-icon {
 
 .svg-inline--fa {
     height: 0.95em;
+}
+button .svg-inline--fa {
+    margin-right: 0.2em;
 }
 
 .empty-value,
@@ -615,6 +624,18 @@ button.btn-icon {
     margin-left: 0.5em;
     color: #888;
     cursor: pointer;
+}
+
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    .action-buttons-left button {
+        margin-right: 1em;
+    }
+    .action-buttons-right button {
+        margin-left: 1em;
+    }
 }
 </style>
 
