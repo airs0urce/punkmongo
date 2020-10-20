@@ -13,7 +13,9 @@ import {
     faCaretRight,
     faPlus,
     faQuestionCircle,
-    faTrashAlt
+    faTrashAlt,
+    faArrowRight,
+    faLongArrowAltRight
 } from '@fortawesome/free-solid-svg-icons'
 import VueWorker from 'vue-worker'
 
@@ -26,6 +28,10 @@ library.add(faCaretRight)
 library.add(faPlus)
 library.add(faQuestionCircle)
 library.add(faTrashAlt)
+library.add(faArrowRight)
+library.add(faLongArrowAltRight)
+
+
 
 
 

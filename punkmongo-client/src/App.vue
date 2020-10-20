@@ -12,9 +12,8 @@
         </div>
         <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px', width: $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
             <div class="left-panel-header no-select">
-                <router-link class="left-panel-header-link overview-databases" to="/overview/databases">Databases</router-link>
                 <router-link class="left-panel-header-link overview-server" to="/overview/server-info">Server</router-link>
-
+                <router-link class="left-panel-header-link overview-databases" to="/overview/databases">Databases</router-link>
                 <router-link class="left-panel-header-link settings" to="/settings">Settings</router-link>
             </div>
             <div class="left-panel-scroll">
@@ -154,8 +153,7 @@ export default {
 </script>
 
 <style lang="scss">
-html,
-body {
+html, body, button {
     font-size: 12px;
     /* font-family:"Courier New", Arial; */
     /* text-rendering: geometricPrecision; */
@@ -259,6 +257,11 @@ table {
         font-weight: bold;
         padding: 0.5rem;
         text-align: center;
+        vertical-align: middle;
+    }
+    tr.totals th {
+        background-color: #eee;
+        font-weight: normal;
     }
     td {
         background-color: #fffeee;
@@ -312,9 +315,11 @@ input[type=number] {
 }
 
 button {
+    line-height: inherit;
     user-select: none;
+    padding: 0.542em 1.5rem;
     font-size: 1rem;
-    padding: 0.542em;
+    
     position: relative;
     box-shadow: none;
     background-color: #fff;
@@ -332,7 +337,59 @@ button {
     &:focus {
         outline: 0;
     }
+    &.btn-icon {
+        padding-left: 1.3rem;    
+    }
+    &.btn-red {
+        color: #a23a3a;
+        background-color: #ffecec;
+        border: 1px solid #a23a3a;
+    }
+    &[disabled] {
+        color: #848484;
+        background-color: #fbfbfb;
+        border: 1px solid #848484;
+    }
 }
+
+a.button {
+    display: inline-block;
+    vertical-align: bottom;
+    user-select: none;
+    padding: 0.542em 1.5rem;
+    font-size: 1rem;
+    position: relative;
+    box-shadow: none;
+    background-color: #fff;
+    color: #555;
+    cursor: default;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    white-space: nowrap;
+    &:active,
+    &.press-active {
+        background-color: #fdffee;
+        top: 1px;
+        box-shadow: none;
+    }
+    &:focus {
+        outline: 0;
+    }
+    &.btn-icon {
+        padding-left: 1.3rem;    
+    }
+    &.btn-red {
+        color: #a23a3a;
+        background-color: #ffecec;
+        border: 1px solid #a23a3a;
+    }
+    &[disabled] {
+        color: #848484;
+        background-color: #fbfbfb;
+        border: 1px solid #848484;
+    }
+}
+
 
 select {
     padding: 0.542em 2em 0.542em 0.542em;
@@ -377,10 +434,6 @@ select {
     font-size: 1rem !important;
 }
 
-button {
-    padding-right: 1.5rem;
-    padding-left: 1.5rem;
-}
 
 .language-mongodb-document,
 .language-mongodb-aggregation,
@@ -416,6 +469,9 @@ strong {
 }
 .light {
     color: #777;
+}
+.lighter {
+    color: #aaa;
 }
 .page-header {
     font-size: 1.5em;
@@ -521,10 +577,6 @@ strong {
     }
 }
 
-table th {
-    vertical-align: middle;
-}
-
 
 form {
     border-radius: 0.5em;
@@ -586,19 +638,6 @@ input[type="checkbox"]:focus, input[type="radio"]:focus {
     }
 }
 
-button.btn-icon {
-    padding-left: 1.3rem;    
-}
-button.btn-red {
-    color: #a23a3a;
-    background-color: #ffecec;
-    border: 1px solid #a23a3a;
-}
-button[disabled] {
-    color: #848484;
-    background-color: #fbfbfb;
-    border: 1px solid #848484;
-}
 .icon-help {
     color: #aaa;
     margin-left: 0.5em;
@@ -630,10 +669,10 @@ button .svg-inline--fa {
 .action-buttons {
     display: flex;
     justify-content: space-between;
-    .action-buttons-left button {
+    .action-buttons-left button, .action-buttons-left a.button {
         margin-right: 1em;
     }
-    .action-buttons-right button {
+    .action-buttons-right button, .action-buttons-right a.button {
         margin-left: 1em;
     }
 }

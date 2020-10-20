@@ -9,10 +9,11 @@
                 Databases                
             </h1>
 
-            <router-link tag="button" class="new-collection no-select btn-icon" :to="'/new-database'">
+            <router-link class="button new-collection no-select btn-icon" :to="'/new-database'">
                 <font-awesome-icon icon="plus" /> 
                 New Database
             </router-link>
+
             <div class="gap"></div>
             <table cellpadding="2" cellspacing="1" class="full-width-table">
                 <colgroup>
@@ -22,6 +23,8 @@
                     <col width="110" valign="top">
                     <col width="110" valign="top">
                     <col width="90" valign="top">
+                    <col width="30" valign="top">
+                    <col width="10" valign="top">
                 </colgroup>
                 <thead>
                     <tr>
@@ -32,17 +35,19 @@
                         <th>Indexes</th>
                         <th>Indexes Size</th>
                         <th>Documents</th>
+                        <th rowspan="3">Del</th>
                     </tr>
-                    <tr>
-                        <th rowspan="2">TOTAL</th>
+                    <tr class="totals">
+                        <th rowspan="2">TOTALS <font-awesome-icon class="lighter" icon="long-arrow-alt-right" /></th>
                         <th rowspan="2">{{ numberWithCommas(statsTotal('collections')) }}</th>
                         <th rowspan="2">{{ numberWithCommas(statsTotal('views')) }}</th>
                         <th>{{ bytesFormatted(statsTotal('storageSize')) }}</th>
                         <th rowspan="2">{{ numberWithCommas(statsTotal('indexes')) }}</th>
                         <th>{{ bytesFormatted(statsTotal('indexSize')) }}</th>
                         <th rowspan="2">{{ numberWithCommas(statsTotal('objects')) }}</th>
+                        <!-- <th rowspan="2"></th> -->
                     </tr>
-                    <tr>
+                    <tr class="totals">
                         <th>{{ bytesFormatted(statsTotal('storageSize'), 'GB') }}</th>
                         <th>{{ bytesFormatted(statsTotal('indexSize'), 'GB') }}</th>
                     </tr>
@@ -59,6 +64,11 @@
                         <td>{{db.stats.indexes}}</td>
                         <td>{{bytesFormatted(db.stats.indexSize)}}</td>
                         <td>{{numberWithCommas(db.stats.objects)}}</td>
+                        <td class="td-delete">
+                            <router-link class="no-select btn-icon" :to="`/db/${db.name}/delete`" style="color: #a23a3a;">
+                                <font-awesome-icon icon="trash-alt" /> 
+                            </router-link>
+                        </td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -71,6 +81,7 @@
                         <th>Storage Size</th>
                         <th>Indexes Size</th>
                         <th>Documents</th>
+                        <th></th>
                     </tr>
                 </tfoot>
             </table>
@@ -115,4 +126,8 @@ export default {
 
 
 
-
+<style lang="scss">
+    .td-delete {
+        text-align: center;
+    }
+</style>

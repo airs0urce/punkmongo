@@ -12,13 +12,13 @@
 
             <div class="action-buttons">
                 <div class="action-buttons-left">
-                    <router-link tag="button" class="new-collection no-select btn-icon" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">
+                    <router-link class="button new-collection no-select btn-icon" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">
                         <font-awesome-icon icon="plus" /> 
                         New Collection
                     </router-link>
                 </div>
                 <div class="action-buttons-right">
-                    <router-link tag="button" class="no-select btn-icon btn-red" :to="'/db/' + $store.state.activeDb.name + '/delete'">
+                    <router-link class="button no-select btn-icon btn-red" :to="'/db/' + $store.state.activeDb.name + '/delete'">
                         <font-awesome-icon icon="trash-alt" /> 
                         Delete Database
                     </router-link>
@@ -38,7 +38,7 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>Collections</th>
+                        <th>Collection</th>
                         <th>Documents</th>
                         <th>Data Size</th>
                         <th>Storage Size</th>
@@ -46,8 +46,8 @@
                         <th>Indexes</th>
                         <th>Indexes Size</th>
                     </tr>
-                    <tr>
-                        <th rowspan="2">TOTAL</th>
+                    <tr class="totals">
+                        <th rowspan="2">TOTALS <font-awesome-icon class="lighter" icon="long-arrow-alt-right" /></th>
                         <th rowspan="2">{{ numberWithCommas(statsTotal('objects')) }}</th>
                         <th>{{ bytesFormatted(statsTotal('dataSize')) }}</th>
                         <th>{{ bytesFormatted(statsTotal('storageSize'), 'MB') }}</th>
@@ -55,7 +55,7 @@
                         <th rowspan="2">{{ statsTotal('indexesCount') }}</th>
                         <th>{{ bytesFormatted(statsTotal('indexesSize'), 'MB') }}</th>
                     </tr>
-                    <tr>
+                    <tr class="totals">
                         <th>{{ bytesFormatted(statsTotal('dataSize'), 'GB') }}</th>
                         <th>{{ bytesFormatted(statsTotal('storageSize'), 'GB') }}</th>
                         <th>{{ bytesFormatted(statsTotal('avgObjSize'), 'MB') }}</th>
@@ -76,6 +76,17 @@
                         <td>{{bytesFormatted(collection.stats.indexesSize)}}</td>
                     </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Collection</th>
+                        <th>Documents</th>
+                        <th>Data Size</th>
+                        <th>Storage Size</th>
+                        <th>Avg Doc Size</th>
+                        <th>Indexes</th>
+                        <th>Indexes Size</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
