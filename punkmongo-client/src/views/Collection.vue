@@ -8,17 +8,49 @@
                 <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.activeCollection.name}} 
                 <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}})</span>
                 <span class="collection-tags">
-                    <div class="info-tag disabled" v-if="!collectionOptions.capped">not capped</div>
-                    <div class="info-tag info" v-if="collectionOptions.capped" >
+                    <div class="info-tag disabled" v-if="!collectionCollationOptions.capped">not capped</div>
+                    <div class="info-tag info" v-if="collectionCollationOptions.capped" >
                         capped
-                        <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}})</strong></span>
-                        <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents maximum)</span>
-                        <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
+                        <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{collectionCollationOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionCollationOptions.size, 'MB', 0, false)}})</strong></span>
+                        <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionCollationOptions.max}}</strong> documents maximum)</span>
+                        <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionCollationOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
                     </div>
 
-                    <div class="info-tag disabled" v-if="!collectionOptions.collation">default collation</div>
-                    <div class="info-tag info" v-if="collectionOptions.collation" >
+                    <div class="info-tag disabled" v-if="!collectionCollationOptions.collation">default collation</div>
+                    <div class="info-tag info" v-if="collectionCollationOptions.collation" >
                         custom collation
+                        <div class="custom-collation-details">
+                            <div class="custom-collation-title">Collation info</div>
+
+
+                            <table>
+                                <colgroup>
+                                    <col width="20%" valign="top">
+                                    <col width="17%" valign="top">
+                                    <col width="63%" valign="top">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>option</th>
+                                        <th>value</th>
+                                        <th>value description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item of getCollationInfo()" :class="{'non-default': !item.default}">
+                                        <td>{{item.title}}</td>
+                                        <td>
+                                            {{JSON.stringify(item.value)}}
+                                        </td>
+                                        <td>
+                                            {{item.valueInfo}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+
+                        </div>
                     </div>
                 </span>
             </div>
@@ -48,6 +80,7 @@ import CollectionAggregate from '@/components/CollectionAggregate';
 import CollectionIndexes from '@/components/CollectionIndexes';
 import CollectionValidation from '@/components/CollectionValidation';
 import utils from '../utils'
+import collectionOptions from '../collectionOptions'
 
 import {
     mapState
@@ -63,12 +96,12 @@ export default {
     },
     data: function() {
         return {
-            selectedTab: 'query'
+            selectedTab: 'query',
         }
     },
     computed: mapState({
         activeDb: state => state.activeDb,
-        collectionOptions: (state) => {
+        collectionCollationOptions: (state) => {
             const collection = state.activeDb.collections.find((collection) => {
                 return collection.name == state.activeDb.activeCollection.name;
             });
@@ -95,7 +128,27 @@ export default {
             return collection.stats;
         },
         collOptionExists(key) {
-            return (typeof this.collectionOptions[key] != 'undefined' && this.collectionOptions[key] != 0);
+            return (typeof this.collectionCollationOptions[key] != 'undefined' && this.collectionCollationOptions[key] != 0);
+        },
+        getCollationInfo() {
+            const valueByField = this.collectionCollationOptions.collation;
+
+            const collationInfoArr = [];
+
+            for (let field in collectionOptions) {
+                const valueText = collectionOptions[field].values.find((valueItem) => {
+                    return (valueItem.value == valueByField[field]); 
+                }).text;
+
+                collationInfoArr.push({
+                    title: collectionOptions[field].title,
+                    value: valueByField[field],
+                    default: (valueByField[field] === collectionOptions[field].default),
+                    valueInfo: valueText
+                });
+            }
+
+            return collationInfoArr;
         }
     },
     mounted() {
@@ -149,6 +202,30 @@ export default {
     margin-left: 1rem;
     .info-tag {
         margin-right: 0.5em;
+        position: relative;
+        &:hover .custom-collation-details {
+            display: block;
+        }
+        .custom-collation-details {
+            display: none;
+            border-radius: 3px;
+            position: absolute;
+            z-index: 2;
+            background-color: #eee;
+            color: #000;
+            border: 1px solid #ddd;
+            padding: 1em;
+            top: 1.7rem;
+            right: -10rem;
+            width: 55rem;
+            .custom-collation-title {
+                font-weight: bold;
+                margin-bottom: 0.5em;
+            }
+            .non-default {
+                font-weight: bold;
+            }
+        }
     }
 }
 </style>

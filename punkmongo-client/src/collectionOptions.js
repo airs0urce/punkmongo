@@ -1,5 +1,7 @@
 module.exports = {
     locale: {
+        sort: 1,
+        title: 'Locale',
         default: 'simple',
         values: [
             {value: 'simple', text: 'Simple binary comparison (DEFAULT)'},
@@ -116,6 +118,8 @@ module.exports = {
         ]
     },
     strength: {
+        sort: 2,
+        title: 'Strength',
         default: 3,
         values: [
             {value: 1, text: `Primary level of comparison`},
@@ -126,6 +130,8 @@ module.exports = {
         ]
     },
     caseLevel: {
+        sort: 3,
+        title: 'Use Case-Level',
         default: false,
         values: [
             {value: true, text: `Include case comparison at Strength level 1 or 2`},
@@ -133,6 +139,8 @@ module.exports = {
         ]
     },
     caseFirst: {
+        sort: 4,
+        title: 'Case First',
         default: 'off',
         values: [
             {value: 'upper', text: 'Uppercase sorts before lowercase'},
@@ -141,13 +149,17 @@ module.exports = {
         ]
     },
     numericOrdering: {
+        sort: 5,
+        title: 'Numeric Ordering',
         default: false,
         values: [
             {value: true, text: `Compare numeric strings as numbers; i.e. "10" is greater than "2"`},
-            {value: false, text: `Compare numeric strings as strings; i.e. "10" is less than "2" (FALSE)`}
+            {value: false, text: `Compare numeric strings as strings; i.e. "10" is less than "2" (DEFAULT)`}
         ]
     },
     alternate: {
+        sort: 6,
+        title: 'Alternate',
         default: 'non-ignorable',
         values: [
             {value: 'non-ignorable', text: `Whitespace and punctuation are considered base characters (DEFAULT)`},
@@ -155,6 +167,8 @@ module.exports = {
         ]
     },
     maxVariable: {
+        sort: 7,
+        title: 'Max-Variable',
         default: 'punct',
         values: [
             {value: 'punct', text: `Both whitespaces and punctuation are “ignorable”, i.e. not considered base characters (DEFAULT)`},
@@ -162,19 +176,14 @@ module.exports = {
         ]  
     },
     backwards: {
+        sort: 8,
+        title: 'Backwards',
         default: false,
         values: [
             {value: true, text: `compare from back to front`},
             {value: false, text: `compare from front to back (DEFAULT)`}
         ]
     },
-    normalization: {
-        default: false,
-        values: [
-            {value: true, text: `Check if fully normalized and perform normalization to compare text`},
-            {value: false, text: `Do not check (DEFAULT)`}
-        ]
-    }
 }
 
 

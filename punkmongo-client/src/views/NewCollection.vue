@@ -47,7 +47,7 @@
             <div v-if="useCustomCollation" class="custom-collation">
                 <div>
                     <div class="form-row-padding">
-                        <label class="field-name" for="collation-locale">Locale</label>
+                        <label class="field-name" for="collation-locale">{{collectionOptions.locale.title}}</label>
                         <select v-model="customCollation.locale" id="collation-locale">
                             <option v-for="value in collectionOptions.locale.values" :value="value.value">
                                 {{ value.value }} - {{ value.text }}
@@ -56,7 +56,7 @@
                     </div>
                     <div v-if="customCollation.locale != 'simple'">
                         <div class="form-row-padding">
-                            <label class="field-name" for="collation-strength">Strength</label>
+                            <label class="field-name" for="collation-strength">{{collectionOptions.strength.title}}</label>
                             <select v-model="customCollation.strength" id="collation-strength" :class="{'empty-value': '' === customCollation.strength}">
                                 <option value="">default</option>
                                 <option v-for="value in collectionOptions.strength.values" :value="value.value">
@@ -66,7 +66,7 @@
                             <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.strength = ''" :class="{'hidden': '' === customCollation.strength}" />
                         </div>
                         <div class="form-row-padding">
-                            <label class="field-name" for="collation-use-case-level" :title="collectionOptions.caseLevel.description">Use Case-Level</label>
+                            <label class="field-name" for="collation-use-case-level" :title="collectionOptions.caseLevel.description">{{collectionOptions.caseLevel.title}}</label>
                             <select v-model="customCollation.caseLevel" id="collation-use-case-level" :class="{'empty-value': '' ===customCollation.caseLevel}">
                                 <option value="">default</option>
                                 <option v-for="value in collectionOptions.caseLevel.values" :value="value.value">
@@ -76,7 +76,7 @@
                             <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.caseLevel = ''" :class="{'hidden': '' === customCollation.caseLevel}" />
                         </div>
                         <div class="form-row-padding">
-                            <label class="field-name" for="collation-case-first">Case First</label>
+                            <label class="field-name" for="collation-case-first">{{collectionOptions.caseFirst.title}}</label>
                             <select v-model="customCollation.caseFirst" id="collation-case-first" :class="{'empty-value': '' === customCollation.caseFirst}">
                                 <option value="">default</option>
                                 <option v-for="value in collectionOptions.caseFirst.values" :value="value.value">
@@ -89,7 +89,7 @@
                 </div>
                 <div v-if="customCollation.locale != 'simple'">
                     <div class="form-row-padding">
-                            <label class="field-name" for="collation-numeric-ordering">Numeric Ordering</label>
+                            <label class="field-name" for="collation-numeric-ordering">{{collectionOptions.numericOrdering.title}}</label>
                             <select v-model="customCollation.numericOrdering" id="collation-numeric-ordering" :class="{'empty-value': '' === customCollation.numericOrdering}">
                                 <option value="">default</option>
                                 <option v-for="value in collectionOptions.numericOrdering.values" :value="value.value">
@@ -99,7 +99,7 @@
                             <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.numericOrdering = ''" :class="{'hidden': '' === customCollation.numericOrdering}" />
                         </div>
                     <div class="form-row-padding">
-                        <label class="field-name" for="collation-alternate">Alternate</label>
+                        <label class="field-name" for="collation-alternate">{{collectionOptions.alternate.title}}</label>
                         <select v-model="customCollation.alternate" id="collation-alternate" :class="{'empty-value': '' === customCollation.alternate}">
                             <option value="">default</option>
                             <option v-for="value in collectionOptions.alternate.values" :value="value.value">
@@ -109,7 +109,7 @@
                         <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.alternate = ''" :class="{'hidden': '' === customCollation.alternate}" />
                     </div>
                     <div class="form-row-padding">
-                        <label class="field-name" for="collation-max-variable">Max-Variable</label>
+                        <label class="field-name" for="collation-max-variable">{{collectionOptions.maxVariable.title}}</label>
                         <select v-model="customCollation.maxVariable" id="collation-max-variable" :class="{'empty-value': '' === customCollation.maxVariable}">
                             <option value="">default</option>
                             <option v-for="value in collectionOptions.maxVariable.values" :value="value.value">
@@ -119,7 +119,7 @@
                         <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.maxVariable = ''" :class="{'hidden': '' === customCollation.maxVariable}" />
                     </div>
                     <div class="form-row-padding">
-                        <label class="field-name" for="collation-backwards">Backwards</label>
+                        <label class="field-name" for="collation-backwards">{{collectionOptions.backwards.title}}</label>
                         <select v-model="customCollation.backwards" id="collation-backwards" :class="{'empty-value': '' === customCollation.backwards}">
                             <option value="">default</option>
                             <option v-for="value in collectionOptions.backwards.values" :value="value.value">
