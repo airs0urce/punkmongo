@@ -17,9 +17,9 @@
                     </div>
 
                     <div class="info-tag disabled" v-if="!collectionCollationOptions.collation">default collation</div>
-                    <div class="info-tag info" v-if="collectionCollationOptions.collation" >
-                        custom collation
-                        <div class="custom-collation-details">
+                    <div class="info-tag info" v-if="collectionCollationOptions.collation" @mouseenter="showCollationDetails(true)" @mouseleave="showCollationDetails(false)">
+                        custom collation…
+                        <div class="info-tag-details" ref="infoTagDetails">
                             <div class="custom-collation-title">
                                 Custom Collation<a href="https://docs.mongodb.com/master/reference/collation/" target="_blank">
                                     <font-awesome-icon icon="question-circle" class="icon-help" /> 
@@ -41,7 +41,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item of getCollationInfo()" :class="{'non-default': !item.default}">
+                                    <tr v-for="item of getCollationInfo()" :class="{'default': item.default, 'non-default': !item.default}">
                                         <td>{{item.title}}</td>
                                         <td>
                                             {{JSON.stringify(item.value)}}
@@ -85,6 +85,7 @@ import CollectionIndexes from '@/components/CollectionIndexes';
 import CollectionValidation from '@/components/CollectionValidation';
 import utils from '../utils'
 import collectionOptions from '../collectionOptions'
+import { gsap } from 'gsap'
 
 import {
     mapState
@@ -101,6 +102,7 @@ export default {
     data: function() {
         return {
             selectedTab: 'query',
+            customCollationAnim: null
         }
     },
     computed: mapState({
@@ -153,6 +155,13 @@ export default {
             }
 
             return collationInfoArr;
+        },
+        showCollationDetails(bool, hideDelay = 0) {
+            if (bool) {
+                this.customCollationAnim.play();
+            } else {
+                this.customCollationAnim.reverse();
+            }
         }
     },
     mounted() {
@@ -161,6 +170,19 @@ export default {
             eventBus.$emit('load-database', this.$route.params.dbName);
         }
 
+        if (! this.customCollationAnim) {
+            this.customCollationAnim = gsap.timeline({
+                paused: true,
+                onReverseComplete: () => {
+                    gsap.set(this.$refs.infoTagDetails, {display: 'none'});;
+                },
+                onStart: () => {
+                    gsap.set(this.$refs.infoTagDetails, {y: 5, opacity: 0, display: 'block'});
+                }
+            });
+            this.customCollationAnim.to(this.$refs.infoTagDetails, {y: 0, opacity: 1, duration: 0.3});
+        }
+        
         this.setActiveCollection();
     },
 
@@ -207,10 +229,7 @@ export default {
     .info-tag {
         margin-right: 0.5em;
         position: relative;
-        &:hover .custom-collation-details {
-            display: block;
-        }
-        .custom-collation-details {
+        .info-tag-details {
             display: none;
             border-radius: 3px;
             position: absolute;
@@ -226,8 +245,8 @@ export default {
                 font-weight: bold;
                 margin-bottom: 0.5em;
             }
-            .non-default {
-                font-weight: bold;
+            .non-default td {
+                background-color: #fffaa3;
             }
         }
     }

@@ -148,7 +148,7 @@
                     });
                     this.timelineGoto.to(
                         this.$refs.gotoContainer, 
-                        {x: 0, opacity: 1, duration: 0.4},
+                        {x: 0, opacity: 1, duration: 0.6},
                     );
                     this.timelineGoto.to(
                         this.$refs.pageSizeEl, 
