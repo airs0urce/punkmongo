@@ -56,7 +56,7 @@ export default {
         async deleteDatabase() {
             this.errors.databaseName = '';
             if (this.databaseName == '') {
-                this.errors.databaseName = `Please enter database name`;
+                this.errors.databaseName = `Please enter database name for confirmation`;
                 return;
             }
             if (this.databaseName != this.dbName) {

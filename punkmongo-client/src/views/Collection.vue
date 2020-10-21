@@ -20,7 +20,11 @@
                     <div class="info-tag info" v-if="collectionCollationOptions.collation" >
                         custom collation
                         <div class="custom-collation-details">
-                            <div class="custom-collation-title">Collation info</div>
+                            <div class="custom-collation-title">
+                                Custom Collation<a href="https://docs.mongodb.com/master/reference/collation/" target="_blank">
+                                    <font-awesome-icon icon="question-circle" class="icon-help" /> 
+                                </a>
+                            </div>
 
 
                             <table>
