@@ -4,22 +4,22 @@
             <div v-show="activeDb.name != ''">
                 <router-link :to="`/overview/databases`">Databases</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
-                <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
-                <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.activeCollection.name}} 
+                <router-link class="with-select" :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
+                <font-awesome-icon icon="angle-right" class="arrow-separator with-select" /><span class="with-select">{{activeDb.activeCollection.name}}</span> 
                 <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}})</span>
                 <span class="collection-tags">
-                    <div class="info-tag disabled" v-if="!dbCollectionOptions.capped">not capped</div>
-                    <div class="info-tag info" v-if="dbCollectionOptions.capped" >
+                    <div class="info-tag disabled no-select" v-if="!dbCollectionOptions.capped">not capped</div>
+                    <div class="info-tag info no-select" v-if="dbCollectionOptions.capped" >
                         capped
                         <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{dbCollectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}})</strong></span>
                         <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{dbCollectionOptions.max}}</strong> documents maximum)</span>
                         <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
                     </div>
 
-                    <div class="info-tag disabled" v-show="!dbCollectionOptions.collation">default collation</div>
-                    <div class="info-tag info" v-show="dbCollectionOptions.collation" @mouseenter="showCollationDetails(true)" @mouseleave="showCollationDetails(false)">
+                    <div class="info-tag disabled no-select" v-show="!dbCollectionOptions.collation">default collation</div>
+                    <div class="info-tag info no-select" v-show="dbCollectionOptions.collation" @mouseenter="showCollationDetails(true)" @mouseleave="showCollationDetails(false)">
                         custom collation…
-                        <div class="info-tag-details" ref="infoTagDetails">
+                        <div class="info-tag-details with-select" ref="infoTagDetails">
                             <div class="custom-collation-title">
                                 Custom Collation<a href="https://docs.mongodb.com/master/reference/collation/" target="_blank">
                                     <font-awesome-icon icon="question-circle" class="icon-help" /> 
@@ -245,6 +245,7 @@ export default {
         position: relative;
         .info-tag-details {
             display: none;
+            width: 55rem;
             border-radius: 3px;
             position: absolute;
             z-index: 2;
@@ -253,8 +254,8 @@ export default {
             border: 1px solid #ddd;
             padding: 1em;
             top: 1.7rem;
-            right: -1rem;
-            width: 55rem;
+            right: -5rem;
+            width: 50rem;
             .custom-collation-title {
                 font-weight: bold;
                 margin-bottom: 0.5em;

@@ -56,7 +56,7 @@
                             <button @click="resetQueryForm">Reset Form</button>
                             <Loader v-if="queryLoading" />
                         </div>
-                        <div class="rows-and-cost">
+                        <div class="rows-and-cost no-select">
                             <div class="cost-value" v-if="!queryLoading && queryResult.explain.executionStats" title="Query execution took time">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
                         </div>
                     </div>

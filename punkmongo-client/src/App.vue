@@ -627,7 +627,6 @@ input[type="checkbox"]:focus, input[type="radio"]:focus {
     display: inline-block;
     padding: 3px 5px;
     font-size: 1rem;
-    user-select: text;
     
     &.info {
         background-color: #17a2b8;
