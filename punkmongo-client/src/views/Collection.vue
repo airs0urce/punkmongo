@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1 class="page-header no-select">
-            <div v-if="activeDb.name != ''">
+            <div v-show="activeDb.name != ''">
                 <router-link :to="`/overview/databases`">Databases</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
                 <router-link :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
@@ -17,7 +17,6 @@
                     </div>
 
                     <div class="info-tag disabled" v-show="!dbCollectionOptions.collation">default collation</div>
-
                     <div class="info-tag info" v-show="dbCollectionOptions.collation" @mouseenter="showCollationDetails(true)" @mouseleave="showCollationDetails(false)">
                         custom collation…
                         <div class="info-tag-details" ref="infoTagDetails">
@@ -174,12 +173,10 @@ export default {
             eventBus.$emit('load-database', this.$route.params.dbName);
         }
 
-
         this.customCollationAnim = gsap.fromTo(this.$refs.infoTagDetails, 
             {
                 y: 5, 
                 opacity: 0,
-                display: 'block',
             }, 
             {
                 display: 'block',
@@ -242,6 +239,7 @@ export default {
         margin-right: 0.5em;
         position: relative;
         .info-tag-details {
+            display: none;
             border-radius: 3px;
             position: absolute;
             z-index: 2;
