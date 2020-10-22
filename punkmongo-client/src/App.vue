@@ -675,6 +675,15 @@ button .svg-inline--fa {
         margin-left: 1em;
     }
 }
+.delete-icon {
+    color: #a23a3a;    
+    &:hover {
+        color: #da4545;
+    }
+}
+.td-delete {
+    text-align: center;
+}
 </style>
 
 

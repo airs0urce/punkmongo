@@ -6,7 +6,7 @@
                 <div v-if="activeDb.name != ''">
                     <router-link :to="`/overview/databases`">Databases</router-link>
                     <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.name}}
-                    <span class="light">({{activeDb.collections.length}})</span>
+                    <span class="lighter">({{activeDb.collections.length}})</span>
                 </div>
             </h1>
 
@@ -20,7 +20,7 @@
                 <div class="action-buttons-right">
                     <router-link class="button no-select btn-icon btn-red" :to="'/db/' + $store.state.activeDb.name + '/delete'">
                         <font-awesome-icon icon="trash-alt" /> 
-                        Delete Database
+                        Delete "{{activeDb.name}}" database
                     </router-link>
                 </div>
             </div> 
@@ -35,6 +35,7 @@
                     <col width="14%" valign="top">
                     <col width="14%" valign="top">
                     <col width="14%" valign="top">
+                    <col width="5%" valign="top">
                 </colgroup>
                 <thead>
                     <tr>
@@ -45,6 +46,7 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
+                        <th rowspan="3">Del</th>
                     </tr>
                     <tr class="totals">
                         <th rowspan="2">TOTALS <font-awesome-icon class="lighter" icon="long-arrow-alt-right" /></th>
@@ -59,7 +61,6 @@
                         <th>{{ bytesFormatted(statsTotal('dataSize'), 'GB') }}</th>
                         <th>{{ bytesFormatted(statsTotal('storageSize'), 'GB') }}</th>
                         <th>{{ bytesFormatted(statsTotal('avgObjSize'), 'MB') }}</th>
-                        
                         <th>{{ bytesFormatted(statsTotal('indexesSize'), 'GB') }}</th>
                     </tr>
                 </thead>
@@ -74,6 +75,11 @@
                         <td>{{bytesFormatted(collection.stats.avgObjSize)}}</td>
                         <td>{{numberWithCommas(collection.stats.indexesCount)}}</td>
                         <td>{{bytesFormatted(collection.stats.indexesSize)}}</td>
+                        <td class="td-delete">
+                            <router-link class="no-select btn-icon delete-icon" :to="{ name: 'delete-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
+                                <font-awesome-icon icon="trash-alt" /> 
+                            </router-link>
+                        </td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -85,6 +91,7 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
+                        <th></th>
                     </tr>
                 </tfoot>
             </table>

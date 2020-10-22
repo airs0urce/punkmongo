@@ -6,7 +6,7 @@
         <div v-if="dbList.length > 0">
 
             <h1 class="page-header no-select">
-                Databases                
+                Databases <span class="lighter">({{dbList.length}})</span>
             </h1>
 
             <router-link class="button new-collection no-select btn-icon" :to="'/new-database'">
@@ -65,7 +65,7 @@
                         <td>{{bytesFormatted(db.stats.indexSize)}}</td>
                         <td>{{numberWithCommas(db.stats.objects)}}</td>
                         <td class="td-delete">
-                            <router-link class="no-select btn-icon" :to="`/db/${db.name}/delete`" style="color: #a23a3a;">
+                            <router-link class="no-select btn-icon delete-icon" :to="`/db/${db.name}/delete`" style="color: #a23a3a;">
                                 <font-awesome-icon icon="trash-alt" /> 
                             </router-link>
                         </td>
@@ -127,7 +127,5 @@ export default {
 
 
 <style lang="scss">
-    .td-delete {
-        text-align: center;
-    }
+    
 </style>

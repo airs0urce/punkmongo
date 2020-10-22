@@ -5,8 +5,8 @@
                 <router-link :to="`/overview/databases`">Databases</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
                 <router-link class="with-select" :to="`/db/${activeDb.name}`">{{activeDb.name}}</router-link>
-                <font-awesome-icon icon="angle-right" class="arrow-separator with-select" /><span class="with-select">{{activeDb.activeCollection.name}}</span> 
-                <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}})</span>
+                <font-awesome-icon icon="angle-right" class="arrow-separator with-select" /><span class="with-select">{{activeDb.activeCollection.name}} </span>
+                 <span class="lighter">({{numberWithCommas(getCollectionStats().objects)}})</span>
                 <span class="collection-tags">
                     <div class="info-tag disabled no-select" v-if="!dbCollectionOptions.capped">not capped</div>
                     <div class="info-tag info no-select" v-if="dbCollectionOptions.capped" >
