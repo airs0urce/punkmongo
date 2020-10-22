@@ -208,78 +208,82 @@ export default {
             this.errors.cappedNotSet = false
             this.errors.createCollectionError = null;
 
+            let error = false;
             const validateNameRes = await this.validateCollectionName(this.collectionName);
             if (!validateNameRes.result.canCreate) {
                 this.errors.collectionName = validateNameRes.result.reason
-            } else {
-                if (this.cappedCollection && this.cappedCollectionMax === '' && this.cappedCollectionSize === '') {
-                    this.errors.cappedNotSet = true;
-                    return;
-                }
-                
-
-                const createCollectionParams = {
-                    db: this.dbName, 
-                    collection: this.collectionName,
-                    capped: {
-                        enable: this.cappedCollection,
-                        options: {
-                            max: this.cappedCollectionMax,
-                            size: this.cappedCollectionSize /* MB */ * 1024 * 1024
-                        }
-                    },
-                    collation: {
-                        enable: this.useCustomCollation,
-                        options: {
-                            locale: this.customCollation.locale,
-                            strength: this.customCollation.strength,
-                            caseLevel: this.customCollation.caseLevel,
-                            caseFirst: this.customCollation.caseFirst,
-                            numericOrdering: this.customCollation.numericOrdering,
-                            alternate: this.customCollation.alternate,
-                            maxVariable: this.customCollation.maxVariable,
-                            backwards: this.customCollation.backwards,
-                        }
-                    }
-                };
-
-                if ('' === createCollectionParams.capped.options.max) {
-                    delete createCollectionParams.capped.options.max;
-                }
-                for (let field in createCollectionParams.collation.options) {
-                    if ('' === createCollectionParams.collation.options[field]) {
-                        if (field == 'locale') {
-                            continue;
-                        }
-                        delete createCollectionParams.collation.options[field];
-                    }
-                }
-                
-                this.loading = true;
-                const response = await api.request('createCollection', createCollectionParams);
-                if (response.error) {
-                    if (response.error.code < 100) {
-                        this.errors.createCollectionError = response.error.message;
-                    }
-                } else {
-                    const dbNames = this.$store.state.persistent.dbList.map((dbItem) => { return dbItem.name });
-                    if (! dbNames.includes(this.dbName)) {
-                        // reload database list
-                        await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
-                    }
-
-                    // relaod collections list 
-                    await this.$store.dispatch(actions.ACTION_LOAD_DB, this.dbName);
-
-                    this.$router.push({
-                        name: 'collection-manager', 
-                        params: {dbName: this.dbName, collName: this.collectionName}
-                    });
-                    this.resetForm();
-                }
-                this.loading = false;
-
+                error = true;
             }
+    
+            if (this.cappedCollection && this.cappedCollectionMax === '' && this.cappedCollectionSize === '') {
+                this.errors.cappedNotSet = true;
+                error = true;
+            }
+
+            if (error) {
+                return;
+            }
+
+            const createCollectionParams = {
+                db: this.dbName, 
+                collection: this.collectionName,
+                capped: {
+                    enable: this.cappedCollection,
+                    options: {
+                        max: this.cappedCollectionMax,
+                        size: this.cappedCollectionSize /* MB */ * 1024 * 1024
+                    }
+                },
+                collation: {
+                    enable: this.useCustomCollation,
+                    options: {
+                        locale: this.customCollation.locale,
+                        strength: this.customCollation.strength,
+                        caseLevel: this.customCollation.caseLevel,
+                        caseFirst: this.customCollation.caseFirst,
+                        numericOrdering: this.customCollation.numericOrdering,
+                        alternate: this.customCollation.alternate,
+                        maxVariable: this.customCollation.maxVariable,
+                        backwards: this.customCollation.backwards,
+                    }
+                }
+            };
+
+            if ('' === createCollectionParams.capped.options.max) {
+                delete createCollectionParams.capped.options.max;
+            }
+            for (let field in createCollectionParams.collation.options) {
+                if ('' === createCollectionParams.collation.options[field]) {
+                    if (field == 'locale') {
+                        continue;
+                    }
+                    delete createCollectionParams.collation.options[field];
+                }
+            }
+            
+            this.loading = true;
+            const response = await api.request('createCollection', createCollectionParams);
+            if (response.error) {
+                if (response.error.code < 100) {
+                    this.errors.createCollectionError = response.error.message;
+                }
+            } else {
+                const dbNames = this.$store.state.persistent.dbList.map((dbItem) => { return dbItem.name });
+                if (! dbNames.includes(this.dbName)) {
+                    // reload database list
+                    await this.$store.dispatch(actions.ACTION_RELOAD_DB_LIST);
+                }
+
+                // relaod collections list 
+                await this.$store.dispatch(actions.ACTION_LOAD_DB, this.dbName);
+
+                this.$router.push({
+                    name: 'collection-manager', 
+                    params: {dbName: this.dbName, collName: this.collectionName}
+                });
+                this.resetForm();
+            }
+            this.loading = false;
         },
         resetForm() {
             this.collectionName = '';
