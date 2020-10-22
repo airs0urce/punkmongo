@@ -45,7 +45,8 @@ export default new Vuex.Store({
         },
         errors: {
             global: null,
-        }
+        },
+        previosRoute: null
     },
     mutations: {
         [mutations.SET_LOADING_DB](state, bool) {
@@ -119,6 +120,9 @@ export default new Vuex.Store({
                 type = 'global';
             }
             state.errors[type] = error;
+        }, 
+        [mutations.SET_PREVIOUS_ROUTE](state, route) {
+            state.previosRoute = route;
         }, 
         
     },

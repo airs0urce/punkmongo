@@ -93,6 +93,16 @@ export default {
             this.loadDatabase(dbName);
         });
         this.loadDatabase(this.$route.params.dbName);
+
+        this.$router.afterEach((to, from) => {
+
+            this.$store.commit(mutations.SET_PREVIOUS_ROUTE, {
+                fullPath: from.fullPath,
+                name: from.name,
+                path: from.path,
+                params: from.params,
+            });
+        })
     },
     methods: {
         enableResizerMoving(event) {
@@ -239,7 +249,7 @@ $left-panel-header-height: 2.7rem;
     height: 100vh;
     overflow: auto;
     padding-bottom: 1.5rem;
-    min-width: 66rem;
+    min-width: 70rem;
 }
 .right-panel .line {
     border-bottom-color: #999;

@@ -11,10 +11,10 @@
         <form class="no-select">
             <div class="form-row">
                 Are you sure you want to delete <strong>{{collName}}</strong> collection?
-
             </div>
         </form>        
         <div class="gap"></div>
+
         <button @click="deleteCollection()" class="btn-red confirm-button" :disabled="loading">
             <font-awesome-icon icon="trash-alt" /> Yes, delete it
         </button>
@@ -66,7 +66,12 @@ export default {
 
         },
         goToDatabasePage() {
-            this.$router.push({ path: '/db/' + this.dbName });
+            if (this.$store.state.previosRoute) {
+                this.$router.go(-1);
+            } else {
+                this.$router.push({ path: '/db/' + this.dbName });
+            }
+            
         }
     }
 }
