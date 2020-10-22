@@ -93,6 +93,8 @@ import {
 import eventBus from '../eventBus'
 import * as mutations from '../store/mutations'
 
+let collationDetailsHideTimeout = 0;
+
 export default {
     components: {
         CollectionQuery, CollectionInsert, 
@@ -162,9 +164,12 @@ export default {
         },
         showCollationDetails(bool) {
             if (bool) {
+                clearTimeout(collationDetailsHideTimeout);
                 this.customCollationAnim.play();
             } else {
-                this.customCollationAnim.reverse();
+                collationDetailsHideTimeout = setTimeout(() => {
+                    this.customCollationAnim.reverse();
+                }, 100);
             }
         }
     },
@@ -248,7 +253,7 @@ export default {
             border: 1px solid #ddd;
             padding: 1em;
             top: 1.7rem;
-            right: -10rem;
+            right: -8rem;
             width: 55rem;
             .custom-collation-title {
                 font-weight: bold;

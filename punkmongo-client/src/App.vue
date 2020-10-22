@@ -239,7 +239,7 @@ $left-panel-header-height: 2.7rem;
     height: 100vh;
     overflow: auto;
     padding-bottom: 1.5rem;
-    min-width: 60rem;
+    min-width: 66rem;
 }
 .right-panel .line {
     border-bottom-color: #999;
