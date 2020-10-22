@@ -8,16 +8,17 @@
                 <font-awesome-icon icon="angle-right" class="arrow-separator" />{{activeDb.activeCollection.name}} 
                 <span class="light" v-if="getCollectionStats().objects > 0">({{numberWithCommas(getCollectionStats().objects)}})</span>
                 <span class="collection-tags">
-                    <div class="info-tag disabled" v-if="!collectionCollationOptions.capped">not capped</div>
-                    <div class="info-tag info" v-if="collectionCollationOptions.capped" >
+                    <div class="info-tag disabled" v-if="!dbCollectionOptions.capped">not capped</div>
+                    <div class="info-tag info" v-if="dbCollectionOptions.capped" >
                         capped
-                        <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{collectionCollationOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionCollationOptions.size, 'MB', 0, false)}})</strong></span>
-                        <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionCollationOptions.max}}</strong> documents maximum)</span>
-                        <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionCollationOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
+                        <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{dbCollectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}})</strong></span>
+                        <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{dbCollectionOptions.max}}</strong> documents maximum)</span>
+                        <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
                     </div>
 
-                    <div class="info-tag disabled" v-if="!collectionCollationOptions.collation">default collation</div>
-                    <div class="info-tag info" v-if="collectionCollationOptions.collation" @mouseenter="showCollationDetails(true)" @mouseleave="showCollationDetails(false)">
+                    <div class="info-tag disabled" v-show="!dbCollectionOptions.collation">default collation</div>
+
+                    <div class="info-tag info" v-show="dbCollectionOptions.collation" @mouseenter="showCollationDetails(true)" @mouseleave="showCollationDetails(false)">
                         custom collation…
                         <div class="info-tag-details" ref="infoTagDetails">
                             <div class="custom-collation-title">
@@ -107,11 +108,12 @@ export default {
     },
     computed: mapState({
         activeDb: state => state.activeDb,
-        collectionCollationOptions: (state) => {
+        dbCollectionOptions: (state) => {
             const collection = state.activeDb.collections.find((collection) => {
                 return collection.name == state.activeDb.activeCollection.name;
             });
-            if (collection) {
+
+            if (collection && collection.options) {
                 return collection.options;
             }
             return {};
@@ -134,17 +136,20 @@ export default {
             return collection.stats;
         },
         collOptionExists(key) {
-            return (typeof this.collectionCollationOptions[key] != 'undefined' && this.collectionCollationOptions[key] != 0);
+            return (typeof this.dbCollectionOptions[key] != 'undefined' && this.dbCollectionOptions[key] != 0);
         },
         getCollationInfo() {
-            const valueByField = this.collectionCollationOptions.collation;
+            const valueByField = this.dbCollectionOptions.collation;
+            if (! valueByField) {
+                return [];
+            }
 
             const collationInfoArr = [];
-
             for (let field in collectionOptions) {
-                const valueText = collectionOptions[field].values.find((valueItem) => {
+                const collectionOption = collectionOptions[field].values.find((valueItem) => {
                     return (valueItem.value == valueByField[field]); 
-                }).text;
+                })
+                const valueText = collectionOption.text;
 
                 collationInfoArr.push({
                     title: collectionOptions[field].title,
@@ -156,7 +161,7 @@ export default {
 
             return collationInfoArr;
         },
-        showCollationDetails(bool, hideDelay = 0) {
+        showCollationDetails(bool) {
             if (bool) {
                 this.customCollationAnim.play();
             } else {
@@ -165,27 +170,34 @@ export default {
         }
     },
     mounted() {
-
         if (this.$route.params.dbName !== this.$store.state.activeDb.name) {
             eventBus.$emit('load-database', this.$route.params.dbName);
         }
 
-        if (! this.customCollationAnim) {
-            this.customCollationAnim = gsap.timeline({
+
+        this.customCollationAnim = gsap.fromTo(this.$refs.infoTagDetails, 
+            {
+                y: 5, 
+                opacity: 0,
+                display: 'block',
+            }, 
+            {
+                display: 'block',
                 paused: true,
+                y: 0, 
+                opacity: 1, 
+                duration: 0.3,
                 onReverseComplete: () => {
-                    gsap.set(this.$refs.infoTagDetails, {display: 'none'});;
-                },
-                onStart: () => {
-                    gsap.set(this.$refs.infoTagDetails, {y: 5, opacity: 0, display: 'block'});
+                    gsap.set(this.$refs.infoTagDetails, {display: 'none'});
                 }
-            });
-            this.customCollationAnim.to(this.$refs.infoTagDetails, {y: 0, opacity: 1, duration: 0.3});
-        }
+            }
+        )
         
         this.setActiveCollection();
     },
-
+    destroyed() {
+        this.customCollationAnim.kill()
+    },
     watch: {
         async $route(to) {
             if (to.name.startsWith('collection-manager-')) {
@@ -230,7 +242,6 @@ export default {
         margin-right: 0.5em;
         position: relative;
         .info-tag-details {
-            display: none;
             border-radius: 3px;
             position: absolute;
             z-index: 2;
