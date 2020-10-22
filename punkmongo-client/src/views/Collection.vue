@@ -253,7 +253,7 @@ export default {
             border: 1px solid #ddd;
             padding: 1em;
             top: 1.7rem;
-            right: -8rem;
+            right: -1rem;
             width: 55rem;
             .custom-collation-title {
                 font-weight: bold;
