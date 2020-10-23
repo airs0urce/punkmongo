@@ -11,17 +11,18 @@ const a = require('awaiting')
 
 
 /*
-params.db - database
-params.collection - collection
-params.query - {
-filter: {}, 
-options: {
-sort: {}, 
-projection: {}, 
-limit: 0, 
-timeout: 0, 
-}
-pagination: {pageSize: 10, pageNumber: 1}
+{
+    params.db - database
+    params.collection - collection
+    params.query - {
+        filter: {}, 
+        options: {
+        sort: {}, 
+        projection: {}, 
+        limit: 0, 
+        timeout: 0, 
+    }
+    pagination: {pageSize: 10, pageNumber: 1}
 }
 
 */
@@ -69,7 +70,7 @@ module.exports = async function (params, dbClient) {
     const recordsTimestamps = [];
 
     let record;
-    while (record = await cursor.next()) {
+    while (record = await cursor.next()) {   
         const docItem = {
             id: (record._id ? record._id.toString(): null),
             timestamp: false,

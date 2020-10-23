@@ -61,10 +61,13 @@
         </h1>
 
         <ul class="tabs no-select">
+            
             <router-link :to="{name: 'collection-manager-query'}">Query/Update/Delete/Distinct</router-link>
             <router-link :to="{name: 'collection-manager-insert'}">Insert</router-link>
             <router-link :to="{name: 'collection-manager-aggregate'}">Aggregate</router-link>
             <router-link :to="{name: 'collection-manager-indexes'}">Indexes</router-link>
+            <router-link :to="{name: 'collection-manager-indexes'}">Delete</router-link>
+            
         </ul>
         
         <CollectionQuery v-if="$route.name == 'collection-manager-query'"/>

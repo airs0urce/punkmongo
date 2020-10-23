@@ -132,7 +132,12 @@
                         <a><span>Refresh</span></a>
                     </span>                        
                     <span class="separator">
-                        <span v-if="record.timestamp" title="Creation date from _id field">{{moment(record.timestamp).format('MMMM Do YYYY, h:mm:ss a')}}</span>
+                        <span v-if="record.timestamp" title="Creation date from _id field">
+                            {{moment(record.timestamp).format('YYYY-MM-DD')}}
+                            <span class="lighter">-</span>
+                            {{moment(record.timestamp).format('h:mm:ss a')}}
+                            
+                        </span>
                         <span class="note" v-if="!record.timestamp">-</span>
                     </span>
                     <span class="doc-actions no-select">
