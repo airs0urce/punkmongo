@@ -66,7 +66,9 @@
             <router-link :to="{name: 'collection-manager-insert'}">Insert</router-link>
             <router-link :to="{name: 'collection-manager-aggregate'}">Aggregate</router-link>
             <router-link :to="{name: 'collection-manager-indexes'}">Indexes</router-link>
-            <router-link :to="{name: 'delete-collection', params: {dbName: activeDb.name, collName: activeDb.activeCollection.name}}" class="delete-collection">Delete collection…</router-link>
+            <router-link :to="{name: 'rename-collection', params: {dbName: activeDb.name, collName: activeDb.activeCollection.name}}" class="rename-collection"><font-awesome-icon icon="pen" /> Rename collection</router-link>
+            <router-link :to="{name: 'delete-collection', params: {dbName: activeDb.name, collName: activeDb.activeCollection.name}}" class="delete-collection"><font-awesome-icon icon="trash-alt" /> Delete collection…</router-link>
+
             
         </ul>
         
@@ -222,27 +224,43 @@ export default {
     border-bottom: 1px solid #e2e2e2;
 
     a {
-        background-color: #eeefff;
+        cursor: default;
+        // background-color: #fbfbff;
+        border: 1px solid #eee;
         padding: 5px 10px;
-        cursor: pointer;
         user-select: none;
-        border: 1px solid transparent;
         border-radius: 3px 3px 0 0;
         position: relative;
         bottom: -1px;
         border-bottom-color: #e2e2e2;
-        background-color: white;
-
+        margin-right: 0.2em;
+        &:hover {
+            color: #004499;
+        }
         &.router-link-exact-active {
             border-color: #e2e2e2;
             border-bottom-color: transparent;
             background-color: #eeefff;
         }
     }
-    .delete-collection {
+    a:last-of-type {
+        margin-right: 0;
+    }
+    .rename-collection {
+        color: #777;
         margin-left: auto;
-        background-color: #ffecec;
-        color: #a23a3a;
+        cursor: pointer;
+        &:hover {
+            color: #555;
+        }
+    }
+    .delete-collection {
+        background-color: #fff4f4;
+        color: #ab5858;
+        cursor: pointer;
+        &:hover {
+            color: #a23a3a;
+        }
     }
 }
 

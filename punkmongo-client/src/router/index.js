@@ -7,8 +7,8 @@ import NewCollection from '../views/NewCollection.vue'
 import NewDatabase from '../views/NewDatabase.vue'
 import Collection from '../views/Collection.vue'
 import DeleteCollection from '../views/DeleteCollection.vue'
+import RenameCollection from '../views/RenameCollection.vue'
 import DeleteDatabase from '../views/DeleteDatabase.vue'
-
 
 
 Vue.use(VueRouter)
@@ -47,6 +47,12 @@ const routes = [{
         path: '/db/:dbName/col/:collName/delete',
         component: DeleteCollection
     },
+    {
+        name: 'rename-collection',
+        path: '/db/:dbName/col/:collName/rename',
+        component: RenameCollection
+    },
+    
     {
         name: 'new-collection',
         path: '/db/:dbName/new-collection',

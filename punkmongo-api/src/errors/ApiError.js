@@ -1,9 +1,13 @@
 const CustomError = require('./CustomError');
 
 class ApiError extends CustomError {
-    constructor(message, code) {
+    constructor(message, code, name = null) {
         super(message, code);
-        this.name = this.constructor.name;
+        if (name) {
+            this.name = name;    
+        } else {
+            this.name = this.constructor.name;
+        }
         Error.captureStackTrace(this, ApiError);
     }
 }
