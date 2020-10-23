@@ -79,11 +79,7 @@ export default {
             this.loading = false;
         },
         goToDatabasePage() {
-            if (this.$store.state.previosRoute) {
-                this.$router.go(-1);
-            } else {
-                this.$router.push({ path: '/db/' + this.dbName });
-            }
+            this.$router.push({ name: 'database', params: {dbName: this.dbName} });
             
         },
         numberWithCommas: utils.numberWithCommas,
