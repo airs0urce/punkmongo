@@ -22,7 +22,7 @@
                         <ul class="left-panel-collections">
                             <li v-for="collection in state.activeDb.collections">
                                 <router-link 
-                                    :to="'/db/' + state.activeDb.name + '/col/' + collection.name"
+                                    :to="{name: 'collection-manager', params: {dbName: state.activeDb.name, collName: collection.name}}"
                                     @mousedown.native="onCollectionLinkMouseDown(collection.name)"
                                     >{{collection.name}}</router-link>
                                 <span :class="{'no-docs': collection.stats.objects == 0}"> ({{numberWithCommas(collection.stats.objects)}})</span>

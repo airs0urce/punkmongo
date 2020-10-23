@@ -455,7 +455,7 @@ select {
 .nowrap {
     white-space: nowrap;
 }
-a {
+* {
     -webkit-user-drag: none;
     -khtml-user-drag: none;
     -moz-user-drag: none;
