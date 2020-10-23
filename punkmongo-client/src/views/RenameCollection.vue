@@ -31,7 +31,7 @@
         <button @click="renameCollection()" class="confirm-button" :disabled="loading">
             <font-awesome-icon icon="pen" /> Rename
         </button>
-        <button @click="goToDatabasePage()" :disabled="loading">
+        <button @click="goBack()" :disabled="loading">
             Cancel
         </button>
        
@@ -97,11 +97,17 @@ export default {
             }
             this.loading = false;
         },
-        goToDatabasePage() {
+        goBack() {
             if (this.$store.state.previosRoute) {
                 this.$router.go(-1);
             } else {
-                this.$router.push({ path: '/db/' + this.dbName });
+                this.$router.push({ 
+                    name: 'collection-manager', 
+                    params: { 
+                        dbName: this.dbName, 
+                        collName: this.collName 
+                    }
+                });
             }
             
         },

@@ -21,7 +21,7 @@
         <button @click="deleteCollection()" class="btn-red confirm-button" :disabled="loading">
             <font-awesome-icon icon="trash-alt" /> Yes, delete it
         </button>
-        <button @click="goToDatabasePage()" :disabled="loading">
+        <button @click="goBack()" :disabled="loading">
             Cancel
         </button>
        
@@ -56,7 +56,7 @@ export default {
                 return coll.name == this.$route.params.collName;
             });
             if (!collection) {
-                return {};
+                return 0;
             }
             return collection.stats.objects;
         }
@@ -74,13 +74,25 @@ export default {
             
             if (response.success) {
                 await this.$store.dispatch(actions.ACTION_LOAD_DB, this.dbName);
-                this.goToDatabasePage();
+                this.$router.push({ 
+                    name: 'database', 
+                    params: { dbName: this.dbName }
+                });
             }
             this.loading = false;
         },
-        goToDatabasePage() {
-            this.$router.push({ name: 'database', params: {dbName: this.dbName} });
-            
+        goBack() {
+            if (this.$store.state.previosRoute) {
+                this.$router.go(-1);
+            } else {
+                this.$router.push({ 
+                    name: 'collection-manager', 
+                    params: { 
+                        dbName: this.dbName, 
+                        collName: this.collName 
+                    }
+                });
+            }
         },
         numberWithCommas: utils.numberWithCommas,
     }
