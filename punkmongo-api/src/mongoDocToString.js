@@ -100,8 +100,8 @@ const BSON_TO_JS_STRING = {
     }
 };
 
-let defaultStringify = null;
-function stringifyValue(value) {
+
+function stringifyValue(value, defaultStringify) {
     const typeDescriptor = getTypeDescriptorForValue(value);
     const convertToJs = BSON_TO_JS_STRING[typeDescriptor.type];
     if (!convertToJs) {
@@ -115,10 +115,7 @@ function mongoDocToString(dbDocument, space = '   ') {
     let string = jsStringify(
         dbDocument,
         (value, indent, stringify) => {
-            if (! defaultStringify) {
-                defaultStringify = stringify;
-            }
-            return stringifyValue(value, defaultStringify);
+            return stringifyValue(value, stringify);
         },
         space
     );
