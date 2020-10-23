@@ -11,6 +11,9 @@
         <form class="no-select">
             <div class="form-row">
                 Are you sure you want to delete <strong>{{collName}}</strong> collection?
+                <span v-if="collectionRecordsAmount > 0">
+                    This collection contains <strong>{{numberWithCommas(collectionRecordsAmount)}}</strong> document<span v-if="collectionRecordsAmount > 1">s</span>.
+                </span>
             </div>
         </form>        
         <div class="gap"></div>
@@ -32,6 +35,7 @@ import api from '../api/api'
 import eventBus from '../eventBus'
 import * as actions from '../store/actions'
 import * as a from 'awaiting';
+import utils from '../utils'
 
 export default {
     data: function() {
@@ -45,6 +49,16 @@ export default {
         },
         collName() {
             return this.$route.params.collName;
+        },
+        collectionRecordsAmount() {
+            const activeDb = this.$store.state.activeDb;
+            const collection = activeDb.collections.find((coll) => {
+                return coll.name == this.$route.params.collName;
+            });
+            if (!collection) {
+                return {};
+            }
+            return collection.stats.objects;
         }
     },
     mounted() {
@@ -63,7 +77,6 @@ export default {
                 this.goToDatabasePage();
             }
             this.loading = false;
-
         },
         goToDatabasePage() {
             if (this.$store.state.previosRoute) {
@@ -72,7 +85,8 @@ export default {
                 this.$router.push({ path: '/db/' + this.dbName });
             }
             
-        }
+        },
+        numberWithCommas: utils.numberWithCommas,
     }
 }
 
