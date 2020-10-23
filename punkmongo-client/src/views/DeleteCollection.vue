@@ -11,7 +11,7 @@
         <form class="no-select">
             <div class="form-row">
                 Are you sure you want to delete <strong>{{collName}} </strong> 
-                <strong :class="{'light': collectionRecordsAmount == 0}">({{numberWithCommas(collectionRecordsAmount)}})</strong> 
+                <strong :class="{'lighter': collectionRecordsAmount == 0}">({{numberWithCommas(collectionRecordsAmount)}})</strong> 
                 collection?
 
             </div>
