@@ -19,10 +19,8 @@
                     v-shortkey="['enter']" 
                     @shortkey="renameCollection()" 
                 />
-                <div v-if="errors.newCollectionName">
-                    <div class="gap"></div>
-                    <div class="local-error-text rename-error">{{errors.newCollectionName}}</div>    
-                </div>
+                <span v-if="errors.newCollectionName" class="local-error-text">{{errors.newCollectionName}}</span>    
+                
                 
             </div>
         </form>        
@@ -92,7 +90,7 @@ export default {
                     }
                 });
             } else {
-                this.errors.newCollectionName = response.error.message;
+                this.errors.newCollectionName = response.error.message.split('\n')[0];
                 this.$refs.newCollectionName.focus();
             }
             this.loading = false;
@@ -124,9 +122,7 @@ export default {
     .confirm-button {
         margin-right: 1rem;
     }
-    .rename-error {
-        display: block;
-    }
+    
     .new-collection-name {
         width: 20rem;
     }

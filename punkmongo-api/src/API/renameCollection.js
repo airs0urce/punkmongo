@@ -13,6 +13,7 @@ params = {
 
 module.exports = async function (params, dbClient) {  
     const collection = dbClient.db(params.db).collection(params.collection);
+
     try {
         await collection.rename(params.newCollectionName);
     } catch (e) {

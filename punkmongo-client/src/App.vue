@@ -356,9 +356,9 @@ button {
         border: 1px solid #a23a3a;
     }
     &[disabled] {
-        color: #848484;
-        background-color: #fbfbfb;
-        border: 1px solid #848484;
+        color: #bfbfbf;
+        background-color: #f1f1f1;
+        border: 1px solid #f1f1f1;
     }
 }
 
