@@ -10,10 +10,10 @@
 
         <form class="no-select">
             <div class="form-row">
-                Are you sure you want to delete <strong>{{collName}}</strong> collection?
-                <span v-if="collectionRecordsAmount > 0">
-                    This collection contains <strong>{{numberWithCommas(collectionRecordsAmount)}}</strong> document<span v-if="collectionRecordsAmount > 1">s</span>.
-                </span>
+                Are you sure you want to delete <strong>{{collName}} </strong> 
+                <strong :class="{'light': collectionRecordsAmount == 0}">({{numberWithCommas(collectionRecordsAmount)}})</strong> 
+                collection?
+
             </div>
         </form>        
         <div class="gap"></div>

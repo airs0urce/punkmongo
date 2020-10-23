@@ -20,7 +20,7 @@
                 <div class="action-buttons-right">
                     <router-link class="button no-select btn-icon btn-red" :to="'/db/' + $store.state.activeDb.name + '/delete'">
                         <font-awesome-icon icon="trash-alt" /> 
-                        Delete "{{activeDb.name}}" database
+                        Delete "{{activeDb.name}}" database…
                     </router-link>
                 </div>
             </div> 

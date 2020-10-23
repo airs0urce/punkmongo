@@ -66,7 +66,7 @@
             <router-link :to="{name: 'collection-manager-insert'}">Insert</router-link>
             <router-link :to="{name: 'collection-manager-aggregate'}">Aggregate</router-link>
             <router-link :to="{name: 'collection-manager-indexes'}">Indexes</router-link>
-            <router-link :to="{name: 'delete-collection', params: {dbName: activeDb.name, collName: activeDb.activeCollection.name}}" class="delete-collection">Delete collection</router-link>
+            <router-link :to="{name: 'delete-collection', params: {dbName: activeDb.name, collName: activeDb.activeCollection.name}}" class="delete-collection">Delete collection…</router-link>
             
         </ul>
         
