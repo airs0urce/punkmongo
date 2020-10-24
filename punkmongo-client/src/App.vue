@@ -698,7 +698,7 @@ button .svg-inline--fa {
     text-align: center;
 }
 
-svg.light.svg-inline--fa {
+a svg.light.svg-inline--fa {
     color: #777;
     &:hover {
         color: #555;
@@ -707,6 +707,9 @@ svg.light.svg-inline--fa {
 
 table.zebra tr:nth-child(even) td {
   background-color: #fffeede0;
+}
+.text-center {
+    text-align: center;
 }
 </style>
 

@@ -46,6 +46,8 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
+                        <th rowspan="3">Custom Collation</th>
+                        <th rowspan="3">Capped</th>
                         <th rowspan="3">Rename</th>
                         <th rowspan="3">Del</th>
                     </tr>
@@ -76,6 +78,16 @@
                         <td>{{bytesFormatted(collection.stats.avgObjSize)}}</td>
                         <td>{{numberWithCommas(collection.stats.indexesCount)}}</td>
                         <td>{{bytesFormatted(collection.stats.indexesSize)}}</td>
+                        <td class="text-center">
+                            <span v-if="collection.options.collation">
+                                <font-awesome-icon icon="circle" class="light" />
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span v-if="collection.options.capped">
+                                <font-awesome-icon icon="circle" class="light" />
+                            </span>
+                        </td>
                         <td class="td-rename">
                             <router-link class="no-select btn-icon" :to="{ name: 'rename-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
                                 <font-awesome-icon icon="pen" class="light" />
@@ -97,6 +109,8 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
+                        <th></th>
+                        <th></th>
                         <th></th>
                         <th></th>
                     </tr>

@@ -16,6 +16,7 @@ import {
     faTrashAlt,
     faArrowRight,
     faLongArrowAltRight,
+    faCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import VueWorker from 'vue-worker'
 
@@ -30,8 +31,7 @@ library.add(faQuestionCircle)
 library.add(faTrashAlt)
 library.add(faArrowRight)
 library.add(faLongArrowAltRight)
-
-
+library.add(faCircle)
 
 
 
