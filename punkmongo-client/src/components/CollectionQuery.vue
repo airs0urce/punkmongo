@@ -124,22 +124,19 @@
             </div>
 
             <div v-for="(record, index) in queryResult.records" :key="queryResult.records[index].id" class="document">
-                
                 <div class="document-header">
                     <span class="doc-actions no-select">
                         <span class="document-num">#{{getResultRecordNumber(index)}}</span>
-                        <a><span>Update</span></a>
-                        <a><span>Delete</span></a>
-                        <a><span>Refresh</span></a>
+                        <a v-if="!dbCollectionOptions.capped"><span>Update</span></a>
+                        <a v-if="!dbCollectionOptions.capped"><span>Delete</span></a>
+                        <a v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
                     </span>                        
-                    <span class="separator">
-                        <span v-if="record.timestamp" title="Creation date from _id field">
+                    <span class="separator" v-if="record.timestamp">
+                        <span title="Creation date from _id field">
                             {{moment(record.timestamp).format('YYYY-MM-DD')}}
                             <span class="lighter">-</span>
                             {{moment(record.timestamp).format('h:mm:ss a')}}
-                            
                         </span>
-                        <span class="note" v-if="!record.timestamp">-</span>
                     </span>
                     <span class="doc-actions no-select">
                         <a @click.prevent="expandDoc(record)" v-if="!record.expand"><span>Expand</span></a>
@@ -236,6 +233,16 @@ export default {
         queryResult() {
             return this.$store.state.activeDb.queryResult;
         },
+        dbCollectionOptions: (state) => {
+            const collection = state.activeDb.collections.find((collection) => {
+                return collection.name == state.activeDb.activeCollection.name;
+            });
+
+            if (collection && collection.options) {
+                return collection.options;
+            }
+            return {};
+        }
 
     },
     watch: {

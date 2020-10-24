@@ -72,7 +72,7 @@
             
         </ul>
         
-        <CollectionQuery v-if="$route.name == 'collection-manager-query'"/>
+        <CollectionQuery v-if="$route.name == 'collection-manager-query'" :dbCollectionOptions="dbCollectionOptions" />
         <CollectionInsert v-if="$route.name == 'collection-manager-insert'"/>
         <CollectionAggregate v-if="$route.name == 'collection-manager-aggregate'"/>
         <CollectionIndexes v-if="$route.name == 'collection-manager-indexes'" />    
