@@ -351,9 +351,9 @@ button {
         padding-left: 1.3rem;    
     }
     &.btn-red {
-        color: #a23a3a;
-        background-color: #ffecec;
-        border: 1px solid #a23a3a;
+        color: #ab5858;
+        background-color: #fff2f2;
+        border: 1px solid #e4b5b5;
     }
     &[disabled] {
         color: #bfbfbf;
