@@ -62,7 +62,7 @@
 
         <ul class="tabs no-select">
             
-            <router-link :to="{name: 'collection-manager-query'}">Query/Update/Delete/Distinct</router-link>
+            <router-link :to="{name: 'collection-manager-query'}">Query</router-link>
             <router-link :to="{name: 'collection-manager-insert'}">Insert</router-link>
             <router-link :to="{name: 'collection-manager-aggregate'}">Aggregate</router-link>
             <router-link :to="{name: 'collection-manager-indexes'}">Indexes</router-link>
@@ -72,7 +72,7 @@
             
         </ul>
         
-        <CollectionQuery v-if="$route.name == 'collection-manager-query'" :dbCollectionOptions="dbCollectionOptions" />
+        <CollectionQuery v-if="$route.name == 'collection-manager-query'" />
         <CollectionInsert v-if="$route.name == 'collection-manager-insert'"/>
         <CollectionAggregate v-if="$route.name == 'collection-manager-aggregate'"/>
         <CollectionIndexes v-if="$route.name == 'collection-manager-indexes'" />    
