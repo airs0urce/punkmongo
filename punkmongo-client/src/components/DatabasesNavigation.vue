@@ -25,7 +25,7 @@
                                     :to="{name: 'collection-manager', params: {dbName: state.activeDb.name, collName: collection.name}}"
                                     @mousedown.native="onCollectionLinkMouseDown(collection.name)"
                                     >{{collection.name}}</router-link>
-                                <span :class="{'no-docs': collection.stats.objects == 0}"> ({{numberWithCommas(collection.stats.objects)}})</span>
+                                <span :class="{'no-docs': !collection.stats.objects}"> ({{numberWithCommas(collection.stats.objects)}})</span>
                             </li>
                         </ul>
                         <router-link class="new-collection no-select" :to="'/db/' + state.activeDb.name + '/new-collection'">New Collection</router-link>
