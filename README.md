@@ -12,6 +12,8 @@ $ npm start
 
 Sure, this is not final way how you start the project, but approach used for development before I make first release .
 
+I test all features on MongoDB >= v4.0. If you have earlier versions it's possoble that some features will not work or will work incorrectly.
+
 Preview:  
 ![Screen Shot 2020-10-12 at 4.43.55 PM](https://user-images.githubusercontent.com/109203/95731940-5120a680-0caa-11eb-82a8-d71456e5de42.png)
 

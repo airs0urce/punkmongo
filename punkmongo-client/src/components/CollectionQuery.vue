@@ -30,7 +30,7 @@
                                 :autocomplete-items="query.sort.autosuggestSortFields"
                                 @tags-changed="newTags => query.sort.tags = newTags"
                                 placeholder=""
-                                :class="{'empty-value': isValueEmpty('query.sort')}"
+                                :class="{'empty-value': (isValueEmpty('query.sort') && !query.sort.tag)}"
                                 />
                         </div>
                         <div>
@@ -46,7 +46,7 @@
                                 :autocomplete-items="query.projection.autosuggestSortFields"
                                 @tags-changed="newTags => query.projection.tags = newTags"
                                 placeholder=""
-                                :class="{'empty-value': isValueEmpty('query.projection')}"
+                                :class="{'empty-value': (isValueEmpty('query.projection') && !query.projection.tag)}"
                                 />
                         </div>
                     </div>
@@ -123,7 +123,8 @@
                 />
             </div>
 
-            <div v-for="(record, index) in queryResult.records" :key="record._id" class="document">
+            <div v-for="(record, index) in queryResult.records" :key="queryResult.records[index].id" class="document">
+                
                 <div class="document-header">
                     <span class="doc-actions no-select">
                         <span class="document-num">#{{getResultRecordNumber(index)}}</span>
@@ -152,7 +153,9 @@
                         <a @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
                     </span>                        
                 </div>
-                <div class="document-body language-mongodb-filter" :class="{'expanded': record.expand}" v-html="highlight(record.doc)"></div>
+                <div class="document-body language-mongodb-filter" 
+                    :class="{'expanded': record.expand}" 
+                    v-html="highlight(record.doc, index)"></div>
             </div>
 
             <div class="results-footer" v-if="queryResult.resultDocumentsTotal > 0">
@@ -481,7 +484,7 @@ export default {
         collapseDoc(doc) {
             this.$set(doc, 'expand', false);
         },
-        moment: moment
+        moment: moment,
     },
     mounted: async function() {        
 
@@ -563,7 +566,7 @@ function getDefaultData() {
                 rule: ({
                     text
                 }) => {
-                    const invalid = (text.slice(-2) !== ':0' && text.slice(-2) !== ':1');
+                    const invalid = (text.slice(-2) !== ':0' && text.slice(-2) !== ':1');                   
                     return invalid;
                 }
             }, ]
@@ -637,7 +640,7 @@ function getDefaultData() {
             font-family: "Courier New";
             background-color: #c8f7c8;
             color: #0a420a;
-            // outline: 0.3rem solid #c8f7c8;
+            // outline: 3px solid #c8f7c8;
         }
         .ti-invalid {
             background-color: #fff;

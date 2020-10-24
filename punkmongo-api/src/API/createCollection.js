@@ -42,11 +42,20 @@ module.exports = async function (params, dbClient) {
     const db = dbClient.db(params.db);
 
     let checkResult;
-    checkResult = await checkCanCreateDatabase({db: params.db}, dbClient);
-    if (!checkResult.canCreate) {
-        throw new ApiError(checkResult.reason, 1);
+
+    const dbListResult = await dbClient.db('admin').admin().listDatabases();
+    const dbAlreadyExists = !!(dbListResult.databases.find((database) => {
+        return database.name === params.db;
+    }));
+
+    if (!dbAlreadyExists) {
+        checkResult = await checkCanCreateDatabase({db: params.db}, dbClient);
+        if (!checkResult.canCreate) {
+            throw new ApiError(checkResult.reason, 1);
+        }
     }
-    checkResult = await mongoHelpers.checkCanCreateCollection({db: params.db, collection: params.collection}, dbClient);
+    
+    checkResult = await mongoHelpers.checkCanCreateCollection(params.db, params.collection);
     if (!checkResult.canCreate) {
         throw new ApiError(checkResult.reason, 2);
     }
