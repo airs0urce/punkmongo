@@ -8,7 +8,7 @@
                 Server Info
             </h1>
 
-            <table cellpadding="2" cellspacing="1">
+            <table cellpadding="2" cellspacing="1" class="zebra">
                 <col width="150" valign="top">
                 <col width="500" valign="top">
                 <tr>
@@ -40,7 +40,7 @@
                 </tr>
             </table>
             <div class="gap"></div>
-            <table cellpadding="2" cellspacing="1">
+            <table cellpadding="2" cellspacing="1" class="zebra">
                 <col width="150" valign="top">
                 <col width="500" valign="top">
                 <tr>

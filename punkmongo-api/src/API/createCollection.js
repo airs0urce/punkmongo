@@ -2,6 +2,9 @@
 const a = require('awaiting');
 const ApiError = require('../errors/ApiError');
 
+const mongoHelpers = require('../mongoHelpers');
+const checkCanCreateDatabase = require('./checkCanCreateDatabase');
+
 /*
 params = {
     db: 'db_name',
@@ -37,6 +40,16 @@ const availableCollationOptions = [
 
 module.exports = async function (params, dbClient) {  
     const db = dbClient.db(params.db);
+
+    let checkResult;
+    checkResult = await checkCanCreateDatabase({db: params.db}, dbClient);
+    if (!checkResult.canCreate) {
+        throw new ApiError(checkResult.reason, 1);
+    }
+    checkResult = await mongoHelpers.checkCanCreateCollection({db: params.db, collection: params.collection}, dbClient);
+    if (!checkResult.canCreate) {
+        throw new ApiError(checkResult.reason, 2);
+    }
     
     const collectionOptions = {}
 
@@ -62,7 +75,7 @@ module.exports = async function (params, dbClient) {
     try {
         await db.createCollection(params.collection, collectionOptions);    
     } catch (e) {
-        throw new ApiError(e.message, 1);
+        throw new ApiError(e.message, 3);
     }
 
     return {}

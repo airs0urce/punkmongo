@@ -11,9 +11,9 @@
                     <div class="info-tag disabled no-select" v-if="!dbCollectionOptions.capped">not capped</div>
                     <div class="info-tag info no-select" v-if="dbCollectionOptions.capped" >
                         capped
-                        <span v-if="collOptionExists('max') && collOptionExists('size')">(maximum <strong>{{dbCollectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}})</strong></span>
-                        <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{dbCollectionOptions.max}}</strong> documents maximum)</span>
-                        <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}}</strong> maximum)</span>
+                        <span v-if="collOptionExists('max') && collOptionExists('size')">(<strong>{{dbCollectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}})</strong></span>
+                        <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{dbCollectionOptions.max}}</strong> documents)</span>
+                        <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}}</strong>)</span>
                     </div>
 
                     <div class="info-tag disabled no-select" v-show="!dbCollectionOptions.collation">default collation</div>
@@ -43,7 +43,7 @@
                                 <tbody>
                                     <tr v-for="item of getCollationInfo()" :class="{'default': item.default, 'non-default': !item.default}">
                                         <td>{{item.title}}</td>
-                                        <td>
+                                        <td :class="{'bold': !item.default}">
                                             {{JSON.stringify(item.value)}}
                                         </td>
                                         <td>
@@ -289,9 +289,14 @@ export default {
             .non-default td {
                 background-color: #fffaa3;
             }
+            td.bold {
+                font-weight: bold;
+            }
         }
     }
 }
+
+
 </style>
 
 

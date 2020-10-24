@@ -44,12 +44,17 @@ const router = new koaRouter();
                 throw new ApiError(e.message, ApiError.ERROR_INPUT);
             }
             
-            const result = await apiMethods[ctx.params.method_name](body.params, dbClient);
-            ctx.body = {
-                id: body.id,
-                success: true,
-                result: result
-            };
+            if (! apiMethods[ctx.params.method_name]) {
+                throw new ApiError(`Method "${ctx.params.method_name}" doesn't exist`, 101);
+            } else {
+                const result = await apiMethods[ctx.params.method_name](body.params, dbClient);
+                ctx.body = {
+                    id: body.id,
+                    success: true,
+                    result: result
+                };
+            }
+            
         } catch (e) {
             const response = {
                 id: null,
