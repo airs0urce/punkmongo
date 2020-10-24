@@ -15,7 +15,7 @@
             </router-link>
 
             <div class="gap"></div>
-            <table cellpadding="2" cellspacing="1" class="full-width-table">
+            <table cellpadding="2" cellspacing="1" class="full-width-table zebra">
                 <colgroup>
                     <col width="200" valign="top">
                     <col width="110" valign="top">
@@ -65,7 +65,7 @@
                         <td>{{bytesFormatted(db.stats.indexSize)}}</td>
                         <td>{{numberWithCommas(db.stats.objects)}}</td>
                         <td class="td-delete">
-                            <router-link class="no-select btn-icon delete-icon" :to="`/db/${db.name}/delete`" style="color: #a23a3a;">
+                            <router-link class="no-select btn-icon delete-icon" :to="`/db/${db.name}/delete`">
                                 <font-awesome-icon icon="trash-alt" /> 
                             </router-link>
                         </td>

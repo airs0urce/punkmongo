@@ -686,13 +686,27 @@ button .svg-inline--fa {
     }
 }
 .delete-icon {
-    color: #a23a3a;    
+    color: #ab6e6e;    
     &:hover {
-        color: #da4545;
+        color: #c54e4e;
     }
 }
 .td-delete {
     text-align: center;
+}
+.td-rename {
+    text-align: center;
+}
+
+svg.light.svg-inline--fa {
+    color: #777;
+    &:hover {
+        color: #555;
+    }    
+}
+
+table.zebra tr:nth-child(even) td {
+  background-color: #fffeede0;
 }
 </style>
 

@@ -27,7 +27,7 @@
 
             <div class="gap"></div>
             
-            <table cellpadding="2" cellspacing="1" class="full-width-table">
+            <table cellpadding="2" cellspacing="1" class="full-width-table zebra">
                 <colgroup>
                     <col width="14%" valign="top">
                     <col width="14%" valign="top">
@@ -46,6 +46,7 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
+                        <th rowspan="3">Rename</th>
                         <th rowspan="3">Del</th>
                     </tr>
                     <tr class="totals">
@@ -75,6 +76,11 @@
                         <td>{{bytesFormatted(collection.stats.avgObjSize)}}</td>
                         <td>{{numberWithCommas(collection.stats.indexesCount)}}</td>
                         <td>{{bytesFormatted(collection.stats.indexesSize)}}</td>
+                        <td class="td-rename">
+                            <router-link class="no-select btn-icon" :to="{ name: 'rename-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
+                                <font-awesome-icon icon="pen" class="light" />
+                            </router-link>
+                        </td>
                         <td class="td-delete">
                             <router-link class="no-select btn-icon delete-icon" :to="{ name: 'delete-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
                                 <font-awesome-icon icon="trash-alt" /> 
@@ -91,6 +97,7 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
+                        <th></th>
                         <th></th>
                     </tr>
                 </tfoot>

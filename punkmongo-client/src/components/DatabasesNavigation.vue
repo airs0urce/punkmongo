@@ -131,11 +131,11 @@ export default {
                 if ('' === this.lastActiveDbName) {
                     activeDbTopEl.scrollIntoView({
                         block: 'start',
-                        behavior: 'smooth'
+                        // behavior: 'smooth'
                     });
                 } else {
                     activeDbTopEl.scrollIntoView({
-                        block: 'nearest'
+                        block: 'nearest',
                     });
                 }
                 this.lastActiveDbName = (this.$store.state.activeDb ? this.$store.state.activeDb.name: '');
