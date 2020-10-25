@@ -29,6 +29,15 @@
             right: 10.2rem;
         }
     }
+    &.info-tag-capped {
+        .info-on-left {
+            right: 6.2rem;
+        }
+        .info-tag-details {
+            width: auto;
+        }
+    }
+
     .question-icon {
         font-size: 0.9em;
         color: #dffaff;

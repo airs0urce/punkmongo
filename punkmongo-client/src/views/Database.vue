@@ -85,12 +85,13 @@
                             <TagCapped :collectionOptions="collection.options" 
                                 :showInfoInline="false" 
                                 :fixedWidth="true" 
+                                :detailsOnLeft="true"
                             />
                             <TagCollation :collectionOptions="collection.options" 
                                 :hideDetailsAnimation="false" 
                                 :hideDetailsDelay="0" 
                                 :fixedWidth="true" 
-                                :collationDetailsOnLeft="true"
+                                :detailsOnLeft="true"
                             />
                         </td>
                         <td class="td-rename" title="rename collection">

@@ -1,14 +1,20 @@
 <template>
-    <div class="info-tag no-select" 
-        :class="{'disabled': !collectionOptions.capped, 'info': collectionOptions.capped, 'info-tag-capped-fixed-width': fixedWidth}">
-        <span v-if="!collectionOptions.capped">not capped</span>
-        <span v-if="collectionOptions.capped">
+    <div class="info-tag info-tag-capped no-select" 
+        :class="{'disabled': !collectionOptions.capped, 'info': collectionOptions.capped, 'info-tag-capped-fixed-width': fixedWidth}"
+        @mouseenter="showDetails(true)" @mouseleave="showDetails(false)">
+        <span v-show="!collectionOptions.capped">not capped</span>
+        <span v-show="collectionOptions.capped">
             capped <font-awesome-icon v-if="!showInfoInline" icon="question-circle" class="question-icon" />
             <span v-if="showInfoInline">
                 <span v-if="collOptionExists('max') && collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}})</strong></span>
                 <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents)</span>
                 <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong>)</span>
             </span>
+            <div class="info-tag-details with-select" ref="infoTagDetails" :class="{'info-on-left': detailsOnLeft}">
+                <span v-if="collOptionExists('max') && collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}})</strong></span>
+                <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents)</span>
+                <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong>)</span>                
+            </div>
         </span>        
     </div>  
 
@@ -17,27 +23,74 @@
 
 <script>
 import utils from '../utils'
+import { gsap } from 'gsap'
 
 export default {
+    data: function() {
+        return {
+            cappedAnim: null,
+            detailsHideTimeout: 0,
+        }
+    },
     props: {
         collectionOptions: Object,
         showInfoInline: {
             type: Boolean,
             default: true
         },
+        hideDetailsAnimation: {
+            type: Boolean,
+            default: true 
+        },
         fixedWidth: {
             type: Boolean,
             default: false  
+        },
+        detailsOnLeft: {
+            type: Boolean,
+            default: false    
         }
     },
     methods: {
         bytesFormatted: utils.bytesFormatted, 
         collOptionExists(key) {
             return (typeof this.collectionOptions[key] != 'undefined' && this.collectionOptions[key] != 0);
-        },      
+        },     
+        showDetails(bool) {
+            if (bool) {
+                clearTimeout(this.detailsHideTimeout);
+                this.cappedAnim.play();
+            } else {
+                this.detailsHideTimeout = setTimeout(() => {
+                    this.cappedAnim.reverse();
+                    if (! this.hideDetailsAnimation) {
+                        this.cappedAnim.progress(0);
+                    }
+                }, this.hideDetailsDelay);
+            }
+        } 
     },
     mounted() {
-        console.log('showInfoInline:',this.showInfoInline);
+        this.cappedAnim = gsap.fromTo(this.$refs.infoTagDetails, 
+            {
+                y: 5, 
+                opacity: 0,
+            }, 
+            {
+                display: 'block',
+                paused: true,
+                y: 0, 
+                opacity: 1, 
+                duration: 0.25,
+                onReverseComplete: () => {
+                    gsap.set(this.$refs.infoTagDetails, {display: 'none'});
+                }
+            }
+        )
+        
+    },
+    destroyed() {
+        this.cappedAnim.kill()
     },
 }
 
