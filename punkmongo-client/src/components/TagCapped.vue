@@ -59,6 +59,11 @@ export default {
         showDetails(bool) {
             if (bool) {
                 clearTimeout(this.detailsHideTimeout);
+                if (this.cappedAnim) {
+                    this.cappedAnim.play();
+                    return;
+                }
+                
                 this.cappedAnim = gsap.fromTo(this.$refs.infoTagDetails, 
                     {
                         y: 5, 

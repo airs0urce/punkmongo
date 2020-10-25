@@ -106,6 +106,10 @@ export default {
         showCollationDetails(bool) {
             if (bool) {
                 clearTimeout(this.collationDetailsHideTimeout);
+                if (this.customCollationAnim) {
+                    this.customCollationAnim.play();
+                    return;
+                }
                 this.customCollationAnim = gsap.fromTo(this.$refs.infoTagDetails, 
                     {
                         y: 5, 
