@@ -2,7 +2,7 @@
 const a = require('awaiting');
 const ApiError = require('../errors/ApiError');
 
-const mongoHelpers = require('../mongoHelpers');
+const mongoHelpers = require('../modules/mongoHelpers');
 const checkCanCreateDatabase = require('./checkCanCreateDatabase');
 
 /*

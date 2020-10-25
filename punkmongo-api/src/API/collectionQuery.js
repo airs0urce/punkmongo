@@ -7,7 +7,7 @@ const a = require('awaiting')
     , vm = require('vm')
     , ejsonParser = require('ejson-shell-parser').default
     , mongoDocToString = require('../mongoDocToString')
-    , mongoHelpers = require('../mongoHelpers')
+    , mongoHelpers = require('../modules/mongoHelpers')
 ;    
 
 

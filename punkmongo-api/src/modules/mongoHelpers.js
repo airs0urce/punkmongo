@@ -64,10 +64,8 @@ class mongoHelpers {
         }
 
         // check if collection already exists
-        const db = dbClient.db(dbName);
-        const cursor = await db.listCollections({name: collectionName}, {nameOnly: true});
-        const collection = await cursor.next();
-        if (collection) {
+        const collExists = await mongoHelpers.isCollectionExist(dbName, collectionName);
+        if (collExists) {
             result.canCreate = false;
             result.reason = `Collection "${collectionName}" already exists in database ${dbName}`;
             return result;
@@ -128,6 +126,18 @@ class mongoHelpers {
         }
 
         return result;
+    }
+
+    static async isCollectionExist(dbName, collectionName) {
+        const dbClient = await DBFactory.connectMongo();
+        const db = dbClient.db(dbName);
+        const cursor = await db.listCollections({name: collectionName}, {nameOnly: true});
+        const collection = await cursor.next();
+        cursor.close();
+        if (collection) {
+            return true
+        }
+        return false;
     }
 
     static makeSureIncludeUniqueIdInProjection(projection, dbName, collectionName) {

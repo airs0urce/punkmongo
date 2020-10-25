@@ -1,6 +1,6 @@
 
 const a = require('awaiting');
-const mongoHelpers = require('../mongoHelpers');
+const mongoHelpers = require('../modules/mongoHelpers');
 
 // params.db
 // params.collection

@@ -355,6 +355,9 @@ button {
         background-color: #fff2f2;
         border: 1px solid #e4b5b5;
     }
+    &.btn-small {
+        padding: 0.1em 1.5rem;
+    }
     &[disabled] {
         color: #bfbfbf;
         background-color: #f1f1f1;
@@ -717,17 +720,20 @@ table.zebra tr:nth-child(even) td {
 
 
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #c1c1c1;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #7d7d7d;
 }
+
+
 </style>
 
 

@@ -5,7 +5,7 @@ const a = require('awaiting')
     , ObjectID = mongodb.ObjectID
     , moment = require('moment')
     , mongoDocToString = require('../mongoDocToString')
-    , mongoHelpers = require('../mongoHelpers')
+    , mongoHelpers = require('../modules/mongoHelpers')
 ;
 
 /*

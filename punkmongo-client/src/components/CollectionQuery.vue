@@ -100,7 +100,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="queryResult.initialLoadFinished">
+        <div class="query-results" v-if="queryResult.initialLoadFinished">
             <div class="gap"></div>
             <div class="no-select" v-if="false">
                 Explain: 
@@ -123,35 +123,42 @@
                 />
             </div>
 
-            <div v-for="(record, index) in queryResult.records" :key="queryResult.records[index].id" class="document">
+            <div v-for="(record, index) in queryResult.records" :key="queryResult.records[index].id" 
+                class="document" :class="{'deleted': record.deleted}">
                 <div class="document-header">
-                    <span class="doc-actions no-select">
-                        <span class="document-num">#{{getResultRecordNumber(index)}}</span>
-                        <a v-if="!dbCollectionOptions.capped"><span>Update</span></a>
-                        <a v-if="!dbCollectionOptions.capped"><span>Delete</span></a>
-                        <a @click="refreshDocument(index)" v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
-                    </span>                        
-                    <span class="separator" v-if="record.timestamp">
-                        <span title="Creation date from _id field" class="document-date" :class="{'border': dbCollectionOptions.capped}">
-                            {{moment(record.timestamp).format('YYYY-MM-DD')}}
-                            <span class="lighter">-</span>
-                            {{moment(record.timestamp).format('h:mm:ss a')}}
+                    <span class="padding" v-if="record.deleted">
+                        The document has been deleted. <a href="">Restore the document (5)</a>
+                    </span>
+                    <span v-if="!record.deleted">
+                        <span class="doc-actions no-select">
+                            <span class="document-num">#{{getResultRecordNumber(index)}}</span>
+                            <a class="padding" v-if="!dbCollectionOptions.capped"><span>Update</span></a>
+                            <a class="padding" @click="deleteDocument(index)" v-if="!dbCollectionOptions.capped"><span>Delete</span></a>
+                            <a class="padding" @click="refreshDocument(index)" v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
+                        </span>                        
+                        <span class="separator" v-if="record.timestamp">
+                            <span title="Creation date from _id field" class="document-date" :class="{'border': dbCollectionOptions.capped}">
+                                {{moment(record.timestamp).format('YYYY-MM-DD')}}
+                                <span class="lighter">-</span>
+                                {{moment(record.timestamp).format('h:mm:ss a')}}
+                            </span>
+                        </span>
+                        <span class="doc-actions no-select">
+                            <a class="padding" @click.prevent="expandDoc(record)" v-if="!record.expand"><span>Expand</span></a>
+                            <a class="padding" @click.prevent="collapseDoc(record)" v-if="record.expand"><span>Collapse</span></a>
+                            <a class="padding" @click.prevent="expandAllDocs($event)" v-show="showOnlyExpandAll"><span>Expand All</span></a>
+                            <a class="padding" @click.prevent="collapseAllDocs($event)" v-show="!showOnlyExpandAll"><span>Collapse All</span></a>
+                            
+                        </span>
+
+                        <span class="doc-actions no-select clipboard">
+                            <a class="padding" @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
                         </span>
                     </span>
-                    <span class="doc-actions no-select">
-                        <a @click.prevent="expandDoc(record)" v-if="!record.expand"><span>Expand</span></a>
-                        <a @click.prevent="collapseDoc(record)" v-if="record.expand"><span>Collapse</span></a>
-                        <a @click.prevent="expandAllDocs($event)" v-show="showOnlyExpandAll"><span>Expand All</span></a>
-                        <a @click.prevent="collapseAllDocs($event)" v-show="!showOnlyExpandAll"><span>Collapse All</span></a>
-                        
-                    </span>
-
-                    <span class="doc-actions no-select clipboard">
-                        <a @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
-                    </span>                        
                 </div>
                 <div class="document-body language-mongodb-filter" 
                     :class="{'expanded': record.expand}" 
+                    v-if="!record.deleted"
                     v-html="highlight(record.doc, index)"></div>
             </div>
 
@@ -192,7 +199,10 @@ import CodeJar from '@/components/CodeJar';
 import Pagination from '@/components/Pagination';
 import Loader from '@/components/Loader';
 import DropdownMenu from '@/components/DropdownMenu';
+import { gsap } from 'gsap'
 
+
+window.gsap = gsap;
 
 export default {
     components: {
@@ -351,9 +361,9 @@ export default {
                 query: query
             });
 
-            if (!response.error) {
+            if (response.success) {
                 this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
-                    collName: this.activeDb.activeCollection,
+                    collName: this.activeDb.activeCollection.name,
                     result: {
                         error: null,
                         initialLoadFinished: true,
@@ -503,6 +513,22 @@ export default {
                 record.timestamp = doc.timestamp;
             }
 
+        },
+        async deleteDocument(index) {
+            const record = this.queryResult.records[index];
+
+            const response = await api.request('deleteDocument', {
+                db: this.activeDb.name,
+                collection: this.activeDb.activeCollection.name,
+                _id: record.id,
+            });
+
+            if (response.success) {
+                // this.queryResult.records[index]
+                this.$set(record, 'deleted', true);
+
+                // this.querySubmit();
+            }
         },
         parseProjection() {
             const projection = {};
@@ -729,6 +755,12 @@ div.document {
     &:hover {
         background-color: rgb(238, 239, 255);
     }
+    &.deleted {
+        overflow: hidden;
+        .document-header {
+            border-bottom: none;
+        }
+    }   
 }
 
 /deep/ .ti-new-tag-input-wrapper input {
@@ -740,11 +772,14 @@ div.document {
 }
 
 .document-header {
+    height: 2rem;
     border-bottom: 2px solid #ccc;
-    a {
-        border-right: 1px solid #ccc;
+    .padding {
         padding: 0.5em;
         display: inline-block;
+    }
+    a.padding {
+        border-right: 1px solid #ccc;
         &:active span,
         &.press-active span {
             position: relative;
@@ -804,6 +839,9 @@ div.document {
     &.border {
         border-left: 1px solid #ccc;
     }
+}
+.query-results {
+    overflow: hidden;
 }
 </style>
 
