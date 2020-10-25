@@ -1,0 +1,33 @@
+.info-tag {
+    margin-right: 0.5em;
+    position: relative;
+    .info-tag-details {
+        display: none;
+        width: 55rem;
+        border-radius: 3px;
+        position: absolute;
+        z-index: 2;
+        background-color: #eee;
+        color: #000;
+        border: 1px solid #ddd;
+        padding: 1em;
+        top: 1.7rem;
+        right: -1rem;
+        width: 50rem;
+        .custom-collation-title {
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+        .non-default td {
+            background-color: #fffaa3;
+        }
+        td.bold {
+            font-weight: bold;
+        }
+    }
+    .question-icon {
+        font-size: 0.9em;
+        color: #dffaff;
+    }
+}
+

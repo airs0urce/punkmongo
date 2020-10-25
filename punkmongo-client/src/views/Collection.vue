@@ -8,54 +8,8 @@
                 <font-awesome-icon icon="angle-right" class="arrow-separator with-select" /><span class="with-select">{{activeDb.activeCollection.name}} </span>
                 <span class="lighter">({{numberWithCommas(getCollectionStats().objects)}})</span>
                 <span class="collection-tags">
-                    <div class="info-tag disabled no-select" v-if="!dbCollectionOptions.capped">not capped</div>
-                    <div class="info-tag info no-select" v-if="dbCollectionOptions.capped" >
-                        capped
-                        <span v-if="collOptionExists('max') && collOptionExists('size')">(<strong>{{dbCollectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}})</strong></span>
-                        <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{dbCollectionOptions.max}}</strong> documents)</span>
-                        <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(dbCollectionOptions.size, 'MB', 0, false)}}</strong>)</span>
-                    </div>
-
-                    <div class="info-tag disabled no-select" v-show="!dbCollectionOptions.collation">default collation</div>
-                    <div class="info-tag info no-select" v-show="dbCollectionOptions.collation" @mouseenter="showCollationDetails(true)" @mouseleave="showCollationDetails(false)">
-                        custom collation…
-                        <div class="info-tag-details with-select" ref="infoTagDetails">
-                            <div class="custom-collation-title">
-                                Custom Collation<a href="https://docs.mongodb.com/master/reference/collation/" target="_blank">
-                                    <font-awesome-icon icon="question-circle" class="icon-help" /> 
-                                </a>
-                            </div>
-
-
-                            <table>
-                                <colgroup>
-                                    <col width="20%" valign="top">
-                                    <col width="17%" valign="top">
-                                    <col width="63%" valign="top">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th>option</th>
-                                        <th>value</th>
-                                        <th>value description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="item of getCollationInfo()" :class="{'default': item.default, 'non-default': !item.default}">
-                                        <td>{{item.title}}</td>
-                                        <td :class="{'bold': !item.default}">
-                                            {{JSON.stringify(item.value)}}
-                                        </td>
-                                        <td>
-                                            {{item.valueInfo}}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            
-
-                        </div>
-                    </div>
+                    <TagCapped :collectionOptions="dbCollectionOptions" />
+                    <TagCollation :collectionOptions="dbCollectionOptions" :hideDetailsAnimation="false" />
                 </span>
             </div>
         </h1>
@@ -88,9 +42,10 @@ import CollectionInsert from '@/components/CollectionInsert';
 import CollectionAggregate from '@/components/CollectionAggregate';
 import CollectionIndexes from '@/components/CollectionIndexes';
 import CollectionValidation from '@/components/CollectionValidation';
+import TagCapped from '@/components/TagCapped';
+import TagCollation from '@/components/TagCollation';
+
 import utils from '../utils'
-import collectionOptions from '../collectionOptions'
-import { gsap } from 'gsap'
 
 import {
     mapState
@@ -98,18 +53,16 @@ import {
 import eventBus from '../eventBus'
 import * as mutations from '../store/mutations'
 
-let collationDetailsHideTimeout = 0;
-
 export default {
     components: {
         CollectionQuery, CollectionInsert, 
         CollectionAggregate, CollectionIndexes, 
-        CollectionValidation
+        CollectionValidation,
+        TagCapped, TagCollation
     },
     data: function() {
         return {
             selectedTab: 'query',
-            customCollationAnim: null
         }
     },
     computed: mapState({
@@ -141,69 +94,12 @@ export default {
             }
             return collection.stats;
         },
-        collOptionExists(key) {
-            return (typeof this.dbCollectionOptions[key] != 'undefined' && this.dbCollectionOptions[key] != 0);
-        },
-        getCollationInfo() {
-            const valueByField = this.dbCollectionOptions.collation;
-            if (! valueByField) {
-                return [];
-            }
-
-            const collationInfoArr = [];
-            for (let field in collectionOptions) {
-                const collectionOption = collectionOptions[field].values.find((valueItem) => {
-                    return (valueItem.value == valueByField[field]); 
-                })
-                const valueText = collectionOption.text;
-
-                collationInfoArr.push({
-                    title: collectionOptions[field].title,
-                    value: valueByField[field],
-                    default: (valueByField[field] === collectionOptions[field].default),
-                    valueInfo: valueText
-                });
-            }
-
-            return collationInfoArr;
-        },
-        showCollationDetails(bool) {
-            if (bool) {
-                clearTimeout(collationDetailsHideTimeout);
-                this.customCollationAnim.play();
-            } else {
-                collationDetailsHideTimeout = setTimeout(() => {
-                    this.customCollationAnim.reverse();
-                }, 100);
-            }
-        }
     },
     mounted() {
         if (this.$route.params.dbName !== this.$store.state.activeDb.name) {
             eventBus.$emit('load-database', this.$route.params.dbName);
         }
-
-        this.customCollationAnim = gsap.fromTo(this.$refs.infoTagDetails, 
-            {
-                y: 5, 
-                opacity: 0,
-            }, 
-            {
-                display: 'block',
-                paused: true,
-                y: 0, 
-                opacity: 1, 
-                duration: 0.3,
-                onReverseComplete: () => {
-                    gsap.set(this.$refs.infoTagDetails, {display: 'none'});
-                }
-            }
-        )
-        
         this.setActiveCollection();
-    },
-    destroyed() {
-        this.customCollationAnim.kill()
     },
     watch: {
         async $route(to) {
@@ -216,7 +112,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .tabs {
     list-style: none;
     display: flex;
@@ -266,34 +161,6 @@ export default {
 
 .collection-tags {
     margin-left: 1rem;
-    .info-tag {
-        margin-right: 0.5em;
-        position: relative;
-        .info-tag-details {
-            display: none;
-            width: 55rem;
-            border-radius: 3px;
-            position: absolute;
-            z-index: 2;
-            background-color: #eee;
-            color: #000;
-            border: 1px solid #ddd;
-            padding: 1em;
-            top: 1.7rem;
-            right: -5rem;
-            width: 50rem;
-            .custom-collation-title {
-                font-weight: bold;
-                margin-bottom: 0.5em;
-            }
-            .non-default td {
-                background-color: #fffaa3;
-            }
-            td.bold {
-                font-weight: bold;
-            }
-        }
-    }
 }
 
 

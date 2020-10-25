@@ -711,6 +711,7 @@ table.zebra tr:nth-child(even) td {
 .text-center {
     text-align: center;
 }
+
 </style>
 
 

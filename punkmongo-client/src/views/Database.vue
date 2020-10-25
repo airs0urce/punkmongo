@@ -31,7 +31,7 @@
 
             <div class="gap"></div>
             
-            <table cellpadding="2" cellspacing="1" class="full-width-table zebra">
+            <table cellpadding="2" cellspacing="1" class="full-width-table zebra dbs-table">
                 <colgroup>
                     <col width="20%" valign="top">
                     <col width="8%" valign="top">
@@ -41,8 +41,7 @@
                     <col width="8%" valign="top">
                     <col width="8%" valign="top">
                     
-                    <col width="3%" valign="top">
-                    <col width="3%" valign="top">
+                    <col width="25%" valign="top">
                     <col width="3%" valign="top">
                     <col width="3%" valign="top">
                 </colgroup>
@@ -55,8 +54,7 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
-                        <th rowspan="3">Custom Collation</th>
-                        <th rowspan="3">Capped</th>
+                        <th rowspan="3">Options</th>
                         <th rowspan="3">Rename</th>
                         <th rowspan="3">Del</th>
                     </tr>
@@ -78,7 +76,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="collection in activeDb.collections">
-                        <td>
+                        <td class="nowrap">
                             <router-link :to="'/db/' + activeDb.name + '/col/' + collection.name">{{collection.name}}</router-link>
                         </td>
                         <td>{{numberWithCommas(collection.stats.objects)}}</td>
@@ -87,22 +85,23 @@
                         <td>{{bytesFormatted(collection.stats.avgObjSize)}}</td>
                         <td>{{numberWithCommas(collection.stats.indexesCount)}}</td>
                         <td>{{bytesFormatted(collection.stats.indexesSize)}}</td>
-                        <td class="text-center">
-                            <span v-if="collection.options.collation">
-                                <font-awesome-icon icon="check" class="light" />
-                            </span>
+                        <td class="nowrap center">
+                            <TagCapped :collectionOptions="collection.options" 
+                                :showInfoInline="false" 
+                                :fixedWidth="true" 
+                            />
+                            <TagCollation :collectionOptions="collection.options" 
+                                :hideDetailsAnimation="false" 
+                                :hideDetailsDelay="0" 
+                                :fixedWidth="true" 
+                            />
                         </td>
-                        <td class="text-center">
-                            <span v-if="collection.options.capped">
-                                <font-awesome-icon icon="check" class="light" />
-                            </span>
-                        </td>
-                        <td class="td-rename">
+                        <td class="td-rename" title="rename collection">
                             <router-link class="no-select btn-icon" :to="{ name: 'rename-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
                                 <font-awesome-icon icon="pen" class="light" />
                             </router-link>
                         </td>
-                        <td class="td-delete">
+                        <td class="td-delete" title="delete collection">
                             <router-link class="no-select btn-icon delete-icon" :to="{ name: 'delete-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
                                 <font-awesome-icon icon="trash-alt" /> 
                             </router-link>
@@ -121,7 +120,6 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th></th>
                     </tr>
                 </tfoot>
             </table>
@@ -132,19 +130,21 @@
 <script>
   
 import * as actions from '../store/actions'
-import moment from 'moment';
-import * as a from 'awaiting';
+import moment from 'moment'
+import * as a from 'awaiting'
 import eventBus from '../eventBus'
 import {
     mapState
 } from 'vuex';
 import utils from '../utils'
+import TagCapped from '@/components/TagCapped'
+import TagCollation from '@/components/TagCollation'
 
 
 export default {
     name: 'OverviewDatabases',
     components: {
-
+        TagCapped, TagCollation
     },
     computed: mapState({
         activeDb: state => state.activeDb,
@@ -179,6 +179,13 @@ export default {
 
 
 <style lang="scss">
+.dbs-table {
+    margin-bottom: 18rem; 
+    /* to make sure that popup from TagCollation always fits the screen and page doesn't jump */
+}
+.dbs-table td.center {
+    text-align: center;
+}
 
 </style>
 
