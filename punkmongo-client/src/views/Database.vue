@@ -184,7 +184,9 @@ export default {
     }
 }
 
-
+.minimal-padding {
+    padding: 0;
+}
 
 </style>
 

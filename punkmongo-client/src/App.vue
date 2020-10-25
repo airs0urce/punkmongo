@@ -275,7 +275,7 @@ table {
     }
     td {
         background-color: #fffeee;
-        padding: 0.3rem;
+        padding: 0.5rem;
     }
     tfoot td {
         font-weight: bold;

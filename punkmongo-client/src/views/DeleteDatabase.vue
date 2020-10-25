@@ -17,7 +17,7 @@
         </form>        
         <div class="gap"></div>
         <button @click="deleteDatabase()" class="btn-red confirm-button" :disabled="loading">
-            <font-awesome-icon icon="trash-alt" /> Delete Database
+            <font-awesome-icon icon="trash-alt" /> Delete <strong>{{dbName}}</strong> database
         </button>
         <button @click="goBack()" :disabled="loading">
             Cancel
