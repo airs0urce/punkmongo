@@ -89,7 +89,7 @@
                             />
                             <TagCollation :collectionOptions="collection.options" 
                                 :hideDetailsAnimation="false" 
-                                :hideDetailsDelay="0" 
+                                :hideDetailsDelay="100" 
                                 :fixedWidth="true" 
                                 :detailsOnLeft="true"
                             />
