@@ -132,7 +132,7 @@
                         <a v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
                     </span>                        
                     <span class="separator" v-if="record.timestamp">
-                        <span title="Creation date from _id field">
+                        <span title="Creation date from _id field" class="document-date" :class="{'border': dbCollectionOptions.capped}">
                             {{moment(record.timestamp).format('YYYY-MM-DD')}}
                             <span class="lighter">-</span>
                             {{moment(record.timestamp).format('h:mm:ss a')}}
@@ -776,6 +776,12 @@ div.document {
 .separator {
     margin-left: 0.5em;
     margin-right: 0.5em;
+}
+.document-date {
+    padding: 0.5rem 0;
+    &.border {
+        border-left: 1px solid #ccc;
+    }
 }
 </style>
 

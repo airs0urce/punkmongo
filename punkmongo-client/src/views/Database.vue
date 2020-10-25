@@ -16,6 +16,10 @@
                         <font-awesome-icon icon="plus" /> 
                         New Collection
                     </router-link>
+                    <router-link tag="button" class="new-collection no-select btn-icon" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">
+                        <font-awesome-icon icon="plus" /> 
+                        New Collection
+                    </router-link>
                 </div>
                 <div class="action-buttons-right">
                     <router-link class="button no-select btn-icon btn-red" :to="'/db/' + $store.state.activeDb.name + '/delete'">
@@ -29,18 +33,23 @@
             
             <table cellpadding="2" cellspacing="1" class="full-width-table zebra">
                 <colgroup>
-                    <col width="14%" valign="top">
-                    <col width="14%" valign="top">
-                    <col width="14%" valign="top">
-                    <col width="14%" valign="top">
-                    <col width="14%" valign="top">
-                    <col width="14%" valign="top">
-                    <col width="5%" valign="top">
+                    <col width="20%" valign="top">
+                    <col width="8%" valign="top">
+                    <col width="8%" valign="top">
+                    <col width="8%" valign="top">
+                    <col width="8%" valign="top">
+                    <col width="8%" valign="top">
+                    <col width="8%" valign="top">
+                    
+                    <col width="3%" valign="top">
+                    <col width="3%" valign="top">
+                    <col width="3%" valign="top">
+                    <col width="3%" valign="top">
                 </colgroup>
                 <thead>
                     <tr>
                         <th>Collection</th>
-                        <th>Documents</th>
+                        <th>Docs</th>
                         <th>Data Size</th>
                         <th>Storage Size</th>
                         <th>Avg Doc Size</th>
@@ -80,12 +89,12 @@
                         <td>{{bytesFormatted(collection.stats.indexesSize)}}</td>
                         <td class="text-center">
                             <span v-if="collection.options.collation">
-                                <font-awesome-icon icon="circle" class="light" />
+                                <font-awesome-icon icon="check" class="light" />
                             </span>
                         </td>
                         <td class="text-center">
                             <span v-if="collection.options.capped">
-                                <font-awesome-icon icon="circle" class="light" />
+                                <font-awesome-icon icon="check" class="light" />
                             </span>
                         </td>
                         <td class="td-rename">
@@ -103,7 +112,7 @@
                 <tfoot>
                     <tr>
                         <th>Collection</th>
-                        <th>Documents</th>
+                        <th>Docs</th>
                         <th>Data Size</th>
                         <th>Storage Size</th>
                         <th>Avg Doc Size</th>
