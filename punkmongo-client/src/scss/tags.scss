@@ -12,7 +12,7 @@
         border: 1px solid #ddd;
         padding: 1em;
         top: 1.7rem;
-        right: -1rem;
+        right: 0;
         width: 50rem;
         .custom-collation-title {
             font-weight: bold;
@@ -23,6 +23,10 @@
         }
         td.bold {
             font-weight: bold;
+        }
+        &.info-on-left{
+            top: 0rem;
+            right: 10.2rem;
         }
     }
     .question-icon {

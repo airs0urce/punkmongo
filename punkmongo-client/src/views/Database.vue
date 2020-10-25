@@ -75,12 +75,12 @@
                         <td class="nowrap">
                             <router-link :to="'/db/' + activeDb.name + '/col/' + collection.name">{{collection.name}}</router-link>
                         </td>
-                        <td>{{numberWithCommas(collection.stats.objects)}}</td>
-                        <td>{{bytesFormatted(collection.stats.dataSize)}}</td>
-                        <td>{{bytesFormatted(collection.stats.storageSize)}}</td>
-                        <td>{{bytesFormatted(collection.stats.avgObjSize)}}</td>
-                        <td>{{numberWithCommas(collection.stats.indexesCount)}}</td>
-                        <td>{{bytesFormatted(collection.stats.indexesSize)}}</td>
+                        <td class="nowrap">{{numberWithCommas(collection.stats.objects)}}</td>
+                        <td class="nowrap">{{bytesFormatted(collection.stats.dataSize)}}</td>
+                        <td class="nowrap">{{bytesFormatted(collection.stats.storageSize)}}</td>
+                        <td class="nowrap">{{bytesFormatted(collection.stats.avgObjSize)}}</td>
+                        <td class="nowrap">{{numberWithCommas(collection.stats.indexesCount)}}</td>
+                        <td class="nowrap">{{bytesFormatted(collection.stats.indexesSize)}}</td>
                         <td class="nowrap center">
                             <TagCapped :collectionOptions="collection.options" 
                                 :showInfoInline="false" 
@@ -90,6 +90,7 @@
                                 :hideDetailsAnimation="false" 
                                 :hideDetailsDelay="0" 
                                 :fixedWidth="true" 
+                                :collationDetailsOnLeft="true"
                             />
                         </td>
                         <td class="td-rename" title="rename collection">

@@ -7,7 +7,7 @@
             custom collation 
             <font-awesome-icon icon="question-circle" class="question-icon" />
 
-            <div class="info-tag-details with-select" ref="infoTagDetails">
+            <div class="info-tag-details with-select" ref="infoTagDetails" :class="{'info-on-left': collationDetailsOnLeft}">
                 <div class="custom-collation-title">
                     Custom Collation<a href="https://docs.mongodb.com/master/reference/collation/" target="_blank">
                         <font-awesome-icon icon="question-circle" class="icon-help" /> 
@@ -73,6 +73,10 @@ export default {
         fixedWidth: {
             type: Boolean,
             default: false  
+        },
+        collationDetailsOnLeft: {
+            type: Boolean,
+            default: false    
         }
     },
     methods: {
