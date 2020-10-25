@@ -16,10 +16,6 @@
                         <font-awesome-icon icon="plus" /> 
                         New Collection
                     </router-link>
-                    <router-link tag="button" class="new-collection no-select btn-icon" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">
-                        <font-awesome-icon icon="plus" /> 
-                        New Collection
-                    </router-link>
                 </div>
                 <div class="action-buttons-right">
                     <router-link class="button no-select btn-icon btn-red" :to="'/db/' + $store.state.activeDb.name + '/delete'">
