@@ -81,7 +81,7 @@
                         <td class="nowrap">{{bytesFormatted(collection.stats.avgObjSize)}}</td>
                         <td class="nowrap">{{numberWithCommas(collection.stats.indexesCount)}}</td>
                         <td class="nowrap">{{bytesFormatted(collection.stats.indexesSize)}}</td>
-                        <td class="nowrap center">
+                        <td class="nowrap center minimal-padding">
                             <TagCapped :collectionOptions="collection.options" 
                                 :showInfoInline="false" 
                                 :fixedWidth="true" 
@@ -178,12 +178,13 @@ export default {
 
 <style lang="scss">
 .dbs-table {
-    margin-bottom: 18rem; 
-    /* to make sure that popup from TagCollation always fits the screen and page doesn't jump */
+    margin-bottom: 18rem;  /* to make sure that popup from TagCollation always fits the screen and page doesn't jump */
+    td.center {
+        text-align: center;
+    }
 }
-.dbs-table td.center {
-    text-align: center;
-}
+
+
 
 </style>
 

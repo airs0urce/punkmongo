@@ -106,7 +106,21 @@ export default {
         showCollationDetails(bool) {
             if (bool) {
                 clearTimeout(this.collationDetailsHideTimeout);
-                this.customCollationAnim.play();
+                this.customCollationAnim = gsap.fromTo(this.$refs.infoTagDetails, 
+                    {
+                        y: 5, 
+                        opacity: 0,
+                    }, 
+                    {
+                        display: 'block',
+                        y: 0, 
+                        opacity: 1, 
+                        duration: 0.25,
+                        onReverseComplete: () => {
+                            gsap.set(this.$refs.infoTagDetails, {display: 'none'});
+                        }
+                    }
+                );
             } else {
                 this.collationDetailsHideTimeout = setTimeout(() => {
                     this.customCollationAnim.reverse();
@@ -118,26 +132,12 @@ export default {
         }
     },
     mounted() {
-        this.customCollationAnim = gsap.fromTo(this.$refs.infoTagDetails, 
-            {
-                y: 5, 
-                opacity: 0,
-            }, 
-            {
-                display: 'block',
-                paused: true,
-                y: 0, 
-                opacity: 1, 
-                duration: 0.25,
-                onReverseComplete: () => {
-                    gsap.set(this.$refs.infoTagDetails, {display: 'none'});
-                }
-            }
-        )
         
     },
     destroyed() {
-        this.customCollationAnim.kill()
+        if (this.customCollationAnim) {
+            this.customCollationAnim.kill()
+        }
     },
 }
 

@@ -59,7 +59,21 @@ export default {
         showDetails(bool) {
             if (bool) {
                 clearTimeout(this.detailsHideTimeout);
-                this.cappedAnim.play();
+                this.cappedAnim = gsap.fromTo(this.$refs.infoTagDetails, 
+                    {
+                        y: 5, 
+                        opacity: 0,
+                    }, 
+                    {
+                        display: 'block',
+                        y: 0, 
+                        opacity: 1, 
+                        duration: 0.25,
+                        onReverseComplete: () => {
+                            gsap.set(this.$refs.infoTagDetails, {display: 'none'});
+                        }
+                    }
+                )
             } else {
                 this.detailsHideTimeout = setTimeout(() => {
                     this.cappedAnim.reverse();
@@ -71,26 +85,12 @@ export default {
         } 
     },
     mounted() {
-        this.cappedAnim = gsap.fromTo(this.$refs.infoTagDetails, 
-            {
-                y: 5, 
-                opacity: 0,
-            }, 
-            {
-                display: 'block',
-                paused: true,
-                y: 0, 
-                opacity: 1, 
-                duration: 0.25,
-                onReverseComplete: () => {
-                    gsap.set(this.$refs.infoTagDetails, {display: 'none'});
-                }
-            }
-        )
-        
+                 
     },
     destroyed() {
-        this.cappedAnim.kill()
+        if (this.cappedAnim) {
+            this.cappedAnim.kill()
+        }
     },
 }
 
