@@ -104,7 +104,5 @@ export default {
 
 <style lang="scss" scoped>
 
-    .confirm-button {
-        margin-right: 1rem;
-    }
+    
 </style>

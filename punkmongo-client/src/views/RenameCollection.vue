@@ -119,9 +119,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    .confirm-button {
-        margin-right: 1rem;
-    }
     
     .new-collection-name {
         width: 20rem;

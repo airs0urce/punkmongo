@@ -711,7 +711,9 @@ table.zebra tr:nth-child(even) td {
 .text-center {
     text-align: center;
 }
-
+.confirm-button {
+    margin-right: 1rem;
+}
 </style>
 
 

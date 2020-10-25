@@ -134,7 +134,13 @@
             
         </form>
         <div class="gap"></div>
-        <button @click="createCollection()" :disabled="loading">Create Collection</button>
+        <button @click="createCollection()" :disabled="loading" class="confirm-button">
+            <font-awesome-icon icon="plus" />
+            Create Collection
+        </button>
+        <button @click="goBack()" :disabled="loading">
+            Cancel
+        </button>
         
 
     </div>
@@ -310,7 +316,20 @@ export default {
             );
             this.validating = false;
             return response;
-        }
+        },
+        goBack() {
+            if (this.$store.state.previosRoute) {
+                this.$router.go(-1);
+            } else {
+                this.$router.push({ 
+                    name: 'collection-manager', 
+                    params: { 
+                        dbName: this.dbName, 
+                        collName: this.collName 
+                    }
+                });
+            }
+        },
     }
 }
 

@@ -16,7 +16,13 @@
         <div class="gap"></div>
 
     
-        <button @click="createDatabase()">Create Database</button>
+        <button @click="createDatabase()" class="confirm-button">
+            <font-awesome-icon icon="plus" />
+            Create Database
+        </button>
+        <button @click="goBack()" :disabled="loading">
+            Cancel
+        </button>
         
     </div>
 </template>
@@ -58,7 +64,17 @@ export default {
             const response = await api.request('checkCanCreateDatabase', {db: this.databaseName});
             this.validating = false;
             return response;
-        }
+        },
+        goBack() {
+            if (this.$store.state.previosRoute) {
+                this.$router.go(-1);
+            } else {
+                this.$router.push({ 
+                    name: 'overview-databases'
+                });
+            }
+            
+        },
     },
     mounted() {
         this.$refs['databaseName'].focus();

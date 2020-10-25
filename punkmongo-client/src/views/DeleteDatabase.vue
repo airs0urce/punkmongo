@@ -16,8 +16,11 @@
             </div>
         </form>        
         <div class="gap"></div>
-        <button @click="deleteDatabase()" class="btn-red" :disabled="loading">
+        <button @click="deleteDatabase()" class="btn-red confirm-button" :disabled="loading">
             <font-awesome-icon icon="trash-alt" /> Delete Database
+        </button>
+        <button @click="goBack()" :disabled="loading">
+            Cancel
         </button>
         
 
@@ -76,7 +79,20 @@ export default {
             }
             this.loading = false;
 
-        }
+        },
+        goBack() {
+            if (this.$store.state.previosRoute) {
+                this.$router.go(-1);
+            } else {
+                this.$router.push({ 
+                    name: 'database', 
+                    params: { 
+                        dbName: this.dbName, 
+                    }
+                });
+            }
+            
+        },
     }
 }
 
