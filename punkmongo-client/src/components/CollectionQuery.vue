@@ -127,14 +127,14 @@
                 class="document" :class="{'deleted': record.deleted}">
                 <div class="document-header">
                     <span class="padding" v-if="record.deleted">
-                        The document has been deleted. <a href="">Restore the document (5)</a>
+                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document (5)</a>
                     </span>
                     <span v-if="!record.deleted">
                         <span class="doc-actions no-select">
                             <span class="document-num">#{{getResultRecordNumber(index)}}</span>
                             <a class="padding" v-if="!dbCollectionOptions.capped"><span>Update</span></a>
-                            <a class="padding" @click="deleteDocument(index)" v-if="!dbCollectionOptions.capped"><span>Delete</span></a>
-                            <a class="padding" @click="refreshDocument(index)" v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
+                            <a class="padding" @click="deleteDocument(record)" v-if="!dbCollectionOptions.capped"><span>Delete</span></a>
+                            <a class="padding" @click="refreshDocument(record)" v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
                         </span>                        
                         <span class="separator" v-if="record.timestamp">
                             <span title="Creation date from _id field" class="document-date" :class="{'border': dbCollectionOptions.capped}">
@@ -496,9 +496,7 @@ export default {
             this.$set(doc, 'expand', false);
         },
         moment: moment,
-        async refreshDocument(index) {
-            const record = this.queryResult.records[index];
-
+        async refreshDocument(record) {
             const response = await api.request('getDocument', {
                 db: this.activeDb.name,
                 collection: this.activeDb.activeCollection.name,
@@ -514,9 +512,7 @@ export default {
             }
 
         },
-        async deleteDocument(index) {
-            const record = this.queryResult.records[index];
-
+        async deleteDocument(record) {
             const response = await api.request('deleteDocument', {
                 db: this.activeDb.name,
                 collection: this.activeDb.activeCollection.name,
@@ -526,8 +522,24 @@ export default {
             if (response.success) {
                 // this.queryResult.records[index]
                 this.$set(record, 'deleted', true);
+                this.$set(record, 'restoreId', response.result.restoreId);
 
                 // this.querySubmit();
+            }
+        },
+        async restoreDocument(record) {
+            const response = await api.request('restoreDocument', {
+                restoreId: record.restoreId
+            });            
+
+            if (response.success) {
+                if (response.result.restored) {
+                    this.$delete(record, 'deleted');
+                    this.$delete(record, 'restoreId');
+                } else {
+                    alert('Error restoring');
+                }
+                
             }
         },
         parseProjection() {

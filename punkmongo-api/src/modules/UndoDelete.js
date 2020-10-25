@@ -3,7 +3,6 @@ const SystemCollections = require('./SystemCollections');
 const mongodb = require('mongodb');
 const ObjectID = mongodb.ObjectID;
 const config = require('../../../config');
-const uuid = require('uuid');
 
 class UndoDelete {
     static async backup(dbName, collectionName, id) {
@@ -22,24 +21,23 @@ class UndoDelete {
             .collection(collectionName)
             .findOne({ _id: ObjectID(id) });
             
-        const backupId = uuid.v4();
-
+        const restoreId = new ObjectID();
         await coll.insertOne({
-            _id: backupId,
+            _id: restoreId,
             d: new Date(),
             dbName: dbName,
             collectionName: collectionName, 
             document: docForBackup
         });
 
-        return backupId;
+        return restoreId.toString();
 
     }
 
-    static async restore(backupId) {
+    static async restore(restoreId) {
         const coll = await SystemCollections.getUndoDelete();
 
-        const backup = await coll.findOne({_id: backupId})
+        const backup = await coll.findOne({_id: ObjectID(restoreId)})
 
         if (backup) {
             const dbClient = await DBFactory.connectMongo();
