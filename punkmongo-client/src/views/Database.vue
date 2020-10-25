@@ -115,9 +115,9 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <th>Options</th>
+                        <th>Rename</th>
+                        <th>Del</th>
                     </tr>
                 </tfoot>
             </table>
