@@ -129,7 +129,7 @@
                         <span class="document-num">#{{getResultRecordNumber(index)}}</span>
                         <a v-if="!dbCollectionOptions.capped"><span>Update</span></a>
                         <a v-if="!dbCollectionOptions.capped"><span>Delete</span></a>
-                        <a v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
+                        <a @click="refreshDocument(index)" v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
                     </span>                        
                     <span class="separator" v-if="record.timestamp">
                         <span title="Creation date from _id field" class="document-date" :class="{'border': dbCollectionOptions.capped}">
@@ -326,13 +326,7 @@ export default {
                 }
             }
 
-            const projection = {};
-            if (this.query.projection.tags.length > 0) {
-                for (let tag of this.query.projection.tags) {
-                    const [field, dir] = tag.text.split(':')
-                    projection[field] = parseInt(dir, 10);
-                }
-            }
+            const projection = this.parseProjection();
 
             const query = {
                 filter: this.query.filter.text,
@@ -492,6 +486,34 @@ export default {
             this.$set(doc, 'expand', false);
         },
         moment: moment,
+        async refreshDocument(index) {
+            const record = this.queryResult.records[index];
+
+            const response = await api.request('getDocument', {
+                db: this.activeDb.name,
+                collection: this.activeDb.activeCollection.name,
+                _id: record.id,
+                projection: this.parseProjection()
+            });
+
+            if (response.success) {
+                const doc = response.result.document;
+                record.doc = doc.doc;
+                record.id = doc.id;
+                record.timestamp = doc.timestamp;
+            }
+
+        },
+        parseProjection() {
+            const projection = {};
+            if (this.query.projection.tags.length > 0) {
+                for (let tag of this.query.projection.tags) {
+                    const [field, dir] = tag.text.split(':')
+                    projection[field] = parseInt(dir, 10);
+                }
+            }
+            return projection;
+        }
     },
     mounted: async function() {        
 

@@ -714,6 +714,20 @@ table.zebra tr:nth-child(even) td {
 .confirm-button {
     margin-right: 1rem;
 }
+
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 </style>
 
 

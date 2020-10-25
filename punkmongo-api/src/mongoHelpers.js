@@ -130,6 +130,62 @@ class mongoHelpers {
         return result;
     }
 
+    static makeSureIncludeUniqueIdInProjection(projection, dbName, collectionName) {
+        const newProjection = {...projection};
+        /*
+        Here is a little magic.
+
+        If client set projection the way that _id field removed, we should not allow it 
+        and make sure that _id returned anyway. We will get that field from DB anyway and then 
+        return it in another array together with records.
+
+        Why we do it? 
+        1) If _id field excluded then user can't edit or delete document. 
+        Sure, we can just disable ability to edit and delete result documents in this, 
+        but I think this is bad design of interface for end-user because it introduces 
+        inconsistencies in user interface (it it takes time to understand why you got those inconsistencies).
+        
+        2) Also we need some unique id for each document on client side (for ":key" in "v-for")
+        
+        ===
+
+        Also there is special case for "oplog.rs" collection in "local" database.
+        As I see this is the only collection where we don't have "_id" field.
+        But there is "ui" field of "UUID" type. This is unique record id, so we can use this field instead of "_id"
+        */
+
+        if (dbName === 'local' && collectionName === 'oplog.rs') {
+            // ui - unique id.
+            // if "ui" was excluded, then let's ignore this exclusion
+            const nonIdIncludesExists = Object.keys(newProjection).filter((key) => {
+                return (key != 'ui' && newProjection[key] === 1)
+            }).length;
+
+            if (newProjection.ui === 0 || nonIdIncludesExists > 0) {
+                newProjection.ui = 1;
+            } else {
+                delete newProjection.ui;
+            }
+        } else {
+            // _id will not be removed from results until you exclude it explicitly, 
+            // so let's only check if it was excluded explicitly:
+            if (newProjection._id === 0) {
+                // if "_id" was excluded, then let's ignore this exclusion
+                const nonIdIncludesExists = Object.keys(newProjection).filter((key) => {
+                    return (key != '_id' && newProjection[key] === 1)
+                }).length;
+
+                if (nonIdIncludesExists > 0) {
+                    newProjection._id = 1;
+                } else {
+                    delete newProjection._id;
+                }
+            }
+        }
+
+        return newProjection;
+    }
+
 }
 
 
