@@ -11,7 +11,7 @@
         <form class="no-select">
             <div class="form-row">
                 Are you sure you want to delete <strong>{{collName}} </strong> 
-                <strong :class="{'lighter': collectionRecordsAmount == 0}">({{numberWithCommas(collectionRecordsAmount)}})</strong> 
+                <strong class="light">({{numberWithCommas(collectionRecordsAmount)}} docs)</strong> 
                 collection?
 
             </div>
@@ -19,7 +19,7 @@
         <div class="gap"></div>
 
         <button @click="deleteCollection()" class="btn-red confirm-button" :disabled="loading">
-            <font-awesome-icon icon="trash-alt" /> Yes, delete it
+            <font-awesome-icon icon="trash-alt" /> Yes, delete <strong>{{collName}}</strong>
         </button>
         <button @click="goBack()" :disabled="loading">
             Cancel
