@@ -27,7 +27,7 @@
                     <thead>
                         <tr>
                             <th>index key</th>
-                            <th>expires after</th>
+                            <th>document lives for</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,13 +137,13 @@ export default {
                     text += ` ${hours} hour${hours > 1 ? 's': ''}`;
                 }
                 return text;
-            } else if (seconds < 60 * 60 * 24 * 30 * 12) {
+            } else {
                 const months = Math.floor(duration.asMonths());
                 const days = duration.days();
                 
-                let text = `${months} month${months ? 's': ''}`;
+                let text = `${months} month${months > 1 ? 's': ''}`;
                 if (days) {
-                    text += ` ${days} day${days ? 's': ''}`;
+                    text += ` ${days} day${days > 1 ? 's': ''}`;
                 }
                 return text;
             } 
