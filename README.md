@@ -1,4 +1,6 @@
-# punkmongo
+# PunkMongo
+
+Tool for administration MongoDB over the Web inspired by RockMongo.
 
 Development in progress.
 The goal of the project is to make free, fast, predictable, easy to use MongoDB client.
