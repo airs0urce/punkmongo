@@ -483,8 +483,16 @@ strong {
 .light {
     color: #777;
 }
+a:hover.light {
+    color: #777;
+    cursor: default; 
+}
 .lighter {
     color: #aaa;
+}
+a:hover.lighter {
+    color: #aaa;
+    cursor: default; 
 }
 .page-header {
     font-size: 1.3em;

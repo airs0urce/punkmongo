@@ -134,8 +134,12 @@
                         <span class="doc-actions no-select">
                             <span class="document-num">#{{getResultRecordNumber(index)}}</span>
                             <a class="padding"><span>Update</span></a>
-                            <a class="padding" @click="deleteDocument(record)" v-if="!dbCollectionOptions.capped"><span>Delete</span></a>
-                            <a class="padding" @click="refreshDocument(record)" v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
+                            <a class="padding" 
+                                :class="{'lighter': dbCollectionOptions.capped}" 
+                                :title="dbCollectionOptions.capped ? `MongoDB doesn't allow to delete records from Capped collection`: ``"
+                                @click="deleteDocument(record)"><span>Delete</span>
+                            </a>
+                            <a class="padding" @click="refreshDocument(record)"><span>Refresh</span></a>
                         </span>                        
                         <span class="separator" v-if="record.timestamp">
                             <span title="Creation date from _id field" class="document-date" :class="{'border': dbCollectionOptions.capped}">
@@ -514,6 +518,11 @@ export default {
 
         },
         async deleteDocument(record) {
+            if (this.dbCollectionOptions.capped) {
+                alert(`MongoDB doesn't allow to delete records from Capped collection`);
+                return;
+            }
+
             const response = await api.request('deleteDocument', {
                 db: this.activeDb.name,
                 collection: this.activeDb.activeCollection.name,
@@ -856,6 +865,7 @@ div.document {
 .query-results {
     overflow: hidden;
 }
+
 </style>
 
 

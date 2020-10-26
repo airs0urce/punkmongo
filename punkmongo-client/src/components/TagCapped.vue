@@ -121,5 +121,6 @@ export default {
     }
     .capped-info-table {
         width: 100%;
+        white-space: nowrap;
     }
 </style>
