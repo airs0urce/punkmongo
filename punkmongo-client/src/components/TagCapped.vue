@@ -20,8 +20,8 @@
                     <tr>
                         <td>
                             <span v-if="collOptionExists('max') && collOptionExists('size')"><strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum</span>
-                            <span v-if="collOptionExists('max') && !collOptionExists('size')"><strong>{{collectionOptions.max}}</strong> documents maximum</span>
-                            <span v-if="!collOptionExists('max') && collOptionExists('size')"><strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum</span>                    
+                            <span v-if="collOptionExists('max') && !collOptionExists('size')"><strong>{{collectionOptions.max}}</strong> documents maximum and no restriction for collection size</span>
+                            <span v-if="!collOptionExists('max') && collOptionExists('size')"><strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum and no restriction for amount of documents</span>                    
                         </td>
                     </tr>
                 </table>
