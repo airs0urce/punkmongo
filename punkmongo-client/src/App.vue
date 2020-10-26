@@ -487,7 +487,7 @@ strong {
     color: #aaa;
 }
 .page-header {
-    font-size: 1.5em;
+    font-size: 1.4em;
     margin-bottom: 1em;
 }
 

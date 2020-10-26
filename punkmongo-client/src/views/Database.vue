@@ -50,7 +50,7 @@
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
-                        <th rowspan="3">Options</th>
+                        <th rowspan="3">Additional information</th>
                         <th rowspan="3">Rename</th>
                         <th rowspan="3">Del</th>
                     </tr>
@@ -88,6 +88,12 @@
                                 :detailsOnLeft="true"
                             />
                             <TagCollation :collectionOptions="collection.options" 
+                                :hideDetailsAnimation="false" 
+                                :hideDetailsDelay="100" 
+                                :fixedWidth="true" 
+                                :detailsOnLeft="true"
+                            />
+                            <TagTtl :ttlIndexes="ttlIndexes[collection.name]"
                                 :hideDetailsAnimation="false" 
                                 :hideDetailsDelay="100" 
                                 :fixedWidth="true" 
@@ -137,15 +143,25 @@ import {
 import utils from '../utils'
 import TagCapped from '@/components/TagCapped'
 import TagCollation from '@/components/TagCollation'
+import TagTtl from '@/components/TagTtl'
 
 
 export default {
     name: 'OverviewDatabases',
     components: {
-        TagCapped, TagCollation
+        TagCapped, TagCollation, TagTtl
     },
     computed: mapState({
         activeDb: state => state.activeDb,
+        ttlIndexes() {
+            const ttlIndexes = {};
+            for (let collection of this.activeDb.collections) {
+                ttlIndexes[collection.name] = collection.indexes.filter((index) => {
+                    return undefined !== index.expireAfterSeconds;
+                });
+            }
+            return ttlIndexes;
+        }
     }),
     watch: {
         async $route(to) {

@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <div class="query-editor">
             <div class="filter-row-wrapper" :class="{'filter-invalid': !this.query.filter.valid}">
                 <!-- <div class="filter-label">filter</div> -->
@@ -252,7 +253,7 @@ export default {
                 return collection.options;
             }
             return {};
-        }
+        },        
 
     },
     watch: {
@@ -551,7 +552,7 @@ export default {
                 }
             }
             return projection;
-        }
+        },
     },
     mounted: async function() {        
 

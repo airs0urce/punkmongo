@@ -8,9 +8,11 @@ module.exports = async function (params, dbClient) {
     let collection;
     let collections = [];
     while (collection = await cursor.next()) {
+        const indexes = await db.collection(collection.name).indexes();
         collections.push({
             name: collection.name,
-            options: collection.options
+            options: collection.options,
+            indexes: indexes
         });
     }
     collections.sort((a, b) => {

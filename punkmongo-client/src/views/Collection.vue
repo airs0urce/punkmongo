@@ -10,6 +10,7 @@
                 <span class="collection-tags">
                     <TagCapped :collectionOptions="dbCollectionOptions" />
                     <TagCollation :collectionOptions="dbCollectionOptions" :hideDetailsAnimation="false" />
+                    <TagTtl :ttlIndexes="ttlIndexes" />
                 </span>
             </div>
         </h1>
@@ -44,6 +45,8 @@ import CollectionIndexes from '@/components/CollectionIndexes';
 import CollectionValidation from '@/components/CollectionValidation';
 import TagCapped from '@/components/TagCapped';
 import TagCollation from '@/components/TagCollation';
+import TagTtl from '@/components/TagTtl';
+
 
 import utils from '../utils'
 
@@ -58,7 +61,9 @@ export default {
         CollectionQuery, CollectionInsert, 
         CollectionAggregate, CollectionIndexes, 
         CollectionValidation,
-        TagCapped, TagCollation
+        TagCapped, 
+        TagCollation,
+        TagTtl
     },
     data: function() {
         return {
@@ -76,6 +81,13 @@ export default {
                 return collection.options;
             }
             return {};
+        },
+        ttlIndexes() {
+            const indexes = this.activeDb.activeCollection.indexes;
+            const ttlIndexes = indexes.filter((index) => {
+                return undefined !== index.expireAfterSeconds;
+            });
+            return ttlIndexes;
         }
     }),
     methods: {
