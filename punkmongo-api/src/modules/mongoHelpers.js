@@ -157,39 +157,21 @@ class mongoHelpers {
         
         2) Also we need some unique id for each document on client side (for ":key" in "v-for")
         
-        ===
-
-        Also there is special case for "oplog.rs" collection in "local" database.
-        As I see this is the only collection where we don't have "_id" field.
-        But there is "ui" field of "UUID" type. This is unique record id, so we can use this field instead of "_id"
         */
 
-        if (dbName === 'local' && collectionName === 'oplog.rs') {
-            // ui - unique id.
-            // if "ui" was excluded, then let's ignore this exclusion
+   
+        // _id will not be removed from results until you exclude it explicitly, 
+        // so let's only check if it was excluded explicitly:
+        if (newProjection._id === 0) {
+            // if "_id" was excluded, then let's ignore this exclusion
             const nonIdIncludesExists = Object.keys(newProjection).filter((key) => {
-                return (key != 'ui' && newProjection[key] === 1)
+                return (key != '_id' && newProjection[key] === 1)
             }).length;
 
-            if (newProjection.ui === 0 || nonIdIncludesExists > 0) {
-                newProjection.ui = 1;
+            if (nonIdIncludesExists > 0) {
+                newProjection._id = 1;
             } else {
-                delete newProjection.ui;
-            }
-        } else {
-            // _id will not be removed from results until you exclude it explicitly, 
-            // so let's only check if it was excluded explicitly:
-            if (newProjection._id === 0) {
-                // if "_id" was excluded, then let's ignore this exclusion
-                const nonIdIncludesExists = Object.keys(newProjection).filter((key) => {
-                    return (key != '_id' && newProjection[key] === 1)
-                }).length;
-
-                if (nonIdIncludesExists > 0) {
-                    newProjection._id = 1;
-                } else {
-                    delete newProjection._id;
-                }
+                delete newProjection._id;
             }
         }
 

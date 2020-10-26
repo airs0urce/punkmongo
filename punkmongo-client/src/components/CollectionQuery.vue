@@ -133,13 +133,21 @@
                     <span v-if="!record.deleted">
                         <span class="doc-actions no-select">
                             <span class="document-num">#{{getResultRecordNumber(index)}}</span>
-                            <a class="padding"><span>Update</span></a>
+                            <a class="padding"
+                                :title="dbCollectionOptions.capped ? `Not supported for Capped collections`: ``"
+                                @click="updateDocument()"
+                                :class="{'lighter': dbCollectionOptions.capped}" ><span>Update</span></a>
+                            
                             <a class="padding" 
                                 :class="{'lighter': dbCollectionOptions.capped}" 
-                                :title="dbCollectionOptions.capped ? `MongoDB doesn't allow to delete records from Capped collection`: ``"
+                                :title="dbCollectionOptions.capped ? `Not supported for Capped collections`: ``"
                                 @click="deleteDocument(record)"><span>Delete</span>
                             </a>
-                            <a class="padding" @click="refreshDocument(record)"><span>Refresh</span></a>
+
+                            <a class="padding"
+                                :class="{'lighter': dbCollectionOptions.capped}" 
+                                :title="dbCollectionOptions.capped ? `Not supported for Capped collections`: ``"
+                                @click="refreshDocument(record)"><span>Refresh</span></a>
                         </span>                        
                         <span class="separator" v-if="record.timestamp">
                             <span title="Creation date from _id field" class="document-date" :class="{'border': dbCollectionOptions.capped}">
@@ -501,7 +509,18 @@ export default {
             this.$set(doc, 'expand', false);
         },
         moment: moment,
+        async updateDocument() {
+            if (this.dbCollectionOptions.capped) {
+                alert(`Not supported for Capped collections`);
+                return;
+            }
+        }, 
         async refreshDocument(record) {
+            if (this.dbCollectionOptions.capped) {
+                alert(`Not supported for Capped collections`);
+                return;
+            }
+
             const response = await api.request('getDocument', {
                 db: this.activeDb.name,
                 collection: this.activeDb.activeCollection.name,
@@ -519,7 +538,7 @@ export default {
         },
         async deleteDocument(record) {
             if (this.dbCollectionOptions.capped) {
-                alert(`MongoDB doesn't allow to delete records from Capped collection`);
+                alert(`Not supported for Capped collections`);
                 return;
             }
 

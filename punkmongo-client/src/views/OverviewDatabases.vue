@@ -81,7 +81,7 @@
                         <th>Storage Size</th>
                         <th>Indexes Size</th>
                         <th>Documents</th>
-                        <th></th>
+                        <th>Del</th>
                     </tr>
                 </tfoot>
             </table>
