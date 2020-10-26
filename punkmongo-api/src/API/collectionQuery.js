@@ -70,34 +70,35 @@ module.exports = async function (params, dbClient) {
         setSkipAndLimit(options, params);
     }
 
-    let shouldRemoveUniqueIdFromResultObject = false;
-    let uniqueIdField = (params.db === 'local' && params.collection === 'oplog.rs') ? 'ui': '_id';
-    if (0 === params.query.options.projection[uniqueIdField]) {
-        // it means client asked to remove uniqueIdField in projection, 
-        // but we included it in "mongoHelpers.makeSureIncludeUniqueIdInProjection" function
-
-        // let's remove this field from result object to not show uniqueIdField for end user
-        shouldRemoveUniqueIdFromResultObject = true;
-    }
-
     const cursor = collection.find(filter, options);
     const records = [];
     const recordsTimestamps = [];
 
     let record;
+    let recordIndex = 0;
     while (record = await cursor.next()) {   
         let timestamp = false;
         if (ObjectID.isValid(record._id)) {
             timestamp = moment(ObjectID(record._id).getTimestamp()).unix();
         }
 
-        let uniqueRecordIdValue = record[uniqueIdField];
-        if (shouldRemoveUniqueIdFromResultObject) {
-            delete record[uniqueIdField];
+        let uniqueRecordId = (record['_id'] ? record['_id'].toString(): null);
+        if (!uniqueRecordId) {
+            // use document index
+            uniqueRecordId = `${params.query.pagination.pageNumber}-${recordIndex++}`;
+        }
+
+
+        if (0 === params.query.options.projection['_id']) {
+            // it means client asked to remove "_id" in projection, 
+            // but we included it in "mongoHelpers.makeSureIncludeUniqueIdInProjection" function
+
+            // let's remove this field from result object to not show "_id" for end user
+            delete record['_id'];
         }
 
         const docItem = {
-            id: (uniqueRecordIdValue ? uniqueRecordIdValue.toString(): null),
+            id: uniqueRecordId,
             timestamp: timestamp,
             doc: mongoDocToString(record),
         }
