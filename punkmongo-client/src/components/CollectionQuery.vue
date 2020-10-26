@@ -124,11 +124,15 @@
                 />
             </div>
 
-            <div v-for="(record, index) in queryResult.records" :key="queryResult.records[index].id" 
-                class="document" :class="{'deleted': record.deleted}">
+            <div v-for="(record, index) in queryResult.records" 
+                :key="queryResult.records[index].id" 
+                class="document" 
+                ref="documents"
+                :class="{'deleted': record.deleted}"
+            >
                 <div class="document-header">
                     <span class="padding" v-if="record.deleted">
-                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document (5)</a>
+                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document ({{record.restoreCountdown}})</a>
                     </span>
                     <span v-if="!record.deleted">
                         <span class="doc-actions no-select">
@@ -141,7 +145,7 @@
                             <a class="padding" 
                                 :class="{'lighter': dbCollectionOptions.capped}" 
                                 :title="dbCollectionOptions.capped ? `Not supported for Capped collections`: ``"
-                                @click="deleteDocument(record)"><span>Delete</span>
+                                @click="deleteDocument(record, index)"><span>Delete</span>
                             </a>
 
                             <a class="padding"
@@ -536,7 +540,7 @@ export default {
             }
 
         },
-        async deleteDocument(record) {
+        async deleteDocument(record, index) {
             if (this.dbCollectionOptions.capped) {
                 alert(`Not supported for Capped collections`);
                 return;
@@ -552,7 +556,26 @@ export default {
                 // this.queryResult.records[index]
                 this.$set(record, 'deleted', true);
                 this.$set(record, 'restoreId', response.result.restoreId);
+                this.$set(record, 'restoreCountdown', 5);
+                this.$set(record, 'restoreCountdownTimer', setInterval(() => {
+                    record.restoreCountdown -= 1;
+                    if (record.restoreCountdown === 0) {
+                        clearInterval(record.restoreCountdownTimer);
 
+                        const deleteAnim = gsap.timeline({});
+                        deleteAnim.to(
+                            this.$refs.documents[index], 
+                            {xPercent: 120, duration: 0.3}
+                        );
+                        deleteAnim.to(
+                            this.$refs.documents[index], 
+                            {height: '0', marginBottom: '0', border: '0px',duration: 0.3},
+                            '>'
+                        );                        
+                    }
+                }, 1000));
+
+                
                 // this.querySubmit();
             }
         },
@@ -562,6 +585,7 @@ export default {
             });            
 
             if (response.success) {
+                clearInterval(record.restoreCountdownTimer);
                 if (response.result.restored) {
                     this.$delete(record, 'deleted');
                     this.$delete(record, 'restoreId');
