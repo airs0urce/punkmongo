@@ -11,9 +11,20 @@
                 <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong>)</span>
             </span>
             <div class="info-tag-details with-select" ref="infoTagDetails" :class="{'info-on-left': detailsOnLeft}">
-                <span v-if="collOptionExists('max') && collOptionExists('size')"><strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum</span>
-                <span v-if="collOptionExists('max') && !collOptionExists('size')"><strong>{{collectionOptions.max}}</strong> documents maximum</span>
-                <span v-if="!collOptionExists('max') && collOptionExists('size')"><strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum</span>                
+                <div class="tag-details-title">
+                    Capped collection <a href="https://docs.mongodb.com/manual/core/capped-collections" target="_blank">
+                        <font-awesome-icon icon="question-circle" class="icon-help" /> 
+                    </a>
+                </div>
+                <table class="capped-info-table">
+                    <tr>
+                        <td>
+                            <span v-if="collOptionExists('max') && collOptionExists('size')"><strong>{{collectionOptions.max}}</strong> documents or <strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum</span>
+                            <span v-if="collOptionExists('max') && !collOptionExists('size')"><strong>{{collectionOptions.max}}</strong> documents maximum</span>
+                            <span v-if="!collOptionExists('max') && collOptionExists('size')"><strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum</span>                    
+                        </td>
+                    </tr>
+                </table>
             </div>
         </span>        
     </div>  
@@ -107,5 +118,8 @@ export default {
     .info-tag-capped-fixed-width {
         width: 6rem;
         text-align: center;
+    }
+    .capped-info-table {
+        width: 100%;
     }
 </style>
