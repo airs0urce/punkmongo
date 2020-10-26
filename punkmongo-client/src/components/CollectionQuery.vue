@@ -133,7 +133,7 @@
                     <span v-if="!record.deleted">
                         <span class="doc-actions no-select">
                             <span class="document-num">#{{getResultRecordNumber(index)}}</span>
-                            <a class="padding" v-if="!dbCollectionOptions.capped"><span>Update</span></a>
+                            <a class="padding"><span>Update</span></a>
                             <a class="padding" @click="deleteDocument(record)" v-if="!dbCollectionOptions.capped"><span>Delete</span></a>
                             <a class="padding" @click="refreshDocument(record)" v-if="!dbCollectionOptions.capped"><span>Refresh</span></a>
                         </span>                        
