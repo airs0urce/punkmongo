@@ -9,9 +9,9 @@
         @mouseleave="showDetails(false)"
     >
 
-        <span v-show="ttlIndexes.length == 0">no ttl</span>
+        <span v-show="ttlIndexes.length == 0">no TTL</span>
         <span v-show="ttlIndexes.length > 0">
-            ttl <font-awesome-icon icon="question-circle" class="question-icon" />
+            TTL <font-awesome-icon icon="question-circle" class="question-icon" />
             <div class="info-tag-details with-select" ref="infoTagDetails" :class="{'info-on-left': detailsOnLeft}">
                 <div class="tag-details-title">
                     TTL indexes<a href="https://docs.mongodb.com/manual/core/index-ttl" target="_blank">
@@ -27,7 +27,7 @@
                     <thead>
                         <tr>
                             <th>index key</th>
-                            <th>document lives for</th>
+                            <th>expires after</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,7 +172,7 @@ export default {
     }
 
     .info-tag-ttl-fixed-width {
-        width: 3.5rem;
+        width: 4rem;
         text-align: center;
     }
 </style>

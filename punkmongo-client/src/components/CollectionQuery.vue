@@ -132,7 +132,7 @@
             >
                 <div class="document-header">
                     <span class="padding" v-if="record.deleted">
-                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document ({{record.restoreCountdown}})</a>
+                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document ({{record.deleted.restoreCountdown}})</a>
                     </span>
                     <span v-if="!record.deleted">
                         <span class="doc-actions no-select">
@@ -378,6 +378,10 @@ export default {
                 query: query
             });
 
+            for (let record of this.queryResult.records) {
+                clearInterval(record.deleted.restoreCountdownTimer);
+            }
+
             if (response.success) {
                 this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
                     collName: this.activeDb.activeCollection.name,
@@ -553,46 +557,75 @@ export default {
             });
 
             if (response.success) {
-                // this.queryResult.records[index]
-                this.$set(record, 'deleted', true);
-                this.$set(record, 'restoreId', response.result.restoreId);
-                this.$set(record, 'restoreCountdown', 5);
-                this.$set(record, 'restoreCountdownTimer', setInterval(() => {
-                    record.restoreCountdown -= 1;
-                    if (record.restoreCountdown === 0) {
-                        clearInterval(record.restoreCountdownTimer);
-
-                        const deleteAnim = gsap.timeline({});
-                        deleteAnim.to(
-                            this.$refs.documents[index], 
-                            {xPercent: 120, duration: 0.3}
-                        );
-                        deleteAnim.to(
-                            this.$refs.documents[index], 
-                            {height: '0', marginBottom: '0', border: '0px',duration: 0.3},
-                            '>'
-                        );                        
-                    }
-                }, 1000));
+                await this.prolongAllRestoreIds();
 
                 
-                // this.querySubmit();
+                this.$set(record, 'deleted', {
+                    restoreId: response.result.restoreId,
+                    restoreCountdown: 5,
+                    restoreCountdownTimer: setInterval(() => {
+               
+                        record.deleted.restoreCountdown -= 1;
+                        if (record.deleted.restoreCountdown === 0) {
+                            clearInterval(record.deleted.restoreCountdownTimer);
+
+                            const deleteAnim = gsap.timeline({});
+                            deleteAnim.to(
+                                this.$refs.documents[index], 
+                                {xPercent: 120, duration: 0.3}
+                            );
+                            deleteAnim.to(
+                                this.$refs.documents[index], 
+                                {height: '0', marginBottom: '0', border: '0px',duration: 0.3},
+                                '>'
+                            );                        
+                        }
+                    }, 1000)
+                });
+
             }
         },
         async restoreDocument(record) {
             const response = await api.request('restoreDocument', {
-                restoreId: record.restoreId
+                restoreId: record.deleted.restoreId
             });            
 
             if (response.success) {
-                clearInterval(record.restoreCountdownTimer);
                 if (response.result.restored) {
+                    clearInterval(record.deleted.restoreCountdownTimer);
                     this.$delete(record, 'deleted');
-                    this.$delete(record, 'restoreId');
+                    await this.prolongAllRestoreIds();
                 } else {
                     alert('Error restoring');
                 }
                 
+            }
+        },
+        async prolongAllRestoreIds() {
+            const expireAfterSecExpireServer = 10;
+            const expireAfterSecExpireClient = 5;
+
+            const deletedRecords = [];
+            for (let record of this.queryResult.records) {
+                if (record.deleted) {       
+                    deletedRecords.push(record);
+                }
+            }
+
+            const response = await api.request(
+                'restoreDocumentSetExpire', 
+                {list: deletedRecords.map((item) => { 
+                    return {
+                        restoreId: item.deleted.restoreId,
+                        expireAfterSec: expireAfterSecExpireServer
+                    }
+                })}
+            );
+
+            if (response.success) {
+                for (let deletedRecord of deletedRecords) {
+                    deletedRecord.deleted.restoreCountdown = expireAfterSecExpireClient;
+                }
             }
         },
         parseProjection() {

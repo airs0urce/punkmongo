@@ -3,9 +3,10 @@ const SystemCollections = require('./SystemCollections');
 const mongodb = require('mongodb');
 const ObjectID = mongodb.ObjectID;
 const config = require('../../../config');
+const moment = require('moment');
 
 class UndoDelete {
-    static async backup(dbName, collectionName, id) {
+    static async backup(dbName, collectionName, id, expireAfterSec = 60) {
         for (let collType in config.api.systemCollections) {
             const info = config.api.systemCollections[collType];
             if (dbName === info.db && collectionName === info.collection) {
@@ -22,9 +23,11 @@ class UndoDelete {
             .findOne({ _id: ObjectID(id) });
             
         const restoreId = new ObjectID();
+        const expireAt = moment().add(expireAfterSec, 'seconds').toDate();
+
         await coll.insertOne({
             _id: restoreId,
-            d: new Date(),
+            expireAt: expireAt,
             dbName: dbName,
             collectionName: collectionName, 
             document: docForBackup
@@ -32,6 +35,19 @@ class UndoDelete {
 
         return restoreId.toString();
 
+    }
+
+    static async updateExpiration(restoreId, expireAfterSec = 10) {
+        const coll = await SystemCollections.getUndoDelete();
+        
+        const expireAt = moment().add(expireAfterSec, 'seconds').toDate();
+
+        await coll.updateOne(
+            {_id: ObjectID(restoreId)},
+            {$set: {
+                expireAt: expireAt
+            }}
+        );
     }
 
     static async restore(restoreId) {
