@@ -20,7 +20,7 @@
     "koa": "^2.13.0",
     "koa-router": "^9.4.0",
     "koa2-cors": "^2.0.6",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
     "mongo-parse": "^2.1.0",
