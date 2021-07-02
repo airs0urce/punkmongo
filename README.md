@@ -6,10 +6,11 @@ Development in progress.
 The goal of the project is to make free, fast, predictable, easy to use MongoDB client.
 
 For now to start server and client:
-1) Make sure mongodb running on local machine on port 27017 (or change configuration in config.js)
-2) Go to both "punkmongo-api" and "punkmongo-client" and run 
+1) Install Vue Cli: https://cli.vuejs.org/guide/installation.html 
+2) Make sure mongodb running on local machine on port 27017 (or change configuration in config.js)
+3) Go to both "punkmongo-api" and "punkmongo-client" and run 
 $ npm install
-3) Run both folders "punkmongo-api" and "punkmongo-client" run:
+4) Run both folders "punkmongo-api" and "punkmongo-client" run:
 $ npm start
 
 Sure, this is not final way how you start the project, but approach used for development before I make first release .
