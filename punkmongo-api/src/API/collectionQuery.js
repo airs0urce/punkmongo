@@ -48,7 +48,7 @@ module.exports = async function (params, dbClient) {
         options.maxTimeMS = params.query.options.timeout;
     }
 
-    const filter = ejsonParser(params.query.filter, {loose: true, allowComments: false});
+    const filter = ejsonParser(params.query.filter, {mode: 'loose', allowComments: false, allowMethods: true});
     
     if (!params.query.pagination.pageNumber) {
         params.query.pagination.pageNumber = 1;
