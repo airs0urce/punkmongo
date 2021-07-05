@@ -5,14 +5,14 @@
         </div>
         <div v-if="serverInfo.version">
             <h1 class="page-header no-select">
-                Server Info
+                Server Information
             </h1>
 
             <table cellpadding="2" cellspacing="1" class="zebra">
                 <col width="150" valign="top">
                 <col width="500" valign="top">
                 <tr>
-                    <th colspan="2">General</th>
+                    <th colspan="2">MongoDB</th>
                 </tr>
                 <tr>
                     <td>Command</td>

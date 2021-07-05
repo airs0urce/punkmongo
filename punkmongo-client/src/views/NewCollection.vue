@@ -9,8 +9,7 @@
 
 
         <div class="local-notice bottom-gap" v-if="!selectedDatabaseExists">
-            MongoDB will create database only if you add at least one collection in the database.
-            <a href="https://docs.mongodb.com/manual/faq/fundamentals/#how-do-i-create-a-database-and-a-collection" target="_blank">More Information</a>
+            Now create your first collection in "{{dbName}}" database (MongoDB creates database only if at least one collection exists)
         </div>
 
         <form class="no-select">

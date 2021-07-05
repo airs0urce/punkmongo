@@ -16,11 +16,11 @@
         <div class="gap"></div>
 
     
-        <button @click="createDatabase()" class="confirm-button">
+        <button @click="createDatabase()" class="confirm-button" :disabled="validating">
             <font-awesome-icon icon="plus" />
             Create Database
         </button>
-        <button @click="goBack()" :disabled="loading">
+        <button @click="goBack()" :disabled="validating">
             Cancel
         </button>
         
@@ -34,6 +34,7 @@ import api from '../api/api';
 export default {
     data: function() {
         return {
+            loading: false,
             validating: false,
             databaseName: '',
             errors: {
