@@ -155,9 +155,6 @@ export default {
         width: 60rem;
         z-index: 200;
     }
-    .info-tag-details-collation {
-        transform: translate(10em, 0px);
-    }
     .collation-info {
         white-space: initial;
     }

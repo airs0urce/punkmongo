@@ -175,7 +175,15 @@ export default {
     margin-left: 1rem;
     
 }
-
+/deep/ .info-tag-details-ttl {
+    transform: translate(5em, 0px);
+}
+/deep/ .info-tag-details-collation {
+    transform: translate(10em, 0px);
+}
+/deep/ .info-tag-details-capped {
+    transform: translate(1.3em, 0px);
+}
 
 </style>
 

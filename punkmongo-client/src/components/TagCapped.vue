@@ -126,7 +126,4 @@ export default {
         width: 100%;
         white-space: nowrap;
     }
-    .info-tag-details-capped {
-        transform: translate(1.3em, 0px);
-    }
 </style>

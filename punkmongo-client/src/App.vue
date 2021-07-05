@@ -641,6 +641,7 @@ input[type="checkbox"]:focus, input[type="radio"]:focus {
 }
 
 .info-tag {
+    margin-right: 0.2em;
     background-color: #6c757d;
     cursor: default;
     color: #fff;

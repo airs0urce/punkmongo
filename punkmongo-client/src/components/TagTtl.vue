@@ -9,7 +9,7 @@
         @mouseleave="showDetails(false)"
     >
 
-        <span v-show="ttlIndexes.length == 0">no TTL indexes</span>
+        <span v-show="ttlIndexes.length == 0">no TTL</span>
         <span v-show="ttlIndexes.length > 0">
             TTL <font-awesome-icon icon="question-circle" class="question-icon" />
             <div class="info-tag-details info-tag-details-ttl with-select" ref="infoTagDetails" :class="{'info-on-left': detailsOnLeft}">
@@ -174,8 +174,5 @@ export default {
     .info-tag-ttl-fixed-width {
         width: 4rem;
         text-align: center;
-    }
-    .info-tag-details-ttl {
-        transform: translate(5em, 0px);
     }
 </style>
