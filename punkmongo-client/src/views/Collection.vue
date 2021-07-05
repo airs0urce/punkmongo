@@ -173,6 +173,7 @@ export default {
 
 .collection-tags {
     margin-left: 1rem;
+    
 }
 
 

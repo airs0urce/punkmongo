@@ -1,7 +1,10 @@
 <template>
     <div class="info-tag info-tag-capped no-select" 
         :class="{'disabled': !collectionOptions.capped, 'info': collectionOptions.capped, 'info-tag-capped-fixed-width': fixedWidth}"
-        @mouseenter="showDetails(true)" @mouseleave="showDetails(false)">
+        @mouseenter="showDetails(true)" 
+        @mouseleave="showDetails(false)"
+        >
+        
         <span v-show="!collectionOptions.capped">not capped</span>
         <span v-show="collectionOptions.capped">
             capped <font-awesome-icon v-if="!showInfoInline" icon="question-circle" class="question-icon" />
@@ -10,7 +13,7 @@
                 <span v-if="collOptionExists('max') && !collOptionExists('size')">(<strong>{{collectionOptions.max}}</strong> documents)</span>
                 <span v-if="!collOptionExists('max') && collOptionExists('size')">(<strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong>)</span>
             </span>
-            <div class="info-tag-details with-select" ref="infoTagDetails" :class="{'info-on-left': detailsOnLeft}">
+            <div class="info-tag-details info-tag-details-capped with-select" ref="infoTagDetails" :class="{'info-on-left': detailsOnLeft}">
                 <div class="tag-details-title">
                     Capped collection <a href="https://docs.mongodb.com/manual/core/capped-collections" target="_blank">
                         <font-awesome-icon icon="question-circle" class="icon-help" /> 
@@ -122,5 +125,8 @@ export default {
     .capped-info-table {
         width: 100%;
         white-space: nowrap;
+    }
+    .info-tag-details-capped {
+        transform: translate(1.3em, 0px);
     }
 </style>

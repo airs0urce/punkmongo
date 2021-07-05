@@ -64,7 +64,7 @@ class mongoHelpers {
         }
 
         // check if collection already exists
-        const collExists = await mongoHelpers.isCollectionExist(dbName, collectionName);
+        const collExists = await mongoHelpers.doesCollectionExist(dbName, collectionName);
         if (collExists) {
             result.canCreate = false;
             result.reason = `Collection "${collectionName}" already exists in database ${dbName}`;
@@ -128,7 +128,7 @@ class mongoHelpers {
         return result;
     }
 
-    static async isCollectionExist(dbName, collectionName) {
+    static async doesCollectionExist(dbName, collectionName) {
         const dbClient = await DBFactory.connectMongo();
         const db = dbClient.db(dbName);
         const cursor = await db.listCollections({name: collectionName}, {nameOnly: true});

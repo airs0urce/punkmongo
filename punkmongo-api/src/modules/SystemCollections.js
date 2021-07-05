@@ -8,10 +8,12 @@ class SystemCollections {
 
         const dbClient = await DBFactory.connectMongo();
 
-        const exists = await mongoHelpers.isCollectionExist(undoDelete.db, undoDelete.collection);
+        const exists = await mongoHelpers.doesCollectionExist(undoDelete.db, undoDelete.collection);
         if (!exists) {
             const dbLocal = dbClient.db(undoDelete.db);
             await dbLocal.createCollection(undoDelete.collection);
+            // expireAfterSeconds is 0 and this is correct. 
+            // This way docuemnt will expire at time in expireAt field
             await dbLocal.createIndex(undoDelete.collection, {expireAt: 1}, {"expireAfterSeconds": 0});
         }
 

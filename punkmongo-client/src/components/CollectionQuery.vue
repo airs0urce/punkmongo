@@ -128,13 +128,13 @@
                 :key="queryResult.records[index].id" 
                 class="document" 
                 ref="documents"
-                :class="{'deleted': record.deleted}"
+                :class="{'deleted': record.__punkmongo_deleted__}"
             >
                 <div class="document-header">
-                    <span class="padding" v-if="record.deleted">
-                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document ({{record.deleted.restoreCountdown}})</a>
+                    <span class="padding" v-if="record.__punkmongo_deleted__">
+                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document ({{record.__punkmongo_deleted__.restoreCountdown}})</a>
                     </span>
-                    <span v-if="!record.deleted">
+                    <span v-if="!record.__punkmongo_deleted__">
                         <span class="doc-actions no-select">
                             <span class="document-num">#{{getResultRecordNumber(index)}}</span>
                             <a class="padding"
@@ -175,7 +175,7 @@
                 </div>
                 <div class="document-body language-mongodb-filter" 
                     :class="{'expanded': record.expand}" 
-                    v-if="!record.deleted"
+                    v-if="!record.__punkmongo_deleted__"
                     v-html="highlight(record.doc, index)"></div>
             </div>
 
@@ -379,7 +379,9 @@ export default {
             });
 
             for (let record of this.queryResult.records) {
-                clearInterval(record.deleted.restoreCountdownTimer);
+                if (record.__punkmongo_deleted__) {
+                    clearInterval(record.__punkmongo_deleted__.restoreCountdownTimer);
+                }
             }
 
             if (response.success) {
@@ -560,14 +562,14 @@ export default {
                 await this.prolongAllRestoreIds();
 
                 
-                this.$set(record, 'deleted', {
+                this.$set(record, '__punkmongo_deleted__', {
                     restoreId: response.result.restoreId,
                     restoreCountdown: 5,
                     restoreCountdownTimer: setInterval(() => {
                
-                        record.deleted.restoreCountdown -= 1;
-                        if (record.deleted.restoreCountdown === 0) {
-                            clearInterval(record.deleted.restoreCountdownTimer);
+                        record.__punkmongo_deleted__.restoreCountdown -= 1;
+                        if (record.__punkmongo_deleted__.restoreCountdown === 0) {
+                            clearInterval(record.__punkmongo_deleted__.restoreCountdownTimer);
 
                             const deleteAnim = gsap.timeline({});
                             deleteAnim.to(
@@ -587,13 +589,13 @@ export default {
         },
         async restoreDocument(record) {
             const response = await api.request('restoreDocument', {
-                restoreId: record.deleted.restoreId
+                restoreId: record.__punkmongo_deleted__.restoreId
             });            
 
             if (response.success) {
                 if (response.result.restored) {
-                    clearInterval(record.deleted.restoreCountdownTimer);
-                    this.$delete(record, 'deleted');
+                    clearInterval(record.__punkmongo_deleted__.restoreCountdownTimer);
+                    this.$delete(record, '__punkmongo_deleted__');
                     await this.prolongAllRestoreIds();
                 } else {
                     alert('Error restoring');
@@ -607,16 +609,16 @@ export default {
 
             const deletedRecords = [];
             for (let record of this.queryResult.records) {
-                if (record.deleted) {       
+                if (record.__punkmongo_deleted__) {       
                     deletedRecords.push(record);
                 }
             }
 
             const response = await api.request(
-                'restoreDocumentSetExpire', 
+                'updateRestoreDocumentExpiration', 
                 {list: deletedRecords.map((item) => { 
                     return {
-                        restoreId: item.deleted.restoreId,
+                        restoreId: item.__punkmongo_deleted__.restoreId,
                         expireAfterSec: expireAfterSecExpireServer
                     }
                 })}
@@ -624,7 +626,7 @@ export default {
 
             if (response.success) {
                 for (let deletedRecord of deletedRecords) {
-                    deletedRecord.deleted.restoreCountdown = expireAfterSecExpireClient;
+                    deletedRecord.__punkmongo_deleted__.restoreCountdown = expireAfterSecExpireClient;
                 }
             }
         },
@@ -935,7 +937,7 @@ div.document {
 .document-date {
     padding: 0.5rem 0;
     &.border {
-        border-left: 1px solid #ccc;
+        // border-left: 1px solid #ccc;
     }
 }
 .query-results {

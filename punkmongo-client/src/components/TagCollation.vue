@@ -1,13 +1,14 @@
 <template>
     <div class="info-tag no-select" 
         :class="{disabled: !collectionOptions.collation, info: collectionOptions.collation, 'info-tag-collation-fixed-width': fixedWidth}"
-        @mouseenter="showCollationDetails(true)" @mouseleave="showCollationDetails(false)">
+        @mouseenter="showCollationDetails(true)" 
+        @mouseleave="showCollationDetails(false)">
         <span v-show="!collectionOptions.collation">default collation</span>
         <span v-show="collectionOptions.collation">
             custom collation 
             <font-awesome-icon icon="question-circle" class="question-icon" />
 
-            <div class="info-tag-details with-select" ref="infoTagDetails" :class="{'info-on-left': detailsOnLeft}">
+            <div class="info-tag-details info-tag-details-collation with-select" ref="infoTagDetails" :class="{'info-on-left': detailsOnLeft}">
                 <div class="tag-details-title">
                     Custom Collation<a href="https://docs.mongodb.com/master/reference/collation/" target="_blank">
                         <font-awesome-icon icon="question-circle" class="icon-help" /> 
@@ -153,6 +154,9 @@ export default {
     .info-tag-details {
         width: 60rem;
         z-index: 200;
+    }
+    .info-tag-details-collation {
+        transform: translate(10em, 0px);
     }
     .collation-info {
         white-space: initial;
