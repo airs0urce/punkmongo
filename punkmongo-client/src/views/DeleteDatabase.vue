@@ -2,7 +2,7 @@
     <div>
         <div class="page-header">
             <router-link :to="`/overview/databases`">Databases</router-link>
-            <font-awesome-icon icon="angle-right" class="arrow-separator" />Delete "<router-link :to="`/db/${dbName}`">{{dbName}}</router-link>" database
+            <font-awesome-icon icon="angle-right" class="arrow-separator" />Delete "<router-link :to="`/db/${encodeURIComponent(dbName)}`">{{dbName}}</router-link>" database
         </div>
 
 

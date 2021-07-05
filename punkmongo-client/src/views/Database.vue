@@ -12,13 +12,13 @@
 
             <div class="action-buttons">
                 <div class="action-buttons-left">
-                    <router-link class="button new-collection no-select btn-icon" :to="'/db/' + $store.state.activeDb.name + '/new-collection'">
+                    <router-link class="button new-collection no-select btn-icon" :to="'/db/' + encodeURIComponent($store.state.activeDb.name) + '/new-collection'">
                         <font-awesome-icon icon="plus" /> 
                         New Collection
                     </router-link>
                 </div>
                 <div class="action-buttons-right">
-                    <router-link class="button no-select btn-icon btn-red" :to="'/db/' + $store.state.activeDb.name + '/delete'">
+                    <router-link class="button no-select btn-icon btn-red" :to="'/db/' + encodeURIComponent($store.state.activeDb.name) + '/delete'">
                         <font-awesome-icon icon="trash-alt" /> 
                         Delete "{{activeDb.name}}" database…
                     </router-link>
@@ -73,7 +73,7 @@
                 <tbody>
                     <tr v-for="collection in activeDb.collections">
                         <td class="nowrap">
-                            <router-link :to="'/db/' + activeDb.name + '/col/' + collection.name">{{collection.name}}</router-link>
+                            <router-link :to="'/db/' + encodeURIComponent(activeDb.name) + '/col/' + encodeURIComponent(collection.name)">{{collection.name}}</router-link>
                         </td>
                         <td class="nowrap">{{numberWithCommas(collection.stats.objects)}}</td>
                         <td class="nowrap">{{bytesFormatted(collection.stats.dataSize)}}</td>

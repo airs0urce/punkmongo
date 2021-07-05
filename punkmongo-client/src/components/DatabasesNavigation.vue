@@ -31,7 +31,7 @@
                                 <span :class="{'no-docs': !collection.stats.objects}"> ({{numberWithCommas(collection.stats.objects)}})</span>
                             </li>
                         </ul>
-                        <router-link class="new-collection no-select" :to="'/db/' + state.activeDb.name + '/new-collection'">New Collection</router-link>
+                        <router-link class="new-collection no-select" :to="'/db/' + encodeURIComponent(state.activeDb.name) + '/new-collection'">New Collection</router-link>
                     </div>
                 </li>
             </ul>

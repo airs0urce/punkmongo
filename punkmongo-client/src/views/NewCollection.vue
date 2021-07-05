@@ -3,7 +3,7 @@
         <div class="page-header">
             <router-link :to="`/overview/databases`">Databases</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />
-            <router-link :to="`/db/${dbName}`">{{dbName}}</router-link>
+            <router-link :to="`/db/${encodeURIComponent(dbName)}`">{{dbName}}</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />New Collection
         </div>
 
