@@ -11,8 +11,11 @@
                     <div class="db-link-wrapper">
                         <router-link 
                             class="db-link loading-animation" 
-                            :class="{loading: showLoadingDb == db.name, 'router-link-exact-active': state.activeDb.name == db.name}"
-                            :to="'/db/' + db.name"
+                            :class="{
+                                'loading': showLoadingDb == db.name, 
+                                'router-link-exact-active': state.activeDb.name == db.name,
+                            }"
+                            :to="'/db/' + encodeURIComponent(db.name)"
                             @click.native="onDbLinkClicked"
                             >{{db.name}}</router-link>
                          ({{db.stats.collections}})
@@ -108,10 +111,13 @@ export default {
             }
             
             if (this.lastActiveDbName) {
-                const oldEl = this.$refs[`intersect-${this.lastActiveDbName}`][0];
-                if (oldEl) {
-                    oldEl.closest('li').querySelector('.db-link-wrapper').classList.remove('sticky-active');
-                    this.dbIntersectionObserver.unobserve(oldEl);
+                const oldElRef = this.$refs[`intersect-${this.lastActiveDbName}`];
+                if (oldElRef) {
+                    const oldEl = this.$refs[`intersect-${this.lastActiveDbName}`][0];
+                    if (oldEl) {
+                        oldEl.closest('li').querySelector('.db-link-wrapper').classList.remove('sticky-active');
+                        this.dbIntersectionObserver.unobserve(oldEl);
+                    }
                 }
             }
             const intersectRef = this.$refs[`intersect-${this.$store.state.activeDb.name}`];

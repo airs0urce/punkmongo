@@ -253,13 +253,13 @@ export default {
             return this.$store.state.activeDb;
         },
         activeDbName() {
-            return this.$store.state.activeDb.name;
+            return this.activeDb.name;
         },
         activeCollectionName() {
-            return this.$store.state.activeDb.activeCollection.name;
+            return this.activeDb.activeCollection.name;
         },
         queryResult() {
-            return this.$store.state.activeDb.queryResult;
+            return this.activeDb.queryResult;
         },
         dbCollectionOptions: (state) => {
             const collection = state.activeDb.collections.find((collection) => {
