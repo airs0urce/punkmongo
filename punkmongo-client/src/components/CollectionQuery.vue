@@ -128,13 +128,13 @@
                 :key="queryResult.records[index].id" 
                 class="document" 
                 ref="documents"
-                :class="{'deleted': record.__punkmongo_deleted__}"
+                :class="{'deleted': record[DELETE_INFO_FIELD]}"
             >
                 <div class="document-header">
-                    <span class="padding" v-if="record.__punkmongo_deleted__">
-                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document ({{record.__punkmongo_deleted__.restoreCountdown}})</a>
+                    <span class="padding" v-if="record[DELETE_INFO_FIELD]">
+                        The document has been deleted. <a @click="restoreDocument(record)">Restore the document ({{record[DELETE_INFO_FIELD].restoreCountdown}})</a>
                     </span>
-                    <span v-if="!record.__punkmongo_deleted__">
+                    <span v-if="!record[DELETE_INFO_FIELD]">
                         <span class="doc-actions no-select">
                             <span class="document-num">#{{getResultRecordNumber(index)}}</span>
                             <a class="padding"
@@ -175,7 +175,7 @@
                 </div>
                 <div class="document-body language-mongodb-filter" 
                     :class="{'expanded': record.expand}" 
-                    v-if="!record.__punkmongo_deleted__"
+                    v-if="!record[DELETE_INFO_FIELD]"
                     v-html="highlight(record.doc, index)"></div>
             </div>
 
@@ -240,6 +240,7 @@ export default {
             copyDropdownItems:[],
             worker: null,
             showOnlyExpandAll: true,
+            DELETE_INFO_FIELD: '__punkmongo_deleted_c67f7242-9733-41c7-b799-feb96d7504cb',
         }
     },
     computed: {
@@ -379,8 +380,8 @@ export default {
             });
 
             for (let record of this.queryResult.records) {
-                if (record.__punkmongo_deleted__) {
-                    clearInterval(record.__punkmongo_deleted__.restoreCountdownTimer);
+                if (record[this.DELETE_INFO_FIELD]) {
+                    clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
                 }
             }
 
@@ -562,16 +563,20 @@ export default {
                 await this.prolongAllRestoreIds();
 
                 
-                this.$set(record, '__punkmongo_deleted__', {
+                this.$set(record, this.DELETE_INFO_FIELD, {
                     restoreId: response.result.restoreId,
                     restoreCountdown: 5,
                     restoreCountdownTimer: setInterval(() => {
                
-                        record.__punkmongo_deleted__.restoreCountdown -= 1;
-                        if (record.__punkmongo_deleted__.restoreCountdown === 0) {
-                            clearInterval(record.__punkmongo_deleted__.restoreCountdownTimer);
+                        record[this.DELETE_INFO_FIELD].restoreCountdown -= 1;
+                        if (record[this.DELETE_INFO_FIELD].restoreCountdown === 0) {
+                            clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
 
-                            const deleteAnim = gsap.timeline({});
+                            const deleteAnim = gsap.timeline({
+                                onComplete: () => {
+                                    this.reloadResultsIfNoRecords();
+                                }
+                            });
                             deleteAnim.to(
                                 this.$refs.documents[index], 
                                 {xPercent: 120, duration: 0.3}
@@ -589,13 +594,13 @@ export default {
         },
         async restoreDocument(record) {
             const response = await api.request('restoreDocument', {
-                restoreId: record.__punkmongo_deleted__.restoreId
+                restoreId: record[this.DELETE_INFO_FIELD].restoreId
             });            
 
             if (response.success) {
                 if (response.result.restored) {
-                    clearInterval(record.__punkmongo_deleted__.restoreCountdownTimer);
-                    this.$delete(record, '__punkmongo_deleted__');
+                    clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
+                    this.$delete(record, this.DELETE_INFO_FIELD);
                     await this.prolongAllRestoreIds();
                 } else {
                     alert('Error restoring');
@@ -609,7 +614,7 @@ export default {
 
             const deletedRecords = [];
             for (let record of this.queryResult.records) {
-                if (record.__punkmongo_deleted__) {       
+                if (record[this.DELETE_INFO_FIELD]) {       
                     deletedRecords.push(record);
                 }
             }
@@ -618,7 +623,7 @@ export default {
                 'updateRestoreDocumentExpiration', 
                 {list: deletedRecords.map((item) => { 
                     return {
-                        restoreId: item.__punkmongo_deleted__.restoreId,
+                        restoreId: item[this.DELETE_INFO_FIELD].restoreId,
                         expireAfterSec: expireAfterSecExpireServer
                     }
                 })}
@@ -626,7 +631,7 @@ export default {
 
             if (response.success) {
                 for (let deletedRecord of deletedRecords) {
-                    deletedRecord.__punkmongo_deleted__.restoreCountdown = expireAfterSecExpireClient;
+                    deletedRecord[this.DELETE_INFO_FIELD].restoreCountdown = expireAfterSecExpireClient;
                 }
             }
         },
@@ -640,6 +645,14 @@ export default {
             }
             return projection;
         },
+        reloadResultsIfNoRecords() {
+            const nonDeletedRecords = this.queryResult.records.filter((record) => {
+                return (undefined == record[this.DELETE_INFO_FIELD]);
+            });
+            if (nonDeletedRecords.length === 0) {;
+                this.querySubmit();
+            }
+        }
     },
     mounted: async function() {        
 
