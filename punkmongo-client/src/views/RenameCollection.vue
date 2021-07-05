@@ -3,8 +3,8 @@
         <div class="page-header">
             <router-link :to="`/overview/databases`">Databases</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />
-            <router-link :to="`/db/${encodeURIComponent(dbName)}`">{{dbName}}</router-link>        
-            <font-awesome-icon icon="angle-right" class="arrow-separator" />Rename "<router-link :to="`/db/${encodeURIComponent(dbName)}/col/${collName}`" class="with-select">{{collName}}</router-link>" collection    
+            <router-link :to="{name: 'database', params: {dbName: dbName}}">{{dbName}}</router-link>        
+            <font-awesome-icon icon="angle-right" class="arrow-separator" />Rename "<router-link :to="{name: 'collection-manager', params: {dbName: dbName, collName: collName}}" class="with-select">{{collName}}</router-link>" collection    
         </div>
 
 

@@ -4,7 +4,7 @@
             <div v-show="activeDb.name != ''">
                 <router-link :to="`/overview/databases`">Databases</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
-                <router-link class="with-select" :to="`/db/${encodeURIComponent(activeDb.name)}`">{{activeDb.name}}</router-link>
+                <router-link class="with-select" :to="{name: 'database', params: {dbName: activeDb.name}}">{{activeDb.name}}</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator with-select" /><span class="with-select">{{activeDb.activeCollection.name}} </span>
                 <span class="lighter">({{numberWithCommas(getCollectionStats().objects)}})</span>
                 <span class="collection-tags">

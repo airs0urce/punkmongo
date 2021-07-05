@@ -56,7 +56,7 @@
                     <tr v-for="db in dbList">
                         <td>
                             <!-- {{db.name}} -->
-                            <router-link :to="'/db/' + encodeURIComponent(db.name)" >{{db.name}}</router-link>
+                            <router-link :to="{name: 'database', params: {dbName: db.name}}">{{db.name}}</router-link>
                         </td>
                         <td>{{db.stats.collections}}</td>
                         <td>{{db.stats.views}}</td>
@@ -65,7 +65,7 @@
                         <td>{{bytesFormatted(db.stats.indexSize)}}</td>
                         <td>{{numberWithCommas(db.stats.objects)}}</td>
                         <td class="td-delete">
-                            <router-link class="no-select btn-icon delete-icon" :to="`/db/${encodeURIComponent(db.name)}/delete`">
+                            <router-link class="no-select btn-icon delete-icon" :to="{name: 'delete-database', params: {dbName: db.name}}">
                                 <font-awesome-icon icon="trash-alt" /> 
                             </router-link>
                         </td>

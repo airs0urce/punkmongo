@@ -15,7 +15,7 @@
                                 'loading': showLoadingDb == db.name, 
                                 'router-link-exact-active': state.activeDb.name == db.name,
                             }"
-                            :to="'/db/' + encodeURIComponent(db.name)"
+                            :to="{name: 'database', params: {dbName: db.name}}"
                             @click.native="onDbLinkClicked"
                             >{{db.name}}</router-link>
                          ({{db.stats.collections}})
@@ -31,7 +31,7 @@
                                 <span :class="{'no-docs': !collection.stats.objects}"> ({{numberWithCommas(collection.stats.objects)}})</span>
                             </li>
                         </ul>
-                        <router-link class="new-collection no-select" :to="'/db/' + encodeURIComponent(state.activeDb.name) + '/new-collection'">New Collection</router-link>
+                        <router-link class="new-collection no-select" :to="{name: 'new-collection', params: {dbName: state.activeDb.name}}">New Collection</router-link>
                     </div>
                 </li>
             </ul>
