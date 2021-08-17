@@ -153,7 +153,7 @@
                                 :title="dbCollectionOptions.capped ? `Not supported for Capped collections`: ``"
                                 @click="refreshDocument(record)"><span>Refresh</span></a>
                         </span>                        
-                        <span class="separator" v-if="record.timestamp">
+                        <span class="separator no-select" v-if="record.timestamp">
                             <span title="Creation date from _id field" class="document-date" :class="{'border': dbCollectionOptions.capped}">
                                 {{moment(record.timestamp).format('YYYY-MM-DD')}}
                                 <span class="lighter">-</span>

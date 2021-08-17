@@ -718,7 +718,7 @@ a svg.light.svg-inline--fa {
 }
 
 table.zebra tr:nth-child(even) td {
-  background-color: #fffeede0;
+  background-color: #fffddee0;
 }
 .text-center {
     text-align: center;
