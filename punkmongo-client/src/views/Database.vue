@@ -45,8 +45,8 @@
                     <tr>
                         <th>Collection</th>
                         <th>Docs</th>
-                        <th>Data Size</th>
                         <th>Storage Size</th>
+                        <th>Data Size</th>
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
@@ -76,8 +76,8 @@
                             <router-link :to="{name: 'collection-manager', params: {dbName: activeDb.name, collName: collection.name}}">{{collection.name}}</router-link>
                         </td>
                         <td class="nowrap">{{numberWithCommas(collection.stats.objects)}}</td>
-                        <td class="nowrap">{{bytesFormatted(collection.stats.dataSize)}}</td>
                         <td class="nowrap">{{bytesFormatted(collection.stats.storageSize)}}</td>
+                        <td class="nowrap">{{bytesFormatted(collection.stats.dataSize)}}</td>
                         <td class="nowrap">{{bytesFormatted(collection.stats.avgObjSize)}}</td>
                         <td class="nowrap">{{numberWithCommas(collection.stats.indexesCount)}}</td>
                         <td class="nowrap">{{bytesFormatted(collection.stats.indexesSize)}}</td>
@@ -116,8 +116,8 @@
                     <tr>
                         <th>Collection</th>
                         <th>Docs</th>
-                        <th>Data Size</th>
                         <th>Storage Size</th>
+                        <th>Data Size</th>
                         <th>Avg Doc Size</th>
                         <th>Indexes</th>
                         <th>Indexes Size</th>
