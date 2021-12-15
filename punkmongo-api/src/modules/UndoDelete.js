@@ -1,4 +1,4 @@
-const DBFactory = require('./DBFactory');
+const Mongo = require('./Mongo');
 const SystemCollections = require('./SystemCollections');
 const mongodb = require('mongodb');
 const ObjectID = mongodb.ObjectID;
@@ -17,7 +17,7 @@ class UndoDelete {
 
         const coll = await SystemCollections.getUndoDelete();
 
-        const dbClient = await DBFactory.connectMongo();
+        const dbClient = await Mongo.getInstance();
         const docForBackup = await dbClient.db(dbName)
             .collection(collectionName)
             .findOne({ _id: ObjectID(id) });
@@ -56,7 +56,7 @@ class UndoDelete {
         const backup = await coll.findOne({_id: ObjectID(restoreId)})
 
         if (backup) {
-            const dbClient = await DBFactory.connectMongo();
+            const dbClient = await Mongo.getInstance();
             await dbClient.db(backup.dbName).collection(backup.collectionName).insertOne(backup.document);
             await coll.deleteOne({ _id: backup._id })
             return true;

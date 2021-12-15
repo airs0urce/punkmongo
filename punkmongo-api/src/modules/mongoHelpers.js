@@ -1,10 +1,10 @@
-const DBFactory = require('./DBFactory');
+const Mongo = require('./Mongo');
 const _ = require('lodash');
 
 
 class mongoHelpers {
     static async validateDatabaseName(dbName) {
-        const dbClient = await DBFactory.connectMongo();
+        const dbClient = await Mongo.getInstance();
         try {
             const res = await dbClient.db(dbName).stats();
         } catch (e) {
@@ -29,7 +29,7 @@ class mongoHelpers {
     }
 
     static async validateCollectionName(dbName, collName) {
-        const dbClient = await DBFactory.connectMongo();       
+        const dbClient = await Mongo.getInstance();
         
         try {
             dbClient.db(dbName).collection(collName);
@@ -47,7 +47,7 @@ class mongoHelpers {
     }
 
     static async checkCanCreateCollection(dbName, collectionName) {
-        const dbClient = await DBFactory.connectMongo();
+        const dbClient = await Mongo.getInstance();
 
         const result = {
             canCreate: true,
@@ -84,7 +84,7 @@ class mongoHelpers {
     }
 
     static async checkCanCreateDatabase(dbName) {
-        const dbClient = await DBFactory.connectMongo();
+        const dbClient = await Mongo.getInstance();
         
         const result = {
             canCreate: true,
@@ -129,7 +129,7 @@ class mongoHelpers {
     }
 
     static async doesCollectionExist(dbName, collectionName) {
-        const dbClient = await DBFactory.connectMongo();
+        const dbClient = await Mongo.getInstance();
         const db = dbClient.db(dbName);
         const cursor = await db.listCollections({name: collectionName}, {nameOnly: true});
         const collection = await cursor.next();

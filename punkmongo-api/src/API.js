@@ -3,7 +3,7 @@ const parse = require('co-body');
 const cors = require('koa2-cors');
 const koaRouter = require('koa-router');
 const config = require('./../../config');
-const DBFactory = require('./modules/DBFactory');
+const Mongo = require('./modules/Mongo');
 const fs = require('mz/fs');
 const a = require('awaiting');
 const ApiError = require('./errors/ApiError');
@@ -13,7 +13,7 @@ const app = new Koa();
 const router = new koaRouter();
 
 (async () => {  
-    const dbClient = await DBFactory.connectMongo();
+    const dbClient = await Mongo.getInstance();
 
     /**
     *    JSON API

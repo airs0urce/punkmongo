@@ -7,6 +7,9 @@
     "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+    "node": ">= 14.0.0"
+  },
   "author": "airs0urce",
   "license": "ISC",
   "dependencies": {
@@ -16,7 +19,7 @@
     "ejson": "^2.2.1",
     "ejson-shell-parser": "1.1.1",
     "faye-websocket": "^0.11.4",
-    "javascript-stringify": "github:airs0urce/javascript-stringify",
+    "javascript-stringify": "2.1.0",
     "koa": "^2.13.1",
     "koa-router": "^10.0.0",
     "koa2-cors": "^2.0.6",
@@ -24,7 +27,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "mongo-parse": "^2.1.0",
-    "mongodb": "^3.6.9",
+    "mongodb": "^4.2.2",
     "mongodb-extended-json": "^1.11.0",
     "mongodb-language-model": "^2.2.0",
     "mongodb-query-parser": "^2.4.2",
