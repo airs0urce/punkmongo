@@ -1,12 +1,13 @@
 const Mongo = require('./Mongo');
 const _ = require('lodash');
+const EJSON = require('bson').EJSON;
 
 
 class mongoHelpers {
     static async validateDatabaseName(dbName) {
-        const dbClient = await Mongo.getInstance();
+        const mongoClient = await Mongo.getInstance();
         try {
-            const res = await dbClient.db(dbName).stats();
+            const res = await mongoClient.db(dbName).stats();
         } catch (e) {
             if (e.codeName == 'InvalidNamespace') {
                 return {
@@ -29,10 +30,10 @@ class mongoHelpers {
     }
 
     static async validateCollectionName(dbName, collName) {
-        const dbClient = await Mongo.getInstance();
+        const mongoClient = await Mongo.getInstance();
         
         try {
-            dbClient.db(dbName).collection(collName);
+            mongoClient.db(dbName).collection(collName);
         } catch (e) {
             return {
                 val: false,
@@ -47,7 +48,7 @@ class mongoHelpers {
     }
 
     static async checkCanCreateCollection(dbName, collectionName) {
-        const dbClient = await Mongo.getInstance();
+        const mongoClient = await Mongo.getInstance();
 
         const result = {
             canCreate: true,
@@ -84,7 +85,7 @@ class mongoHelpers {
     }
 
     static async checkCanCreateDatabase(dbName) {
-        const dbClient = await Mongo.getInstance();
+        const mongoClient = await Mongo.getInstance();
         
         const result = {
             canCreate: true,
@@ -101,7 +102,7 @@ class mongoHelpers {
         }
 
         // check if database already exists
-        const queryResult = await dbClient.db('admin').admin().listDatabases();
+        const queryResult = await mongoClient.db('admin').admin().listDatabases();
         const databases = queryResult.databases.map(db => db.name);
         
         for (let database of databases) {
@@ -129,8 +130,8 @@ class mongoHelpers {
     }
 
     static async doesCollectionExist(dbName, collectionName) {
-        const dbClient = await Mongo.getInstance();
-        const db = dbClient.db(dbName);
+        const mongoClient = await Mongo.getInstance();
+        const db = mongoClient.db(dbName);
         const cursor = await db.listCollections({name: collectionName}, {nameOnly: true});
         const collection = await cursor.next();
         cursor.close();
@@ -178,6 +179,14 @@ class mongoHelpers {
         return newProjection;
     }
 
+    static stringify(obj) {
+        return EJSON.stringify(obj, {relaxed: false});
+    } 
+
+    static parse(string) {
+        const object = EJSON.parse(string, {relaxed: false});
+        return object;
+    }
 }
 
 

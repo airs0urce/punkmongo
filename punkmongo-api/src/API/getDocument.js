@@ -17,8 +17,8 @@ params = {
 }
 */
 
-module.exports = async function (params, dbClient) {  
-    const collection = dbClient.db(params.db).collection(params.collection);
+module.exports = async function (params, mongoClient) {  
+    const collection = mongoClient.db(params.db).collection(params.collection);
 
     const options = {};
     if (params.projection) {
@@ -29,10 +29,15 @@ module.exports = async function (params, dbClient) {
         );
     }
     
-    const record = await collection.findOne({_id: ObjectID(params._id)}, options);
+    const docId = mongoHelpers.parse(params._id);
 
+    const record = await collection.findOne({_id: docId}, options);
 
-    const recordId = (record._id ? record._id.toString(): null)
+    if (! record) {
+        throw new ApiError(`Record with ID "${docId}" doesn't exist in "${params.collection}" collection anymore`, 1);
+    }
+
+    const recordId = (record._id ? record._id: null)
     
     let timestamp = false;
     if (ObjectID.isValid(record._id)) {
@@ -43,11 +48,11 @@ module.exports = async function (params, dbClient) {
         delete record._id;        
     }
     
-    const doc = {
-        id: recordId,
-        timestamp: timestamp,
-        doc: mongoDocToString(record),
-    }
-    
-    return {document: doc}
+    return {
+        document: {
+            id: mongoHelpers.stringify(recordId),
+            timestamp: timestamp,
+            doc: mongoDocToString(record),
+        }
+    };
 }

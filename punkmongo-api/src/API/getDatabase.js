@@ -1,8 +1,8 @@
 
 const a = require('awaiting');
 
-module.exports = async function (params, dbClient) {  
-    const db = dbClient.db(params.db);
+module.exports = async function (params, mongoClient) {  
+    const db = mongoClient.db(params.db);
 
     const cursor = await db.listCollections({}, {});
     let collection;

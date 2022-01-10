@@ -4,8 +4,8 @@ const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
 const { EJSON } = require('bson');
 
-module.exports = async function (params, dbClient) {  
-    const db = dbClient.db(params.db);
+module.exports = async function (params, mongoClient) {  
+    const db = mongoClient.db(params.db);
 
     // get full collections list
     const cursor = await db.listCollections({}, {nameOnly: true});

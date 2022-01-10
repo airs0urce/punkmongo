@@ -27,8 +27,8 @@ const a = require('awaiting')
 }
 
 */
-module.exports = async function (params, dbClient) {  
-    const collection = dbClient.db(params.db).collection(params.collection);
+module.exports = async function (params, mongoClient) {  
+    const collection = mongoClient.db(params.db).collection(params.collection);
 
     let resultDocumentsTotal;
     let pagesTotal;
@@ -82,12 +82,7 @@ module.exports = async function (params, dbClient) {
             timestamp = moment(ObjectID(record._id).getTimestamp()).unix();
         }
 
-        let uniqueRecordId = (record['_id'] ? record['_id'].toString(): null);
-        if (!uniqueRecordId) {
-            // use document index
-            uniqueRecordId = `${params.query.pagination.pageNumber}-${recordIndex++}`;
-        }
-
+        const docId = mongoHelpers.stringify(record._id);
 
         if (0 === params.query.options.projection['_id']) {
             // it means client asked to remove "_id" in projection, 
@@ -98,7 +93,7 @@ module.exports = async function (params, dbClient) {
         }
 
         const docItem = {
-            id: uniqueRecordId,
+            id: docId,
             timestamp: timestamp,
             doc: mongoDocToString(record),
         }

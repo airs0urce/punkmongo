@@ -12,7 +12,10 @@ params = {
 }
 */
 
-module.exports = async function (params, dbClient) {  
-    const restored = await UndoDelete.restore(params.restoreId);    
-    return {restored: restored}
+module.exports = async function (params, mongoClient) {  
+    const restored = await UndoDelete.restore(params.restoreId);
+    
+    if (! restored) {
+        throw new ApiError(`Backup record for this document has expired and deleted`, 1);
+    }
 }

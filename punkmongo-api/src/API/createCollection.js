@@ -38,18 +38,18 @@ const availableCollationOptions = [
     'maxVariable', 'backwards'
 ];
 
-module.exports = async function (params, dbClient) {  
-    const db = dbClient.db(params.db);
+module.exports = async function (params, mongoClient) {  
+    const db = mongoClient.db(params.db);
 
     let checkResult;
 
-    const dbListResult = await dbClient.db('admin').admin().listDatabases();
+    const dbListResult = await mongoClient.db('admin').admin().listDatabases();
     const dbAlreadyExists = !!(dbListResult.databases.find((database) => {
         return database.name === params.db;
     }));
 
     if (!dbAlreadyExists) {
-        checkResult = await checkCanCreateDatabase({db: params.db}, dbClient);
+        checkResult = await checkCanCreateDatabase({db: params.db}, mongoClient);
         if (!checkResult.canCreate) {
             throw new ApiError(checkResult.reason, 1);
         }

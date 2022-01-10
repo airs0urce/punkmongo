@@ -1,13 +1,13 @@
 const a = require('awaiting');
 
-module.exports = async function (params, dbClient) {
-    const result = await dbClient.db('admin').admin().listDatabases();
+module.exports = async function (params, mongoClient) {
+    const result = await mongoClient.db('admin').admin().listDatabases();
 
     let i;
 
     const getStatsPromises = [];
     for (i = 0; i < result.databases.length; i++) {
-        getStatsPromises.push(dbClient.db(result.databases[i].name).stats())
+        getStatsPromises.push(mongoClient.db(result.databases[i].name).stats())
     }
 
     const getStatsResults = await Promise.all(getStatsPromises);

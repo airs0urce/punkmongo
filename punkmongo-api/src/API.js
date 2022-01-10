@@ -13,7 +13,7 @@ const app = new Koa();
 const router = new koaRouter();
 
 (async () => {  
-    const dbClient = await Mongo.getInstance();
+    const mongoClient = await Mongo.getInstance();
 
     /**
     *    JSON API
@@ -47,7 +47,7 @@ const router = new koaRouter();
             if (! apiMethods[ctx.params.method_name]) {
                 throw new ApiError(`Method "${ctx.params.method_name}" doesn't exist`, 101);
             } else {
-                const result = await apiMethods[ctx.params.method_name](body.params, dbClient);
+                const result = await apiMethods[ctx.params.method_name](body.params, mongoClient);
                 ctx.body = {
                     id: body.id,
                     success: true,
@@ -56,14 +56,21 @@ const router = new koaRouter();
             }
             
         } catch (e) {
+            const errorCode = e.code || 101;
+
+            const errorObject = {
+                message: (errorCode >= 100 ? stackTrace(e): e.message),
+                code: errorCode
+            }
+
             const response = {
                 id: null,
                 success: false,
-                error: {
-                    message: stackTrace(e),
-                    code: e.code || 101
-                },
+                error: errorObject,
             };
+
+            console.error(errorObject);
+
             ctx.body = response;
         }
 

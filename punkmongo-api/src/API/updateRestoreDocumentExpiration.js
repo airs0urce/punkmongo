@@ -15,7 +15,7 @@ params = {
 }
 */
 
-module.exports = async function (params, dbClient) {  
+module.exports = async function (params, mongoClient) {  
     const promises = [];
     for (let item of params.list) {
         promises.push(UndoDelete.updateExpiration(item.restoreId, item.expireAfterSec));

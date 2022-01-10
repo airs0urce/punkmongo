@@ -1,7 +1,7 @@
 const a = require('awaiting');
 
-module.exports = async function (params, dbClient) {  
-    const db = dbClient.db('admin');
+module.exports = async function (params, mongoClient) {  
+    const db = mongoClient.db('admin');
     const admin = db.admin();
 
     const serverStatus = await admin.serverStatus();

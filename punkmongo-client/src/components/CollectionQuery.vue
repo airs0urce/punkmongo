@@ -539,13 +539,14 @@ export default {
                 projection: this.parseProjection()
             });
 
-            if (response.success) {
-                const doc = response.result.document;
-                record.doc = doc.doc;
-                record.id = doc.id;
-                record.timestamp = doc.timestamp;
+            if (! response.success) {
+                alert(response.error.message);
+                return;
             }
-
+            const doc = response.result.document;
+            record.doc = doc.doc;
+            record.id = doc.id;
+            record.timestamp = doc.timestamp;
         },
         async deleteDocument(record, index) {
             if (this.dbCollectionOptions.capped) {
@@ -559,54 +560,57 @@ export default {
                 _id: record.id,
             });
 
-            if (response.success) {
-                await this.prolongAllRestoreIds();
-
-                
-                this.$set(record, this.DELETE_INFO_FIELD, {
-                    restoreId: response.result.restoreId,
-                    restoreCountdown: 5,
-                    restoreCountdownTimer: setInterval(() => {
-               
-                        record[this.DELETE_INFO_FIELD].restoreCountdown -= 1;
-                        if (record[this.DELETE_INFO_FIELD].restoreCountdown === 0) {
-                            clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
-
-                            const deleteAnim = gsap.timeline({
-                                onComplete: () => {
-                                    this.reloadResultsIfNoRecords();
-                                }
-                            });
-                            deleteAnim.to(
-                                this.$refs.documents[index], 
-                                {xPercent: 120, duration: 0.3}
-                            );
-                            deleteAnim.to(
-                                this.$refs.documents[index], 
-                                {height: '0', marginBottom: '0', border: '0px',duration: 0.3},
-                                '>'
-                            );                        
-                        }
-                    }, 1000)
-                });
-
+            if (! response.success) {
+                alert(response.error.message);
+                return;
             }
+            await this.prolongAllRestoreIds();
+
+            
+            this.$set(record, this.DELETE_INFO_FIELD, {
+                restoreId: response.result.restoreId,
+                restoreCountdown: 5,
+                restoreCountdownTimer: setInterval(() => {
+           
+                    record[this.DELETE_INFO_FIELD].restoreCountdown -= 1;
+                    if (record[this.DELETE_INFO_FIELD].restoreCountdown === 0) {
+                        clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
+
+                        const deleteAnim = gsap.timeline({
+                            onComplete: () => {
+                                this.reloadResultsIfNoRecords();
+                            }
+                        });
+                        deleteAnim.to(
+                            this.$refs.documents[index], 
+                            {xPercent: 120, duration: 0.3}
+                        );
+                        deleteAnim.to(
+                            this.$refs.documents[index], 
+                            {height: '0', marginBottom: '0', border: '0px',duration: 0.3},
+                            '>'
+                        );                        
+                    }
+                }, 1000)
+            });
+
+
+            console.log(record);
+
         },
         async restoreDocument(record) {
             const response = await api.request('restoreDocument', {
                 restoreId: record[this.DELETE_INFO_FIELD].restoreId
             });            
 
-            if (response.success) {
-                if (response.result.restored) {
-                    clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
-                    this.$delete(record, this.DELETE_INFO_FIELD);
-                    await this.prolongAllRestoreIds();
-                } else {
-                    alert('Error restoring');
-                }
-                
+            if (! response.success) {
+                alert(response.error.message);
+                return;
             }
+
+            clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
+            this.$delete(record, this.DELETE_INFO_FIELD);
+            await this.prolongAllRestoreIds();
         },
         async prolongAllRestoreIds() {
             const expireAfterSecExpireServer = 10;

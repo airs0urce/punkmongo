@@ -8,8 +8,8 @@ params = {
 }
 */
 
-module.exports = async function (params, dbClient) {  
-    const db = dbClient.db(params.db);
+module.exports = async function (params, mongoClient) {  
+    const db = mongoClient.db(params.db);
     await db.dropDatabase();
     return {}
 }

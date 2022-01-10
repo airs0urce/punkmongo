@@ -9,8 +9,8 @@ params = {
 }
 */
 
-module.exports = async function (params, dbClient) {  
-    const collection = dbClient.db(params.db).collection(params.collection);
+module.exports = async function (params, mongoClient) {  
+    const collection = mongoClient.db(params.db).collection(params.collection);
     await collection.drop();
     
     return {}
