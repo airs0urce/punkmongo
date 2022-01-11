@@ -5,8 +5,8 @@ module.exports = async function (params, mongoClient) {
     const admin = db.admin();
 
     const serverStatus = await admin.serverStatus();
-    const getCmdLineOpts = await db.executeDbAdminCommand({getCmdLineOpts: 1});
-    const hostInfo = await db.executeDbAdminCommand({hostInfo: 1});
+    const getCmdLineOpts = await db.command({getCmdLineOpts: 1});
+    const hostInfo = await db.command({hostInfo: 1});
 
 
     const result = {

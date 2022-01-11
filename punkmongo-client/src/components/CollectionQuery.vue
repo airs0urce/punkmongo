@@ -293,6 +293,7 @@ export default {
             if (newVal != oldVal) {
                 this.resetQueryForm()
                 this.resetPagination();
+                this.resetRestoreCountdowns()
                 this.$store.commit(mutations.RESET_COLLECTION_QUERY_RESULT);
                 this.querySubmit()
                 this.$refs.filterTextInput.$el.focus()
@@ -379,12 +380,6 @@ export default {
                 query: query
             });
 
-            for (let record of this.queryResult.records) {
-                if (record[this.DELETE_INFO_FIELD]) {
-                    clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
-                }
-            }
-
             if (response.success) {
                 this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
                     collName: this.activeDb.activeCollection.name,
@@ -403,7 +398,16 @@ export default {
             } else {
                 this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
                     collName: this.activeDb.activeCollection.name,
-                    result: {...defaultQueryResult, error: response.error}
+                    result: {
+                        error: response.error,
+                        initialLoadFinished: true,
+                        collectionDocumentsTotal: 0,
+                        resultDocumentsTotal: 0,
+                        explain: {},
+                        pageNumber: 1,
+                        pagesTotal: 1,
+                        records: [],
+                    }
                 });
             }
 
@@ -445,6 +449,14 @@ export default {
             this.paginationPageSize = 10;
             this.pageLoading = false;
         },
+        resetRestoreCountdowns() {
+            // disable all restore coundowns
+            for (let record of this.queryResult.records) {
+                if (record[this.DELETE_INFO_FIELD]) {
+                    clearInterval(record[this.DELETE_INFO_FIELD].restoreCountdownTimer);
+                }
+            }
+        },  
         highlight(code) {
             return Prism.highlight(code, Prism.languages['mongodb-document'], 'mongodb-document')
             // return await this.worker.postMessage('highlightMongoDocument', [code]);
@@ -593,10 +605,6 @@ export default {
                     }
                 }, 1000)
             });
-
-
-            console.log(record);
-
         },
         async restoreDocument(record) {
             const response = await api.request('restoreDocument', {
@@ -688,9 +696,8 @@ export default {
     },
     destroyed: async function() {
         eventBus.$off('databaseNavigation:collection-mousedown');
-        this.worker.unregister(['highlightMongoDocument'])
-    }
-
+        this.worker.unregister(['highlightMongoDocument']);
+    },
 }
 
 function getDefaultData() {

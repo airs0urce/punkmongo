@@ -27,7 +27,7 @@
             
         </ul>
         
-        <CollectionQuery v-if="$route.name == 'collection-manager-query'" />
+        <CollectionQuery v-if="$route.name == 'collection-manager-query'" ref="componentCollectionQuery" />
         <CollectionInsert v-if="$route.name == 'collection-manager-insert'"/>
         <CollectionAggregate v-if="$route.name == 'collection-manager-aggregate'"/>
         <CollectionIndexes v-if="$route.name == 'collection-manager-indexes'" />    
@@ -119,6 +119,10 @@ export default {
                 this.setActiveCollection();
             }
         }
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.$refs.componentCollectionQuery.resetRestoreCountdowns()
+        next()
     },
 }
 </script>
