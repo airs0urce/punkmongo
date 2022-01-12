@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="page-header no-select">
+        <h1 class="page-header no-select" :style="{'min-width': `calc(100% - ${$store.state.persistent.resizerPosition}px - 0.7rem)`}">
             <div v-show="activeDb.name != ''">
                 <router-link :to="`/overview/databases`">Databases</router-link>
                 <font-awesome-icon icon="angle-right" class="arrow-separator" /> 
@@ -128,11 +128,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.page-header {
+    transform: translate(-1rem, -1rem);
+    background-color: #fff;
+    z-index: 10;
+    position: fixed;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
 .tabs {
     list-style: none;
     display: flex;
     padding-left: 0;
     border-bottom: 1px solid #e2e2e2;
+
+    padding-top: 3.4rem;
 
     a {
         cursor: default;
