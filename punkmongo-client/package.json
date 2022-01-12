@@ -18,7 +18,7 @@
     "awaiting": "3.0.0",
     "axios": "0.24.0",
     "bson": "4.6.1",
-    "codejar": "3.5.0",
+    "codejar": "3.2.2",
     "core-js": "3.19.3",
     "gsap": "3.8.0",
     "human-size": "1.1.0",

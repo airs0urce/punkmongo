@@ -435,7 +435,8 @@ select {
     white-space: nowrap !important;
     border: 1px solid #ddd;
     background: #fff;
-    font-family: Courier;
+    font-family: 'Courier New';
+    font-weight: bold;
     font-size: 1.1em;
     line-height: 1.3rem;
     padding-left: 2px;
