@@ -8,12 +8,24 @@ module.exports = async function (params, mongoClient) {
     let collection;
     let collections = [];
     while (collection = await cursor.next()) {
-        const indexes = await db.collection(collection.name).indexes();
-        collections.push({
+        const coll = {
             name: collection.name,
             options: collection.options,
-            indexes: indexes
-        });
+            indexes: []
+        }
+
+        switch (collection.type) {
+            case 'collection': {
+                const indexes = await db.collection(collection.name).indexes();
+                coll.indexes = indexes;
+                break;
+            }
+            case 'view': {
+                break;
+            }
+        }
+
+        collections.push(coll);
     }
     collections.sort((a, b) => {
         if (a.name < b.name) {

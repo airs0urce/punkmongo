@@ -23,12 +23,13 @@
 
                     <div v-if="state.activeDb.name == db.name">
                         <ul class="left-panel-collections">
-                            <li v-for="collection in state.activeDb.collections">
+                            <li v-for="collection in state.activeDb.collections" :class="{'view': collection.options.viewOn}">
                                 <router-link 
                                     :to="{name: 'collection-manager', params: {dbName: state.activeDb.name, collName: collection.name}}"
                                     @mousedown.native="onCollectionLinkMouseDown(collection.name)"
                                     >{{collection.name}}</router-link>
-                                <span :class="{'no-docs': !collection.stats.objects}"> ({{numberWithCommas(collection.stats.objects)}})</span>
+                                <span v-if="!collection.options.viewOn" :class="{'no-docs': !collection.stats.objects}"> ({{numberWithCommas(collection.stats.objects)}})</span>
+                                <span v-if="collection.options.viewOn" class="no-docs"> (on: {{collection.options.viewOn}})</span>
                             </li>
                         </ul>
                         <router-link class="new-collection no-select" :to="{name: 'new-collection', params: {dbName: state.activeDb.name}}">New Collection</router-link>
@@ -231,7 +232,11 @@ ul.left-panel-collections {
         background: url("../assets/imgs/collection.png") no-repeat;
         background-size: 14px;
         margin-bottom: 0;
+        &.view {
+            background: url("../assets/imgs/view.png") no-repeat;
+        }
     }
+    
 }
 
 .loading-animation {

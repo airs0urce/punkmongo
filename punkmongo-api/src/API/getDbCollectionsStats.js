@@ -8,23 +8,30 @@ module.exports = async function (params, mongoClient) {
     const db = mongoClient.db(params.db);
 
     // get full collections list
-    const cursor = await db.listCollections({}, {nameOnly: true});
+    const cursor = await db.listCollections({});
     let collection;
     const collections = [];
     while (collection = await cursor.next()) {
-        collections.push(collection.name);
+        collections.push({
+            name: collection.name,
+            type: collection.type
+        });
     }
-    collections.sort();
+    collections.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
 
     // get stats for the collections
-    let collectionsStats = await Promise.all(collections.map((colName) => {
-        return db.collection(colName).stats();
+    let collectionsStats = await Promise.all(collections.map((colItem) => {
+        if (colItem.type === 'collection') {
+            return db.collection(colItem.name).stats();
+        } else {
+            return {};
+        }
     }));
 
     const response = {};
     for (let i = 0; i < collections.length; i++) {
-        const colName = collections[i];
+        const colName = collections[i].name;
         const stats = collectionsStats[i];
         response[colName] = {
             objects: stats.count,

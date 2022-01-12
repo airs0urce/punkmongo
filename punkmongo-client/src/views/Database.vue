@@ -177,6 +177,10 @@ export default {
             let total = 0;
             const dbList = this.$store.state.persistent.dbList;
             for (let collection of this.activeDb.collections) {
+                if (collection.options.viewOn) {
+                    // skip views
+                    continue;
+                }
                 total += collection.stats[field];
             }
             if (isNaN(total)) {
