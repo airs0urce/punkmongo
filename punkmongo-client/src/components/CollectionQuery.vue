@@ -380,6 +380,8 @@ export default {
                 query: query
             });
 
+            this.resetRestoreCountdowns();
+
             if (response.success) {
                 this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
                     collName: this.activeDb.activeCollection.name,
