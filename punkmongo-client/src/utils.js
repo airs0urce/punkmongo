@@ -1,3 +1,7 @@
+function noMinus(value) {
+    return value.toString().replace('-', '');
+}
+
 export default {
     bytesFormatted: function(bytes, forceUnit, toFixed = 2, space = true) {
         if (space) {
@@ -12,25 +16,25 @@ export default {
         if (forceUnit) {
             switch (forceUnit) {
                 case 'KB':
-                    return (bytes / 1024).toFixed(toFixed) + space + 'KB'
+                    return noMinus((bytes / 1024).toFixed(toFixed)) + space + 'KB'
                 case 'MB':
-                    return (bytes / 1024 / 1024).toFixed(toFixed) + space + 'MB'
+                    return noMinus((bytes / 1024 / 1024).toFixed(toFixed)) + space + 'MB'
                 case 'GB':
-                    return (bytes / 1024 / 1024 / 1024).toFixed(toFixed) + space + 'GB'
+                    return noMinus((bytes / 1024 / 1024 / 1024).toFixed(toFixed)) + space + 'GB'
                 case 'TB':
-                    return (bytes / 1024 / 1024 / 1024 / 1024).toFixed(toFixed) + space + 'TB'
+                    return noMinus((bytes / 1024 / 1024 / 1024 / 1024).toFixed(toFixed)) + space + 'TB'
             }
         }
 
         if (bytes <= 1073741824) { // less than 1GB
             // show in MB
-            return (bytes / 1024 / 1024).toFixed(toFixed) + space + 'MB';
+            return noMinus((bytes / 1024 / 1024).toFixed(toFixed)) + space + 'MB';
         } else if (bytes <= 1099511627776) { // less than 1TB
             // show in GB
-            return (bytes / 1024 / 1024 / 1024).toFixed(toFixed) + space + 'GB';
+            return noMinus((bytes / 1024 / 1024 / 1024).toFixed(toFixed)) + space + 'GB';
         } else {
             // show in TB
-            return (bytes / 1024 / 1024 / 1024 / 1024).toFixed(toFixed) + space + 'TB';
+            return noMinus((bytes / 1024 / 1024 / 1024 / 1024).toFixed(toFixed)) + space + 'TB';
         }
     },
     numberWithCommas: function(x) {
