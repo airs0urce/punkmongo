@@ -139,8 +139,8 @@
                             <span class="document-num">#{{getResultRecordNumber(index)}}</span>
                             <a class="padding"
                                 :title="dbCollectionOptions.capped ? `Not supported for Capped collections`: ``"
-                                @click="updateDocument()"
-                                :class="{'lighter': dbCollectionOptions.capped}" ><span>Update</span></a>
+                                @click="editDocument()"
+                                :class="{'lighter': dbCollectionOptions.capped}" ><span>Edit</span></a>
                             
                             <a class="padding" 
                                 :class="{'lighter': dbCollectionOptions.capped}" 
@@ -169,7 +169,10 @@
                         </span>
 
                         <span class="doc-actions no-select clipboard">
-                            <a class="padding" @click.prevent="copyToClipboard(record.doc)"><span>Copy to clipboard</span></a>
+                            <a class="padding" @click.prevent="copyToClipboard(record)" style="min-width: 9.5em;">
+                                <span v-if="!record._showCopiedMsg">Copy to clipboard</span>
+                                <span v-if="record._showCopiedMsg" class="copied-msg">Copied!</span>
+                            </a>
                         </span>
                     </span>
                 </div>
@@ -469,8 +472,14 @@ export default {
         copyToClipboardAll() {
             ;
         },
-        copyToClipboard(record) {
-            utils.copyToClipboard(record);
+        async copyToClipboard(record) {
+            if (record._showCopiedMsg) {
+                return;
+            }
+            utils.copyToClipboard(record.doc);
+            this.$set(record, '_showCopiedMsg', true);
+            await a.delay(1000);
+            this.$delete(record, '_showCopiedMsg');
         },
         resetLimit() {
             this.query.limit = 0
@@ -534,7 +543,7 @@ export default {
             this.$set(doc, 'expand', false);
         },
         moment: moment,
-        async updateDocument() {
+        async editDocument() {
             if (this.dbCollectionOptions.capped) {
                 alert(`Not supported for Capped collections`);
                 return;
@@ -968,6 +977,11 @@ div.document {
 }
 .query-results {
     overflow: hidden;
+}
+
+.copied-msg {
+    color: #000;
+    cursor: default;
 }
 
 </style>
