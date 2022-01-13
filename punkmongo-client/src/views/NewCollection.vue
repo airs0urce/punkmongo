@@ -24,12 +24,12 @@
                 <a href="https://docs.mongodb.com/manual/core/capped-collections/" target="_blank">
                     <font-awesome-icon icon="question-circle" class="icon-help" /> 
                 </a>
-                <div v-if="errors.cappedNotSet" class="local-error-text">You have to set either "Max size" or "Max number of documents" for capped collection</div>
             </div>
             <div v-if="cappedCollection">
                 <div class="form-row-padding">
-                    <label class="field-name" for="max-size">Max size:</label>
-                    <input type="number" step="1" id="max-size" v-model.number="cappedCollectionSize" :class="{'empty-value': '' === cappedCollectionSize}" /> MB
+                    <label class="field-name" for="max-size">Max size (required):</label>
+                    <input type="number" step="1" id="max-size" v-model.number="cappedCollectionSize"/> MB
+                    <div v-if="errors.cappedNotSet" class="local-error-text">You have to set "Max size" for capped collection</div>
                 </div>   
                 <div class="form-row-padding">
                     <label class="field-name" for="max-docs-num">Max number of documents:</label>
@@ -186,7 +186,7 @@ export default {
         selectedDatabaseExists() {
             let exists = false;
             for (let db of this.$store.state.persistent.dbList) {
-                if (db.name == this.$store.state.activeDb.name) {
+                if (db.name == this.dbName) {
                     exists = true;
                     break;
                 }
