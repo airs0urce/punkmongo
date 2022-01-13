@@ -675,12 +675,6 @@ button .svg-inline--fa {
     margin-right: 0.2em;
 }
 
-.empty-value,
-.empty-value /deep/ input {
-    background-color: #eee !important;
-    color: #aaa;
-}
-
 .reset-btn {
     margin-left: 0.5em;
     color: #888;

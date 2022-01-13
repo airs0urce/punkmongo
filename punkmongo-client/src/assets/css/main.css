@@ -1,3 +1,9 @@
 * {
   box-sizing: border-box;
 }
+
+.empty-value,
+.empty-value input {
+    background-color: #eee !important;
+    color: #aaa;
+}
