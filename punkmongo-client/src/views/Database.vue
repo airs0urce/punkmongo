@@ -75,36 +75,43 @@
                         <td class="nowrap">
                             <router-link :to="{name: 'collection-manager', params: {dbName: activeDb.name, collName: collection.name}}">{{collection.name}}</router-link>
                         </td>
-                        <td class="nowrap">{{numberWithCommas(collection.stats.objects)}}</td>
-                        <td class="nowrap">{{bytesFormatted(collection.stats.storageSize)}}</td>
-                        <td class="nowrap">{{bytesFormatted(collection.stats.dataSize)}}</td>
-                        <td class="nowrap">{{bytesFormatted(collection.stats.avgObjSize)}}</td>
-                        <td class="nowrap">{{numberWithCommas(collection.stats.indexesCount)}}</td>
-                        <td class="nowrap">{{bytesFormatted(collection.stats.indexesSize)}}</td>
-                        <td class="nowrap center minimal-padding">
-                            <TagCapped class="first" :collectionOptions="collection.options" 
-                                :showInfoInline="false" 
-                                :fixedWidth="true" 
-                                :detailsOnLeft="true"
-                            />
-                            <TagCollation :collectionOptions="collection.options" 
-                                :hideDetailsAnimation="false" 
-                                :hideDetailsDelay="100" 
-                                :fixedWidth="true" 
-                                :detailsOnLeft="true"
-                            />
-                            <TagTtl :ttlIndexes="ttlIndexes[collection.name]"
-                                :hideDetailsAnimation="false" 
-                                :hideDetailsDelay="100" 
-                                :fixedWidth="true" 
-                                :detailsOnLeft="true"
-                            />
-                        </td>
-                        <td class="td-rename" title="rename collection">
-                            <router-link class="no-select btn-icon" :to="{ name: 'rename-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
-                                <font-awesome-icon icon="pen" class="light" />
-                            </router-link>
-                        </td>
+                        
+                        <template v-if="!collection.options.viewOn">
+                            <td class="nowrap">{{numberWithCommas(collection.stats.objects)}}</td>
+                            <td class="nowrap">{{bytesFormatted(collection.stats.storageSize)}}</td>
+                            <td class="nowrap">{{bytesFormatted(collection.stats.dataSize)}}</td>
+                            <td class="nowrap">{{bytesFormatted(collection.stats.avgObjSize)}}</td>
+                            <td class="nowrap">{{numberWithCommas(collection.stats.indexesCount)}}</td>
+                            <td class="nowrap">{{bytesFormatted(collection.stats.indexesSize)}}</td>
+                            <td class="nowrap center minimal-padding">
+                                <TagCapped class="first" :collectionOptions="collection.options" 
+                                    :showInfoInline="false" 
+                                    :fixedWidth="true" 
+                                    :detailsOnLeft="true"
+                                />
+                                <TagCollation :collectionOptions="collection.options" 
+                                    :hideDetailsAnimation="false" 
+                                    :hideDetailsDelay="100" 
+                                    :fixedWidth="true" 
+                                    :detailsOnLeft="true"
+                                />
+                                <TagTtl :ttlIndexes="ttlIndexes[collection.name]"
+                                    :hideDetailsAnimation="false" 
+                                    :hideDetailsDelay="100" 
+                                    :fixedWidth="true" 
+                                    :detailsOnLeft="true"
+                                />
+                            </td>
+                            <td class="td-rename" title="rename collection">
+                                <router-link class="no-select btn-icon" :to="{ name: 'rename-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
+                                    <font-awesome-icon icon="pen" class="light" />
+                                </router-link>
+                            </td>
+                        </template>
+                        <template v-if="collection.options.viewOn">
+                            <td colspan="8">This is a view on <strong>{{collection.options.viewOn}}</strong></td>
+                        </template>
+
                         <td class="td-delete" title="delete collection">
                             <router-link class="no-select btn-icon delete-icon" :to="{ name: 'delete-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
                                 <font-awesome-icon icon="trash-alt" /> 
