@@ -1,9 +1,17 @@
 <template>
-    <div>
-        <div class="test-editor language-mongodb-document">
-        </div>
+    <div class="collection-tab">
+        
+        <CodeJar 
+            v-model="demoCode" 
+            language="mongodb-document" 
+            class="mongo-query-editor mongodb-document-input" 
+            ref="insertDocInput" 
+            :shortkey="{win: ['ctrl', 'enter'], mac: ['meta', 'enter']}"
+            @shortkey=""
+        />
+
         <div class="gap"></div>
-        <button>Insert</button>
+        <button>Insert Document</button>
     </div>
 </template>
 <script>
@@ -12,10 +20,12 @@
     import CodeJar from '@/components/CodeJar';
 
     export default {
-        mounted: function() {
-            
-            let jar = CodeJar(document.querySelector('.test-editor'), Prism.highlightElement);
-            jar.updateCode(`{
+        components: {
+            CodeJar
+        },
+        data: function() {
+
+            const demoCode = `{
    '_id': ObjectId('5ec72ffe00316be87cab3927'),
    'code': Code('function () { return 22; }'),
    'binary': BinData(1, '232sa3d323sd232a32sda3s2d3a2s1d23s21d3sa'),
@@ -50,8 +60,14 @@
   'number': 1234,
   'invalid-key': 123,
   'tsNew': Timestamp(1, 23)
-}
-`);
+}`;
+
+            return {
+                demoCode
+            }
+        },
+        mounted: function() {
+
         }
 }
 
@@ -59,16 +75,17 @@
 </script>
 
 <style lang="scss">
-.test-editor {
-    border-radius: 6px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-    font-family: 'Source Code Pro', monospace;
-    font-size: 14px;
-    font-weight: 400;
-    height: 340px;
-    letter-spacing: normal;
-    line-height: 20px;
-    padding: 10px;
-    tab-size: 4;
+.mongodb-document-input {
+    // height: 20em;
+    // border-radius: 6px;
+    // box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    // font-family: 'Source Code Pro', monospace;
+    // font-size: 14px;
+    // font-weight: 400;
+    // height: 340px;
+    // letter-spacing: normal;
+    // line-height: 20px;
+    // padding: 10px;
+    // tab-size: 4;
 }
 </style>

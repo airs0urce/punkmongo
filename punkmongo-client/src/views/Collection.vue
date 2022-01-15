@@ -201,6 +201,12 @@ export default {
     transform: translate(1.3em, 0px);
 }
 
+/deep/ .collection-tab {
+    padding: 1rem 0.8rem 0.4rem;
+    background-color: rgb(238, 239, 255);
+    border: 1px solid #e2e2e2;
+    border-top: none;
+}
 </style>
 
 

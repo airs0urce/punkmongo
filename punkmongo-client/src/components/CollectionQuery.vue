@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <div class="query-editor">
+        <div class="collection-tab">
             <div class="filter-row-wrapper" :class="{'filter-invalid': !this.query.filter.valid}">
                 <!-- <div class="filter-label">filter</div> -->
                 <!-- <div class="options-label">options</div> -->
@@ -770,12 +770,6 @@ function getDefaultData() {
 </script>
 
 <style lang="scss" scoped>
-.query-editor {
-    padding: 1rem 0.8rem 0.4rem;
-    background-color: rgb(238, 239, 255);
-    border: 1px solid #e2e2e2;
-    border-top: none;
-}
 .filter-row-wrapper {
     display: flex;
     align-items: flex-start;
