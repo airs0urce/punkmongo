@@ -44,7 +44,7 @@ export default new Vuex.Store({
             queryResult: defaultQueryResult,
         },
         errors: {
-            global: null,
+            server_uncaught: null,
         },
         previosRoute: null
     },
@@ -115,11 +115,8 @@ export default new Vuex.Store({
         [mutations.SET_COLLECTION_INDEXES](state, indexes) {
             state.activeDb.activeCollection.indexes = indexes;
         },
-        [mutations.SET_ERROR](state, {type, error}) {
-            if (!type) {
-                type = 'global';
-            }
-            state.errors[type] = error;
+        [mutations.SET_UNCAUGHT_SERVER_ERROR](state, {error}) {
+            state.errors['server_uncaught'] = error;
         }, 
         [mutations.SET_PREVIOUS_ROUTE](state, route) {
             state.previosRoute = route;

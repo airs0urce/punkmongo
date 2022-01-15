@@ -2,12 +2,12 @@
 <router-link to="/about">About</router-link> -->
 
 <template>
-    <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving" :class="{'error-padding': $store.state.errors.global}">
+    <div class="main-container" @mousemove="onMouseMove" @mouseup="disableResizerMoving" :class="{'error-padding': $store.state.errors.server_uncaught}">
 
-        <span class="global-error-close" v-if="$store.state.errors.global" @click="closeError()"><font-awesome-icon icon="times" /></span>
-        <div class="global-error" v-if="$store.state.errors.global">
+        <span class="global-error-close" v-if="$store.state.errors.server_uncaught" @click="closeError()"><font-awesome-icon icon="times" /></span>
+        <div class="global-error" v-if="$store.state.errors.server_uncaught">
             <div class="error-wrapper">
-                <span class="message">{{$store.state.errors.global}}</span>
+                <span class="message">{{$store.state.errors.server_uncaught}}</span>
             </div>
         </div>
         <div class="left-panel" :style="{flex: '0 0 ' + $store.state.persistent.resizerPosition + 'px', width: $store.state.persistent.resizerPosition + 'px'}" v-if="$store.state.persistent.showLeftPanel">
@@ -155,7 +155,7 @@ export default {
             await this.$store.dispatch(actions.ACTION_LOAD_DB, dbName);
         },
         closeError() {
-            this.$store.commit(mutations.SET_ERROR, {error: null});
+            this.$store.commit(mutations.SET_UNCAUGHT_SERVER_ERROR, {error: null});
         }
 
     }
@@ -585,6 +585,10 @@ a:hover.lighter {
     margin-top: 0;
     a {
         text-decoration: underline;
+    }
+    &.block {
+        display: block;
+        margin-bottom: 0.8rem;
     }
 }
 .local-info-text {

@@ -5,11 +5,10 @@ const a = require('awaiting')
     , moment = require('moment')
     , util = require('util')
     , vm = require('vm')
-    , ejsonParser = require('ejson-shell-parser').default
     , mongoDocToString = require('../mongoDocToString')
+    , mongoQueryParser = require('mongodb-query-parser')
     , mongoHelpers = require('../modules/mongoHelpers')
 ;    
-
 
 /*
 {
@@ -48,7 +47,8 @@ module.exports = async function (params, mongoClient) {
         options.maxTimeMS = params.query.options.timeout;
     }
 
-    const filter = ejsonParser(params.query.filter, {mode: 'loose', allowComments: false, allowMethods: true});
+
+    const filter = mongoQueryParser(params.query.filter);
     
     if (!params.query.pagination.pageNumber) {
         params.query.pagination.pageNumber = 1;

@@ -205,7 +205,7 @@ import * as mongodbQueryParser from 'mongodb-query-parser';
 import VueTagsInput from '@johmun/vue-tags-input';
 import * as actions from '../store/actions';
 import * as mutations from '../store/mutations';
-import api from '../api/api';
+import api from '@/api/api';
 import * as a from 'awaiting';
 import * as moment from 'moment';
 import eventBus from '../eventBus';

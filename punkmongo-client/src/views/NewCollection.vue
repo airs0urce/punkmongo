@@ -269,7 +269,7 @@ export default {
             this.loading = true;
             const response = await api.request('createCollection', createCollectionParams);
             if (response.error) {
-                if (response.error.code < 100) {
+                if (!response.error.generic) {
                     this.errors.createCollectionError = response.error.message;
                 }
             } else {

@@ -2,7 +2,7 @@
     <div class="collection-tab">
         
         <CodeJar 
-            v-model="demoCode" 
+            v-model="doc" 
             language="mongodb-document" 
             class="mongo-query-editor mongodb-document-input" 
             ref="insertDocInput" 
@@ -11,13 +11,19 @@
         />
 
         <div class="gap"></div>
-        <button>Insert Document</button>
+        
+        <div class="local-error-text block">{{error}}</div>
+        
+
+        <button @click="insertDocument">Insert Document</button>
     </div>
 </template>
 <script>
     import Prism from '@/vendor/prismjs/prism.js';
     import '@/vendor/prismjs/prism.css'
     import CodeJar from '@/components/CodeJar';
+    import {EJSON} from 'bson';
+    import api from '@/api/api';
 
     export default {
         components: {
@@ -25,7 +31,7 @@
         },
         data: function() {
 
-            const demoCode = `{
+            const doc = `{
    '_id': ObjectId('5ec72ffe00316be87cab3927'),
    'code': Code('function () { return 22; }'),
    'binary': BinData(1, '232sa3d323sd232a32sda3s2d3a2s1d23s21d3sa'),
@@ -63,7 +69,32 @@
 }`;
 
             return {
-                demoCode
+                doc: doc,
+                error: ''
+            }
+        },
+        computed: {
+            activeDb() {
+                return this.$store.state.activeDb;
+            },
+            activeCollectionName() {
+                return this.activeDb.activeCollection.name;
+            },
+        },
+        methods: {
+            async insertDocument() {
+                this.error = '';
+                const response = await api.request('insertDocument', {
+                    db: this.activeDb.name,
+                    collection: this.activeDb.activeCollection.name,
+                    doc: this.doc,
+                });
+
+                if (response.error) {
+                    this.error = `${response.error.message}`;
+                }
+
+                
             }
         },
         mounted: function() {

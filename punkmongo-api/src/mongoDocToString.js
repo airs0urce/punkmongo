@@ -105,6 +105,9 @@ function stringifyValue(value, defaultStringify) {
     const typeDescriptor = getTypeDescriptorForValue(value);
     const convertToJs = BSON_TO_JS_STRING[typeDescriptor.type];
     if (!convertToJs) {
+      if (!defaultStringify) {
+         defaultStringify = JSON.stringify;
+      }
         return defaultStringify(value);
     }
     return convertToJs(value);

@@ -56,11 +56,12 @@ const router = new koaRouter();
             }
             
         } catch (e) {
-            const errorCode = e.code || 101;
+            // Error code 100 - unhandled error
+            const errorCode = e.code || 100;
 
             const errorObject = {
+                code: errorCode,
                 message: (errorCode >= 100 ? stackTrace(e): e.message),
-                code: errorCode
             }
 
             const response = {
