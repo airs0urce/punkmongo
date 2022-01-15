@@ -65,7 +65,7 @@
                         <td>{{bytesFormatted(db.stats.indexSize)}}</td>
                         <td>{{numberWithCommas(db.stats.objects)}}</td>
                         <td class="td-delete">
-                            <router-link class="no-select btn-icon delete-icon" :to="{name: 'delete-database', params: {dbName: db.name}}">
+                            <router-link class="no-select btn-icon delete-icon" :to="{name: 'drop-database', params: {dbName: db.name}}">
                                 <font-awesome-icon icon="trash-alt" /> 
                             </router-link>
                         </td>

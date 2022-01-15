@@ -18,9 +18,9 @@
                     </router-link>
                 </div>
                 <div class="action-buttons-right">
-                    <router-link class="button no-select btn-icon btn-red" :to="{name: 'delete-database', params: {dbName: $store.state.activeDb.name}}">
+                    <router-link class="button no-select btn-icon btn-red" :to="{name: 'drop-database', params: {dbName: $store.state.activeDb.name}}">
                         <font-awesome-icon icon="trash-alt" /> 
-                        Delete "{{activeDb.name}}" database…
+                        Drop "{{activeDb.name}}" database…
                     </router-link>
                 </div>
             </div> 
@@ -112,8 +112,8 @@
                             <td colspan="8">This is a view on <strong>{{collection.options.viewOn}}</strong></td>
                         </template>
 
-                        <td class="td-delete" title="delete collection">
-                            <router-link class="no-select btn-icon delete-icon" :to="{ name: 'delete-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
+                        <td class="td-delete" title="drop collection">
+                            <router-link class="no-select btn-icon delete-icon" :to="{ name: 'drop-collection', params: { dbName: activeDb.name, collName: collection.name }}" >
                                 <font-awesome-icon icon="trash-alt" /> 
                             </router-link>
                         </td>

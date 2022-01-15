@@ -4,29 +4,24 @@
             <router-link :to="`/overview/databases`">Databases</router-link>
             <font-awesome-icon icon="angle-right" class="arrow-separator" />
             <router-link :to="{name: 'database', params: {dbName: dbName}}">{{dbName}}</router-link>
-            <font-awesome-icon icon="angle-right" class="arrow-separator" />Delete "<router-link :to="{name: 'collection-manager', params: {dbName: dbName, collName: collName}}">{{collName}}</router-link>" collection
+            <font-awesome-icon icon="angle-right" class="arrow-separator" />Drop "<router-link :to="{name: 'collection-manager', params: {dbName: dbName, collName: collName}}">{{collName}}</router-link>" collection
         </div>
-
 
         <form class="no-select">
             <div class="form-row">
-                Are you sure you want to delete <strong>{{collName}} </strong> 
+                Are you sure you want to drop <strong>{{collName}} </strong> 
                 <strong class="light">({{numberWithCommas(collectionRecordsAmount)}} docs)</strong> 
                 collection?
-
             </div>
         </form>        
         <div class="gap"></div>
 
-        <button @click="deleteCollection()" class="btn-red confirm-button" :disabled="loading">
-            <font-awesome-icon icon="trash-alt" /> Yes, delete <strong>{{collName}}</strong>
+        <button @click="dropCollection()" class="btn-red confirm-button" :disabled="loading">
+            <font-awesome-icon icon="trash-alt" /> Drop <strong>{{collName}}</strong>
         </button>
         <button @click="goBack()" :disabled="loading">
             Cancel
-        </button>
-       
-        
-
+        </button> 
     </div>
 </template>
 
@@ -65,10 +60,10 @@ export default {
         
     },
     methods: {
-        async deleteCollection() {
+        async dropCollection() {
             this.loading = true;
             const response = await api.request(
-                'deleteCollection', 
+                'dropCollection', 
                 {db: this.dbName, collection: this.collName}
             );
             
