@@ -16,8 +16,6 @@ params = {
 */
 
 module.exports = async function (params, mongoClient) {  
-    mongoClient.db('local').collection('punkmongo_undo');
-
     const docId = mongoHelpers.parse(params._id);
 
     const restoreId = await UndoDelete.backup(params.db, params.collection, docId);
