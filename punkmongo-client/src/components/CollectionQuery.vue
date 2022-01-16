@@ -61,6 +61,7 @@
                             <div class="cost-value" v-if="!queryLoading && queryResult.explain.executionStats" title="Query execution took time">{{queryResult.explain.executionStats.executionTimeMillis}} ms</div>
                         </div>
                     </div>
+                    <div class="local-error-text block" v-if="msgError">{{msgError}}</div>
                 </div>
                 <div class="query-options no-select">
                     <div class="query-row-margin">
@@ -244,6 +245,7 @@ export default {
             worker: null,
             showOnlyExpandAll: true,
             DELETE_INFO_FIELD: '__punkmongo_deleted_c67f7242-9733-41c7-b799-feb96d7504cb',
+            msgError: '',
         }
     },
     computed: {
@@ -343,6 +345,7 @@ export default {
             this.$refs.projection_params_input.$el.querySelector('input').focus();
         },
         async querySubmit() {
+            this.msgError = '';
 
             if (!this.activeDb.name || !this.activeDb.activeCollection.name) {
                 return;
@@ -399,8 +402,9 @@ export default {
                         records: response.result.records,
                     }
                 });
-
             } else {
+                this.msgError = response.error.message;
+
                 this.$store.commit(mutations.SET_COLLECTION_QUERY_RESULT, {
                     collName: this.activeDb.activeCollection.name,
                     result: {

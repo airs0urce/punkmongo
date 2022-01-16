@@ -8,6 +8,7 @@ const a = require('awaiting')
     , mongoDocToString = require('../mongoDocToString')
     , mongoQueryParser = require('mongodb-query-parser')
     , mongoHelpers = require('../modules/mongoHelpers')
+    , ApiError = require('../errors/ApiError')
 ;    
 
 /*
@@ -47,8 +48,13 @@ module.exports = async function (params, mongoClient) {
         options.maxTimeMS = params.query.options.timeout;
     }
 
-
-    const filter = mongoQueryParser(params.query.filter);
+    let filter;
+    try {
+        filter = mongoQueryParser(params.query.filter);
+    } catch (e) {
+        throw new ApiError(`Error parsing: ${e.message}`, 1);
+    }
+    
     
     if (!params.query.pagination.pageNumber) {
         params.query.pagination.pageNumber = 1;
@@ -59,7 +65,13 @@ module.exports = async function (params, mongoClient) {
     if (params.query.options.limit > 0) {
         countOptions.limit = params.query.options.limit;
     }
-    resultDocumentsTotal = await collection.countDocuments(filter, countOptions);
+    try {
+        resultDocumentsTotal = await collection.countDocuments(filter, countOptions);
+    } catch (e) {
+        throw new ApiError(`Error: ${e.message}`, 2);
+    }
+    
+
     pagesTotal = Math.ceil(resultDocumentsTotal / params.query.pagination.pageSize);
     if (pagesTotal === 0) {
         pagesTotal = 1;
@@ -70,13 +82,20 @@ module.exports = async function (params, mongoClient) {
         setSkipAndLimit(options, params);
     }
 
-    const cursor = collection.find(filter, options);
+    let findCursor;
+    try {
+        findCursor = collection.find(filter, options);
+    } catch (e) {
+        throw new ApiError(`Error: ${e.message}`, 3);
+    }
+
+    
     const records = [];
     const recordsTimestamps = [];
 
     let record;
     let recordIndex = 0;
-    while (record = await cursor.next()) {   
+    while (record = await findCursor.next()) {   
         let timestamp = false;
         if (ObjectID.isValid(record._id)) {
             timestamp = moment(ObjectID(record._id).getTimestamp()).unix();
@@ -101,11 +120,10 @@ module.exports = async function (params, mongoClient) {
         records.push(docItem);
     }
 
-
     const collectionDocumentsTotal = await collection.estimatedDocumentCount();
 
-    cursor.rewind();
-    const explainInfo = await cursor.explain();
+    findCursor.rewind();
+    const explainInfo = await findCursor.explain();
 
     return {
         collectionDocumentsTotal: collectionDocumentsTotal, 
