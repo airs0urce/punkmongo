@@ -7,15 +7,16 @@
             class="mongo-query-editor mongodb-document-input" 
             ref="insertDocInput" 
             :shortkey="{win: ['ctrl', 'enter'], mac: ['meta', 'enter']}"
-            @shortkey=""
+            @shortkey="insertDocument()"
         />
 
         <div class="gap"></div>
         
-        <div class="local-error-text block">{{error}}</div>
         
+        <button @click="insertDocument" :disabled="loading">Insert Document</button>
 
-        <button @click="insertDocument">Insert Document</button>
+        <div class="local-error-text block" v-if="msgError">{{msgError}}</div>
+        <div class="local-info-text block" v-if="msgInfo">{{msgInfo}}</div>
     </div>
 </template>
 <script>
@@ -31,46 +32,13 @@
         },
         data: function() {
 
-            const doc = `{
-   '_id': ObjectId('5ec72ffe00316be87cab3927'),
-   'code': Code('function () { return 22; }'),
-   'binary': BinData(1, '232sa3d323sd232a32sda3s2d3a2s1d23s21d3sa'),
-   'dbref': DBRef('test', ObjectId('5ec72f4200316be87cab3926'), 'nearby_aventura'),
-   timestamp: Timestamp(0, 0),
-   'long': 0,
-   'long1': NumberLong(9223372036854775807),
-   'decimal': NumberDecimal('1000'),
-   'integer': 12,
-   'maxkey': MaxKey(),
-   'minkey': MinKey(),
-   'isodate': ISODate('2012-01-01T00:00:00.000Z'),
-   'regexp': RegExp('test'),
-   'string': 'stringvalue',
-   'array': [
-   1,
-   2,
-   3
-   ],
-   'nulll': null,
-   'object': {
-      'a': 1,
-      'b': 2
-  },
-  'undef': null,
-  'timestamp2': Timestamp(1, 22),
-  'regexp2': RegExp('test2', 'i'),
-  'regexp3': RegExp('test3\/', 'i'),
-  'max_key2': MaxKey(),
-  'code2': Code('function test() { return \'fdkfkdfkdf\'; }'),
-  'code3': Code('function test() { return "fdkfkdfkdf"; }'),
-  'number': 1234,
-  'invalid-key': 123,
-  'tsNew': Timestamp(1, 23)
-}`;
+            const doc = `{\n  \n}`;
 
             return {
+                loading: false,
                 doc: doc,
-                error: ''
+                msgError: '',
+                msgInfo: '',
             }
         },
         computed: {
@@ -83,18 +51,24 @@
         },
         methods: {
             async insertDocument() {
-                this.error = '';
+                this.msgError = '';
+                this.msgInfo = '';
+
+                this.loading = true;
+
                 const response = await api.request('insertDocument', {
                     db: this.activeDb.name,
                     collection: this.activeDb.activeCollection.name,
                     doc: this.doc,
                 });
 
-                if (response.error) {
-                    this.error = `${response.error.message}`;
-                }
+                this.loading = false;
 
-                
+                if (response.error) {
+                    this.msgError = `${response.error.message}`;
+                } else {
+                    this.msgInfo = `Successfully inserted. ID of new record is ${response.result.insertedId}`;
+                }
             }
         },
         mounted: function() {

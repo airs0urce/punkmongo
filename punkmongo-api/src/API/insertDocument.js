@@ -24,13 +24,13 @@ module.exports = async function (params, mongoClient) {
     try {
         doc = mongoQueryParser(params.doc);
     } catch (e) {
-        throw new ApiError(`Error parsing Mongo Query: ${e.message}`, 1);
+        throw new ApiError(`Error parsing document: ${e.message}`, 1);
     }
     
     try {
         result = await collection.insertOne(doc);
     } catch (e) {
-        throw new ApiError(`Error inserting Mongo document: ${e.message}`, 2);
+        throw new ApiError(`Error inserting document: ${e.message}`, 2);
     }
 
     return {

@@ -588,7 +588,11 @@ a:hover.lighter {
     }
     &.block {
         display: block;
-        margin-bottom: 0.8rem;
+        margin-top: 0.8rem;
+        border: 2px solid #ff5858;
+        padding: 0.3rem;
+        margin-left: 0;
+        background-color: #f9ecec;
     }
 }
 .local-info-text {
@@ -600,6 +604,15 @@ a:hover.lighter {
     color: #777;
     a {
         text-decoration: underline;
+    }
+    &.block {
+        display: block;
+        margin-top: 0.8rem;
+        border: 2px solid #41a149;
+        padding: 0.3rem;
+        margin-left: 0;
+        background-color: #ecf9ef;
+        color: #16441a;
     }
 }
 
