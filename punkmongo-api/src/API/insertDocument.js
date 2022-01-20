@@ -22,7 +22,7 @@ module.exports = async function (params, mongoClient) {
     try {
         doc = mongoHelpers.mongoShellToObject(params.doc);
     } catch (e) {
-        throw new ApiError(`${e.message} Stack: ${e.stack}`, 1);
+        throw new ApiError(`${e.message} at ${e.stack}`, 1);
     }
 
     try {

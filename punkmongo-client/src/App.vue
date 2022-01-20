@@ -577,6 +577,7 @@ a:hover.lighter {
     }
 }
 .local-error-text {
+    white-space: pre;
     user-select: text;
     color: #d80808;
     position: static;
@@ -596,6 +597,7 @@ a:hover.lighter {
     }
 }
 .local-info-text {
+    white-space: pre;
     position: static;
     display: inline;
     margin-left: 0.5em;
