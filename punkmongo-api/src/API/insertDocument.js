@@ -4,7 +4,6 @@ const a = require('awaiting')
     , mongodb = require('mongodb')
     , ObjectID = mongodb.ObjectID
     , mongoHelpers = require('../modules/mongoHelpers')
-    , mongoQueryParser = require('mongodb-query-parser')
 ;
 
 /*
@@ -18,15 +17,14 @@ params = {
 module.exports = async function (params, mongoClient) {  
     const collection = mongoClient.db(params.db).collection(params.collection);
 
-    let doc;
-    let result;
+    let doc, result;
 
     try {
-        doc = mongoQueryParser(params.doc);
+        doc = mongoHelpers.mongoShellToObject(params.doc);
     } catch (e) {
-        throw new ApiError(`Error parsing document: ${e.message}`, 1);
+        throw new ApiError(`${e.message} Stack: ${e.stack}`, 1);
     }
-    
+
     try {
         result = await collection.insertOne(doc);
     } catch (e) {

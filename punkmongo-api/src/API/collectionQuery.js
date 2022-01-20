@@ -6,8 +6,8 @@ const a = require('awaiting')
     , util = require('util')
     , vm = require('vm')
     , mongoDocToString = require('../mongoDocToString')
-    , mongoQueryParser = require('mongodb-query-parser')
     , mongoHelpers = require('../modules/mongoHelpers')
+    , utils = require('../utils')
     , ApiError = require('../errors/ApiError')
 ;    
 
@@ -47,15 +47,14 @@ module.exports = async function (params, mongoClient) {
     if (params.query.options.timeout) {
         options.maxTimeMS = params.query.options.timeout;
     }
-
-    let filter;
+console.log('1');
     try {
-        filter = mongoQueryParser(params.query.filter);
+        filter = mongoHelpers.mongoShellToObject(params.query.filter);
+console.log('2');        
     } catch (e) {
-        throw new ApiError(`Error parsing: ${e.message}`, 1);
-    }
-    
-    
+        throw new ApiError(`${e.message} Stack: ${e.stack}`, 1);
+    }    
+console.log('3');        
     if (!params.query.pagination.pageNumber) {
         params.query.pagination.pageNumber = 1;
     }
@@ -119,7 +118,7 @@ module.exports = async function (params, mongoClient) {
 
         records.push(docItem);
     }
-
+console.log(records);
     const collectionDocumentsTotal = await collection.estimatedDocumentCount();
 
     findCursor.rewind();

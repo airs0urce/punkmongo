@@ -26,17 +26,17 @@
     import {EJSON} from 'bson';
     import api from '@/api/api';
 
+    const emptyDoc = `{\n  \n}`;
+
     export default {
         components: {
             CodeJar
         },
         data: function() {
 
-            const doc = `{\n  \n}`;
-
             return {
                 loading: false,
-                doc: doc,
+                doc: emptyDoc,
                 msgError: '',
                 msgInfo: '',
             }
@@ -65,9 +65,10 @@
                 this.loading = false;
 
                 if (response.error) {
-                    this.msgError = `${response.error.message}`;
+                    this.msgError = `(Code ${response.error.code}) ${response.error.message}`;
                 } else {
                     this.msgInfo = `Successfully inserted. ID of new record is ${response.result.insertedId}`;
+                    this.doc = emptyDoc;
                 }
             }
         },

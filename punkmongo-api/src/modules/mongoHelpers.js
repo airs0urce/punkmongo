@@ -1,6 +1,8 @@
 const Mongo = require('./Mongo');
 const _ = require('lodash');
 const EJSON = require('bson').EJSON;
+const vm = require('vm');
+const mongodb = require('mongodb');
 
 
 class mongoHelpers {
@@ -185,6 +187,65 @@ class mongoHelpers {
 
     static parse(string) {
         const object = EJSON.parse(string, {relaxed: false});
+        return object;
+    }
+
+    static mongoShellToObject(mongoString) {
+        /*
+        HELP FROM Mongo Shell:
+
+        b = new BinData(subtype,base64str)  create a BSON BinData value
+        b.subtype()                         the BinData subtype (0..255)
+        b.length()                          length of the BinData data in bytes
+        b.hex()                             the data as a hex encoded string
+        b.base64()                          the data as a base 64 encoded string
+        b.toString()
+            
+        \x02 Binary (Old) - This used to be the default subtype, but was deprecated in favor of \x00. 
+        Drivers and tools should be sure to handle \x02 appropriately. 
+        The structure of the binary data (the byte* array in the binary non-terminal) must be 
+        an int32 followed by a (byte*). The int32 is the number of bytes in the repetition.
+
+        \x03 UUID (Old) - This used to be the UUID subtype, but was deprecated in favor of \x04. 
+        Drivers and tools for languages with a native UUID type should handle \x03 appropriately.
+
+        b = HexData(subtype,hexstr)         create a BSON BinData value from a hex string
+        b = UUID(hexstr)                    create a BSON BinData value of UUID subtype
+        b = MD5(hexstr)                     create a BSON BinData value of MD5 subtype
+        "hexstr"                            string, sequence of hex characters (no 0x prefix)
+        */
+        const context = {
+          Code: mongodb.Code,
+          ObjectId: mongodb.ObjectID,
+          ObjectID: mongodb.ObjectID,
+          BinData: function(subtype, base64str) {
+            return new mongodb.Binary(Buffer.from(base64str, 'base64'), subtype);
+          },
+          UUID: function(hexstr) {
+            return new mongodb.Binary(Buffer.from(hexstr, 'hex'), 4);
+          },
+          MD5: function(hexstr) {
+            return new mongodb.Binary(Buffer.from(hexstr, 'hex'), 5);
+          },
+          HexData: function(subtype, hexstr) {
+            return new mongodb.Binary(Buffer.from(hexstr, 'hex'), subtype);
+          },
+          DBRef: mongodb.DBRef,
+          Timestamp: mongodb.Timestamp,
+          NumberLong: mongodb.Long,
+          NumberDecimal: mongodb.Decimal128,
+          NumberInt: mongodb.Int32,
+          MaxKey: mongodb.MaxKey,
+          MinKey: mongodb.MinKey,
+          ISODate: function(string) {
+                if (string) {
+                  return new Date(string);
+                }
+                return new Date();
+          },
+        };
+
+        const object = vm.runInNewContext(`(${mongoString})`, context);
         return object;
     }
 }
