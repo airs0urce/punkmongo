@@ -24,7 +24,7 @@
     "human-size": "1.1.0",
     "list.js": "1.5.0",
     "lodash": "4.17.21",
-    "moment": "2.29.1",
+    "moment": "2.29.4",
     "moment-timezone": "0.5.34",
     "mongodb-index-model": "2.7.1",
     "mongodb-query-parser": "2.4.3",
