@@ -26,7 +26,7 @@
     "lodash": "4.17.21",
     "moment": "2.29.1",
     "moment-timezone": "0.5.34",
-    "mongodb-index-model": "2.7.1",
+    "mongodb-index-model": "4.1.0",
     "mongodb-query-parser": "2.4.3",
     "mongodb-stage-validator": "0.3.1",
     "node-sass": "6.0.1",
