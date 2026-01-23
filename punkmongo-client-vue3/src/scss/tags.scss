@@ -1,0 +1,53 @@
+.info-tag {
+    margin-right: 0.5em;
+    position: relative;
+
+    .info-tag-details {
+        display: none;
+        border-radius: 3px;
+        position: absolute;
+        z-index: 2;
+        background-color: #eee;
+        color: #000;
+        border: 1px solid #ddd;
+        padding: 1em;
+        top: 1.7rem;
+        right: 0;
+        width: 50rem;
+        .tag-details-title {
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+        .non-default td {
+            background-color: #fffaa3;
+        }
+        td.bold {
+            font-weight: bold;
+        }
+        &.info-on-left{
+            top: 0rem;
+            right: 10.2rem;
+        }
+    }
+    &.info-tag-capped {
+        .info-on-left {
+            right: 6.2rem;
+            top: 0;
+        }
+        .info-tag-details {
+            min-width: 13em;
+            width: auto;
+        }
+    }
+    &.info-tag-ttl {
+        .info-on-left {
+            right: 4.2rem;
+            top: 0em;
+        }
+    }
+
+    .question-icon {
+        font-size: 0.9em;
+        color: #dffaff;
+    }
+}

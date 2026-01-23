@@ -1,0 +1,347 @@
+<template>
+    <div>
+        <div class="page-header">
+            <router-link to="/overview/databases">Databases</router-link>
+            <font-awesome-icon icon="angle-right" class="arrow-separator" />
+            <router-link :to="{name: 'database', params: {dbName: dbName}}">{{dbName}}</router-link>
+            <font-awesome-icon icon="angle-right" class="arrow-separator" />New Collection
+        </div>
+
+        <div class="local-notice bottom-gap" v-if="!selectedDatabaseExists">
+            Now create your first collection in "{{dbName}}" database (MongoDB creates database only if at least one collection exists)
+        </div>
+
+        <form class="no-select" @submit.prevent="createCollection">
+            <div class="form-row">
+                <label class="field-name">Collection Name</label>
+                <input type="text" v-model.trim="collectionName" ref="collectionName" class="collection-name" @keyup.enter="createCollection" />
+                <div v-if="errors.collectionName" class="local-error-text">{{errors.collectionName}}</div>
+                <div v-if="validating" class="local-info-text">Validating collection name...</div>
+            </div>
+            <div class="form-row">
+                <label><input v-model="cappedCollection" type="checkbox" /> Capped Collection</label>
+                <a href="https://docs.mongodb.com/manual/core/capped-collections/" target="_blank">
+                    <font-awesome-icon icon="question-circle" class="icon-help" />
+                </a>
+            </div>
+            <div v-if="cappedCollection">
+                <div class="form-row-padding">
+                    <label class="field-name" for="max-size">Max size (required):</label>
+                    <input type="number" step="1" id="max-size" v-model.number="cappedCollectionSize"/> MB
+                    <div v-if="errors.cappedNotSet" class="local-error-text">You have to set "Max size" for capped collection</div>
+                </div>
+                <div class="form-row-padding">
+                    <label class="field-name" for="max-docs-num">Max number of documents:</label>
+                    <input type="number" step="1" id="max-docs-num" v-model.number="cappedCollectionMax" :class="{'empty-value': '' === cappedCollectionMax}" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label><input v-model="useCustomCollation" type="checkbox" /> Use Custom Collation</label>
+                <a href="https://docs.mongodb.com/master/reference/collation/" target="_blank">
+                    <font-awesome-icon icon="question-circle" class="icon-help" />
+                </a>
+            </div>
+            <div v-if="useCustomCollation" class="custom-collation">
+                <div>
+                    <div class="form-row-padding">
+                        <label class="field-name" for="collation-locale">{{collectionOptionsConfig.locale.title}}</label>
+                        <select v-model="customCollation.locale" id="collation-locale">
+                            <option v-for="value in collectionOptionsConfig.locale.values" :key="value.value" :value="value.value">
+                                {{ value.value }} - {{ value.text }}
+                            </option>
+                        </select>
+                    </div>
+                    <div v-if="customCollation.locale != 'simple'">
+                        <div class="form-row-padding">
+                            <label class="field-name" for="collation-strength">{{collectionOptionsConfig.strength.title}}</label>
+                            <select v-model="customCollation.strength" id="collation-strength" :class="{'empty-value': '' === customCollation.strength}">
+                                <option value="">default</option>
+                                <option v-for="value in collectionOptionsConfig.strength.values" :key="value.value" :value="value.value">
+                                    {{ value.value }} - {{ value.text }}
+                                </option>
+                            </select>
+                            <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.strength = ''" :class="{'hidden': '' === customCollation.strength}" />
+                        </div>
+                        <div class="form-row-padding">
+                            <label class="field-name" for="collation-use-case-level">{{collectionOptionsConfig.caseLevel.title}}</label>
+                            <select v-model="customCollation.caseLevel" id="collation-use-case-level" :class="{'empty-value': '' ===customCollation.caseLevel}">
+                                <option value="">default</option>
+                                <option v-for="value in collectionOptionsConfig.caseLevel.values" :key="String(value.value)" :value="value.value">
+                                    {{ value.value }} - {{ value.text }}
+                                </option>
+                            </select>
+                            <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.caseLevel = ''" :class="{'hidden': '' === customCollation.caseLevel}" />
+                        </div>
+                        <div class="form-row-padding">
+                            <label class="field-name" for="collation-case-first">{{collectionOptionsConfig.caseFirst.title}}</label>
+                            <select v-model="customCollation.caseFirst" id="collation-case-first" :class="{'empty-value': '' === customCollation.caseFirst}">
+                                <option value="">default</option>
+                                <option v-for="value in collectionOptionsConfig.caseFirst.values" :key="value.value" :value="value.value">
+                                    {{ value.value }} - {{ value.text }}
+                                </option>
+                            </select>
+                            <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.caseFirst = ''" :class="{'hidden': '' === customCollation.caseFirst}" />
+                        </div>
+                    </div>
+                </div>
+                <div v-if="customCollation.locale != 'simple'">
+                    <div class="form-row-padding">
+                        <label class="field-name" for="collation-numeric-ordering">{{collectionOptionsConfig.numericOrdering.title}}</label>
+                        <select v-model="customCollation.numericOrdering" id="collation-numeric-ordering" :class="{'empty-value': '' === customCollation.numericOrdering}">
+                            <option value="">default</option>
+                            <option v-for="value in collectionOptionsConfig.numericOrdering.values" :key="String(value.value)" :value="value.value">
+                                {{ value.text }}
+                            </option>
+                        </select>
+                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.numericOrdering = ''" :class="{'hidden': '' === customCollation.numericOrdering}" />
+                    </div>
+                    <div class="form-row-padding">
+                        <label class="field-name" for="collation-alternate">{{collectionOptionsConfig.alternate.title}}</label>
+                        <select v-model="customCollation.alternate" id="collation-alternate" :class="{'empty-value': '' === customCollation.alternate}">
+                            <option value="">default</option>
+                            <option v-for="value in collectionOptionsConfig.alternate.values" :key="value.value" :value="value.value">
+                                {{ value.text }}
+                            </option>
+                        </select>
+                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.alternate = ''" :class="{'hidden': '' === customCollation.alternate}" />
+                    </div>
+                    <div class="form-row-padding">
+                        <label class="field-name" for="collation-max-variable">{{collectionOptionsConfig.maxVariable.title}}</label>
+                        <select v-model="customCollation.maxVariable" id="collation-max-variable" :class="{'empty-value': '' === customCollation.maxVariable}">
+                            <option value="">default</option>
+                            <option v-for="value in collectionOptionsConfig.maxVariable.values" :key="value.value" :value="value.value">
+                                {{ value.text }}
+                            </option>
+                        </select>
+                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.maxVariable = ''" :class="{'hidden': '' === customCollation.maxVariable}" />
+                    </div>
+                    <div class="form-row-padding">
+                        <label class="field-name" for="collation-backwards">{{collectionOptionsConfig.backwards.title}}</label>
+                        <select v-model="customCollation.backwards" id="collation-backwards" :class="{'empty-value': '' === customCollation.backwards}">
+                            <option value="">default</option>
+                            <option v-for="value in collectionOptionsConfig.backwards.values" :key="String(value.value)" :value="value.value">
+                                {{ value.text }}
+                            </option>
+                        </select>
+                        <font-awesome-icon class="reset-btn" icon="times" @click="customCollation.backwards = ''" :class="{'hidden': '' === customCollation.backwards}" />
+                    </div>
+                </div>
+            </div>
+            <div class="local-error-text top-gap" v-if="errors.createCollectionError">{{errors.createCollectionError}}</div>
+        </form>
+        <div class="gap"></div>
+        <button @click="createCollection()" :disabled="loading" class="confirm-button">
+            <font-awesome-icon icon="plus" />
+            Create Collection
+        </button>
+        <button @click="goBack()" :disabled="loading">
+            Cancel
+        </button>
+    </div>
+</template>
+
+<script>
+import api from '../api/api'
+import collectionOptionsConfig from '../collectionOptions'
+import { useMainStore } from '../stores/main'
+import { useRoute, useRouter } from 'vue-router'
+import { computed } from 'vue'
+
+export default {
+    setup() {
+        const store = useMainStore()
+        const route = useRoute()
+        const router = useRouter()
+        const dbName = computed(() => route.params.dbName)
+        const selectedDatabaseExists = computed(() => {
+            let exists = false
+            for (let db of store.persistent.dbList) {
+                if (db.name == route.params.dbName) {
+                    exists = true
+                    break
+                }
+            }
+            return exists
+        })
+        return { store, route, router, dbName, selectedDatabaseExists, collectionOptionsConfig }
+    },
+    data() {
+        return {
+            loading: false,
+            collectionName: '',
+            cappedCollection: false,
+            cappedCollectionMax: '',
+            cappedCollectionSize: '',
+            useCustomCollation: false,
+            customCollation: {
+                locale: 'simple',
+                strength: '',
+                caseLevel: '',
+                caseFirst: '',
+                numericOrdering: '',
+                alternate: '',
+                maxVariable: '',
+                backwards: '',
+            },
+            errors: {
+                collectionName: null,
+                cappedNotSet: false,
+                createCollectionError: null
+            },
+            validating: false,
+        }
+    },
+    watch: {
+        cappedCollection() {
+            this.errors.cappedNotSet = false
+        }
+    },
+    mounted() {
+        this.resetForm()
+        this.$refs['collectionName'].focus()
+    },
+    methods: {
+        async createCollection() {
+            this.errors.collectionName = null
+            this.errors.cappedNotSet = false
+            this.errors.createCollectionError = null
+
+            let error = false
+            const validateNameRes = await this.validateCollectionName(this.collectionName)
+            if (!validateNameRes.result.canCreate) {
+                this.errors.collectionName = validateNameRes.result.reason
+                error = true
+            }
+
+            if (this.cappedCollection && this.cappedCollectionMax === '' && this.cappedCollectionSize === '') {
+                this.errors.cappedNotSet = true
+                error = true
+            }
+
+            if (error) {
+                return
+            }
+
+            const createCollectionParams = {
+                db: this.dbName,
+                collection: this.collectionName,
+                capped: {
+                    enable: this.cappedCollection,
+                    options: {
+                        max: this.cappedCollectionMax,
+                        size: this.cappedCollectionSize * 1024 * 1024
+                    }
+                },
+                collation: {
+                    enable: this.useCustomCollation,
+                    options: {
+                        locale: this.customCollation.locale,
+                        strength: this.customCollation.strength,
+                        caseLevel: this.customCollation.caseLevel,
+                        caseFirst: this.customCollation.caseFirst,
+                        numericOrdering: this.customCollation.numericOrdering,
+                        alternate: this.customCollation.alternate,
+                        maxVariable: this.customCollation.maxVariable,
+                        backwards: this.customCollation.backwards,
+                    }
+                }
+            }
+
+            if ('' === createCollectionParams.capped.options.max) {
+                delete createCollectionParams.capped.options.max
+            }
+            for (let field in createCollectionParams.collation.options) {
+                if ('' === createCollectionParams.collation.options[field]) {
+                    if (field == 'locale') {
+                        continue
+                    }
+                    delete createCollectionParams.collation.options[field]
+                }
+            }
+
+            this.loading = true
+            const response = await api.request('createCollection', createCollectionParams)
+            if (response.error) {
+                if (!response.error.generic) {
+                    this.errors.createCollectionError = response.error.message
+                }
+            } else {
+                const dbNames = this.store.persistent.dbList.map((dbItem) => { return dbItem.name })
+                if (!dbNames.includes(this.dbName)) {
+                    await this.store.reloadDbList()
+                }
+
+                await this.store.loadDb(this.dbName)
+
+                this.router.push({
+                    name: 'collection-manager',
+                    params: { dbName: this.dbName, collName: this.collectionName }
+                })
+                this.resetForm()
+            }
+            this.loading = false
+        },
+        resetForm() {
+            this.collectionName = ''
+            this.cappedCollection = false
+            this.cappedCollectionMax = ''
+            this.cappedCollectionSize = ''
+            this.useCustomCollation = false
+            this.customCollation = {
+                locale: 'simple',
+                strength: '',
+                caseLevel: '',
+                caseFirst: '',
+                numericOrdering: '',
+                alternate: '',
+                maxVariable: '',
+                backwards: '',
+            }
+        },
+        async validateCollectionName() {
+            this.validating = true
+            const response = await api.request(
+                'checkCanCreateCollection',
+                { db: this.dbName, collection: this.collectionName }
+            )
+            this.validating = false
+            return response
+        },
+        goBack() {
+            if (this.store.previosRoute) {
+                this.router.go(-1)
+            } else {
+                this.router.push({
+                    name: 'collection-manager',
+                    params: {
+                        dbName: this.dbName,
+                        collName: this.collName
+                    }
+                })
+            }
+        },
+    }
+}
+</script>
+
+<style lang="scss" scoped>
+.collection-name {
+    width: 20em;
+}
+select {
+    width: 17rem;
+}
+#max-docs-num, #max-size {
+    width: 7rem;
+}
+.custom-collation select {
+    width: 25em;
+}
+.custom-collation {
+    display: flex;
+}
+.hidden {
+    visibility: hidden;
+}
+</style>
