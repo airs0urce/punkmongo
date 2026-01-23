@@ -191,17 +191,17 @@ export default {
     margin-left: 1rem;
     
 }
-/deep/ .info-tag-details-ttl {
+::v-deep .info-tag-details-ttl {
     transform: translate(5em, 0px);
 }
-/deep/ .info-tag-details-collation {
+::v-deep .info-tag-details-collation {
     transform: translate(10em, 0px);
 }
-/deep/ .info-tag-details-capped {
+::v-deep .info-tag-details-capped {
     transform: translate(1.3em, 0px);
 }
 
-/deep/ .collection-tab {
+::v-deep .collection-tab {
     padding: 1rem 0.8rem 0.4rem;
     background-color: rgb(238, 239, 255);
     border: 1px solid #e2e2e2;

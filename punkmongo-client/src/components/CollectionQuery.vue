@@ -813,32 +813,30 @@ function getDefaultData() {
         }
     }
 }
-/deep/ {
-    .ti-new-tag-input-wrapper {
-        font-size: 1rem;
+::v-deep .ti-new-tag-input-wrapper {
+    font-size: 1rem;
+}
+::v-deep .vue-tags-input {
+    width: 17.2rem;
+    background-color: #fff;
+    .ti-input {
+        border: 1px solid #ddd;
+        padding: 2px;
     }
-    .vue-tags-input {
-        width: 17.2rem;
+    .ti-new-tag-input {
+        font-family: "Courier New";
+        background-color: #c8f7c8;
+        color: #0a420a;
+        // outline: 3px solid #c8f7c8;
+    }
+    .ti-invalid {
         background-color: #fff;
-        .ti-input {
-            border: 1px solid #ddd;
-            padding: 2px;
-        }
-        .ti-new-tag-input {
-            font-family: "Courier New";
-            background-color: #c8f7c8;
-            color: #0a420a;
-            // outline: 3px solid #c8f7c8;
-        }
-        .ti-invalid {
-            background-color: #fff;
-        }
     }
+}
 
-    .ti-tag {
-        background-color: #5e87c1;
-        cursor: default;
-    }
+::v-deep .ti-tag {
+    background-color: #5e87c1;
+    cursor: default;
 }
 
 .field-limit {
@@ -896,7 +894,7 @@ div.document {
     }   
 }
 
-/deep/ .ti-new-tag-input-wrapper input {
+::v-deep .ti-new-tag-input-wrapper input {
     min-width: fit-content;
 }
 
