@@ -19,12 +19,14 @@
                     </a>
                 </div>
                 <table class="capped-info-table">
-                    <tr>
-                        <td>
-                            <span v-if="collOptionExists('max') && collOptionExists('size')"><strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum or <strong>{{collectionOptions.max}}</strong> documents</span>
-                            <span v-if="!collOptionExists('max') && collOptionExists('size')"><strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum and no restriction for amount of documents</span>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span v-if="collOptionExists('max') && collOptionExists('size')"><strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum or <strong>{{collectionOptions.max}}</strong> documents</span>
+                                <span v-if="!collOptionExists('max') && collOptionExists('size')"><strong>{{bytesFormatted(collectionOptions.size, 'MB', 0, false)}}</strong> maximum and no restriction for amount of documents</span>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </span>
@@ -112,7 +114,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/scss/tags.scss';
+@use '@/scss/tags.scss';
 
 .info-tag-capped-fixed-width {
     width: 6rem;

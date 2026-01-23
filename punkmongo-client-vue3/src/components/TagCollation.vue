@@ -140,7 +140,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/scss/tags.scss';
+@use '@/scss/tags.scss';
 
 .info-tag-details {
     width: 60rem;
